@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  service_id: 
+  burns: 1
+  total_findings: 1
+  open_findings: 1
+  filtered_findings: 1
+  hidden_findings: 1
+  published_findings: 1
+
+two:
+  service_id: 
+  burns: 1
+  total_findings: 1
+  open_findings: 1
+  filtered_findings: 1
+  hidden_findings: 1
+  published_findings: 1

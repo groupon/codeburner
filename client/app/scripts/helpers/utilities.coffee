@@ -1,0 +1,122 @@
+ARRAY_COLUMN = [
+  'burn_id'
+  'service_id'
+  'status'
+]
+PAGINATION_RANGE = 6
+
+Codeburner.Utilities =
+  postRequest: (url, data, cb, error) ->
+    $.ajax
+      url: url
+      type: 'POST'
+      data: data
+      success: (res) ->
+        cb res if cb?
+      error: (res) ->
+        error res if error?
+
+  getRequest: (url, cb, error) ->
+    $.ajax
+      url: url
+      type: 'GET'
+      dataType: 'json'
+      success: (res) ->
+        cb res if cb?
+      error: (res) ->
+        error res if error?
+
+  putRequest: (url, cb, error) ->
+    $.ajax
+      url: url
+      type: 'PUT'
+      dataType: 'json'
+      success: (res) ->
+        cb res if cb?
+      error: (res) ->
+        error res if error?
+
+  deleteRequest: (url, cb, error) ->
+    $.ajax
+      url: url
+      type: 'DELETE'
+      dataType: 'json'
+      success: (res) ->
+        cb res if cb?
+      error: (res) ->
+        error res if error?
+
+  renderPaginater: (currentPage, totalPages, totalRows, pageSize) ->
+    # Calculate the pagination
+    total = totalPages
+    current = currentPage
+    paginater = {}
+
+    if current - PAGINATION_RANGE / 2 <= 1
+      left = 1
+      right = Math.min PAGINATION_RANGE, total
+    else
+      left = current - PAGINATION_RANGE / 2
+      right = current + PAGINATION_RANGE / 2
+      if right > total
+        right = total
+        left = Math.max 1, right - PAGINATION_RANGE
+
+    paginater.paginater = yes
+    paginater.left = left
+    paginater.right = right
+    paginater.current = current
+    paginater.total = total
+    paginater.totalRows = totalRows
+    paginater.pageSize = pageSize
+    if current - 1 >= 1
+      paginater.previous = current - 1
+    else
+      paginater.previous = 0
+
+    if current + 1 <= total
+      paginater.next = current + 1
+    else
+      paginater.next = 0
+
+    $('.paginater').html JST['app/scripts/templates/paginater.ejs'] paginater
+
+  parseQueryString: (queryString) ->
+    params = {}
+    queries = queryString.split '&'
+    for item in queries
+      parts = item.split '='
+      if parts[0] in ARRAY_COLUMN
+        value = parts[1].split ','
+      else
+        value = parts[1]
+      params[parts[0]] = value
+    return params
+
+  truncateString: (input_string, length) ->
+    if input_string.length > length
+      return input_string.substring(0, length - 3) + '...'
+    else
+      return input_string
+
+  confirm: (msg, yesFunction, noFunction) ->
+    $('#confirm-title').html msg
+    dialog = $('#confirm-dialog')
+
+    $('#confirm-yes-btn').click =>
+      yesFunction()
+      $('.confirm-btn').off('click')
+
+    $('#confirm-no-btn').click =>
+      noFunction()
+      $('.confirm-btn').off('click')
+
+    do dialog.show
+    do dialog.modal
+
+  alert: (msg) ->
+    $('#alert-body').html msg
+    dialog = $('#alert-dialog')
+
+    do dialog.show
+    do dialog.modal

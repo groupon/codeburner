@@ -1,0 +1,90 @@
+<form class="form-horizontal">
+  <input type="text" id="finding-id" hidden value="<%= id %>">
+  <div class="form-group ">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="checkbox" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Service" name="service_id" id="filter-service-id" disabled value="<%= service_name %>">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Severity" name="severity" id="filter-severity" data-severity="<%= model.get('severity') %>" value="<%= display_severity %>" disabled>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Scanner" name="scanner" id="filter-scanner" value="<%= model.get('scanner') %>">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Description" name="description" id="filter-description" value="<%= model.get('description') %>">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Detail" name="detail" id="filter-detail" value="<%= model.get('detail') %>" disabled>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="File" name="file" id="filter-file" value="<%= model.get('file') %>">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX">
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <input type="TEXT" class="form-control floating-label" placeholder="Line" name="line" id="filter-line" value="<%= model.get('line') %>">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="checkbox col-sm-1">
+      <label>
+        <input type="CHECKBOX" checked>
+      </label>
+    </div>
+    <div class="col-sm-11">
+      <pre><code name="code"><%= hljs.highlightAuto(code.trim()).value %></code></pre>
+    </div>
+  </div>
+</form>

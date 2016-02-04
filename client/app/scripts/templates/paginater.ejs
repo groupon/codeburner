@@ -1,0 +1,26 @@
+<% if (typeof paginater !== "undefined" && paginater !==null) { %>
+<div class="col-lg-12">
+  <ul class="pagination pull-right">
+    <li><a href="javascript:void(0);" data-page="<%= 1 %>">&lt;&lt;</a></li>
+
+    <% if (previous != 0) { %>
+      <li><a href="javascript:void(0);" data-page="<%= previous %>">Previous</a></li>
+    <% } %>
+
+    <% for(i = left; i <= right; i++) { %>
+      <% if (i == current) { %>
+        <li class="active"><a href="javascript:void(0);" data-page="<%= i %>"><%= i %></a></li>
+      <% } else { %>
+        <li><a href="javascript:void(0);" data-page="<%= i %>"><%= i %></a></li>
+      <% } %>
+    <% } %>
+
+    <% if (next != 0) { %>
+      <li><a href="javascript:void(0);" data-page="<%= next %>">Next</a></li>
+    <% } %>
+
+    <li><a href="javascript:void(0);" data-page="<%= total %>">&gt;&gt;</a></li>
+  </ul>
+  <p><%= (current - 1) * pageSize + 1 %> - <%= (current * pageSize > totalRows) ? totalRows : current * pageSize  %> of <%= totalRows %></p>
+</div>
+<% } %>

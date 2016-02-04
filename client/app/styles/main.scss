@@ -1,0 +1,240 @@
+$groupon_green: #53A318;
+
+@import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
+
+@import "bootstrap-material-design/sass/_variables.scss";
+$brand-primary: $groupon_green;
+@import 'bootstrap-material-design/sass/bootstrap-material-design.scss';
+
+@import 'bootstrap-material-design/sass/ripples.scss';
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  vertical-align: middle !important;
+}
+
+.table tbody>tr>td>th
+{
+  vertical-align: middle !important;
+}
+
+th.header:hover {
+  background-color: #e0e0e0 !important;
+}
+
+textarea {
+  resize: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.dl-horizontal dt {
+  width: 100px;
+}
+
+.dl-horizontal dd {
+  margin-left: 120px;
+}
+
+.service-sidebar {
+  height: 1000px !important;
+  overflow-y: scroll !important;
+}
+
+.sev3.highlight-row {
+  font-weight: bold;
+  background-color: #f26969;
+}
+
+.sev3 {
+  background-color: #f2dede;
+}
+
+.sev3:hover {
+  background-color: #f26969;
+}
+
+.sev2.highlight-row {
+  font-weight: bold;
+  background-color: #fcf196;
+}
+
+.sev2 {
+  background-color: #fcf8e3;
+}
+
+.sev2:hover {
+  background-color: #fcf196;
+}
+
+.sev1.highlight-row {
+  font-weight: bold;
+  background-color: #a1ed89;
+}
+
+.sev1 {
+  background-color: #dff0d8;
+}
+
+.sev1:hover {
+  background-color: #a1ed89;
+}
+
+.sev0.highlight-row {
+  font-weight: bold;
+  background-color: #e0e0e0;
+}
+
+.sev0 {
+  background-color: #fff;
+}
+
+.sev0:hover {
+  background-color: #e0e0e0;
+}
+
+.affix {
+  right: 0px;
+}
+
+ul.nav {
+  color: #000 !important;
+}
+
+.navbar-nav a:hover,
+.navbar-header a:hover {
+  font-weight: bold !important;
+}
+
+.navbar-default {
+  background-color: #f6f6f6 !important;
+}
+
+a,
+a:hover {
+  color: $groupon_green;
+}
+
+a.navbar-brand {
+  color: #000 !important;
+}
+
+tr.service-list:hover {
+  background-color: rgba(83, 163, 24, 0.2) !important;
+}
+
+tr.service-list.highlight-service-row {
+  background-color: $groupon_green !important;
+  color: #fff !important;
+}
+
+tr.burn-list:hover {
+  background-color: rgba(83, 163, 24, 0.2) !important;
+  /*background-color: $groupon_green !important;*/
+  /*color: #fff !important;*/
+}
+
+.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+    border: none !important;
+}
+
+dd.wrap {
+  word-wrap: break-word;
+}
+
+body {
+  background-color: #FFF !important;
+}
+
+.well {
+  background-color: #f6f6f6 !important;
+}
+
+.panel-body.panel-detail {
+  background-color: #f6f6f6 !important;
+}
+
+.pagination {
+  display: inline-block;
+  padding-left: 0;
+  margin: 20px 0;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-radius: 4px;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  color: $groupon_green;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  /*color: #fff;*/
+  background-color: rgba(83, 163, 24, 0.2);
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background-color: $groupon_green;
+  border-color: $groupon_green;
+}
+
+.invalid {
+  color: #f44336 !important;
+}
+
+.btn-sm {
+  padding: 10px !important;
+}
+
+.btn-no-padding {
+  padding: 2px !important;
+}
+
+.slider-label {
+  position: absolute;
+  top: -10px;
+  font-size: 12px;
+  // opacity: 1;
+  // color: #7E7E7E;
+}
+
+label.toggle-label {
+  font-size: 100% !important;
+  font-style: normal !important;
+  color: #000 !important;
+}
+
+.form-group.no-margin {
+  margin: 0 0 0 0 !important;
+}
+
+.checkbox input[type=checkbox]:checked + .checkbox-material .check:before,
+.checkbox input[type=checkbox]:checked + .checkbox-material .check {
+    color: $groupon_green !important;
+    border-color: $groupon_green !important;
+}
+
+i.btn {
+  font-size: normal !important;
+  font-weight: normal !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.selectize-control.single .selectize-input, .selectize-dropdown.single {
+  background-image: none !important;
+  background-color: #fff !important;
+}

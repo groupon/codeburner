@@ -1,0 +1,16 @@
+---
+:concurrency: 2
+:pidfile: /tmp/sidekiq_svc_proc.pid
+:timeout: 3600
+staging:
+  :concurrency: 10
+  :pidfile: tmp/pids/sidekiq.pid
+  :logfile: ./log/sidekiq.log
+  :timeout: 3600
+production:
+  :concurrency: 20
+  :pidfile: tmp/pids/sidekiq.pid
+  :logfile: ./log/sidekiq.log
+  :timeout: 3600
+:queues:
+- codeburner

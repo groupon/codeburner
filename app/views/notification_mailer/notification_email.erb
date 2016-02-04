@@ -1,0 +1,57 @@
+<h3>Codeburner Report</h3>
+Codeburner has finished burning <b><%= @burn.service.pretty_name %></b> - <a href="<%= @burn.repo_url %>/tree/<%= @burn.revision %>"><%= @burn.revision %></a>.<br>
+<br>Finding Summary:<br>
+<table style="border:0px;font-size:14px;">
+  <tr>
+    <td style="float:left;"><b>Open: </b></td>
+    <td style="float:left;clear:right;"><%= @current_stats[:open_findings] %><% if @current_stats[:open_findings] != @previous_stats[:open_findings] %> (<%= "%+d" % (@current_stats[:open_findings] - @previous_stats[:open_findings]) %>)<% end %></td>
+  </tr>
+  <tr>
+    <td style="float:left;"><b>Filtered: </b></td>
+    <td style="float:left;clear:right;"><%= @current_stats[:filtered_findings] %><% if @current_stats[:filtered_findings] != @previous_stats[:filtered_findings] %> (<%= "%+d" % (@current_stats[:filtered_findings] - @previous_stats[:filtered_findings]) %>)<% end %></td>
+  </tr>
+  <tr>
+    <td style="float:left;"><b>Total: </b></td>
+    <td style="float:left;clear:right;"><%= @current_stats[:total_findings] %><% if @current_stats[:total_findings] != @previous_stats[:total_findings] %> (<%= "%+d" % (@current_stats[:total_findings] - @previous_stats[:total_findings]) %>)<% end %></td>
+  </tr>
+</table>
+<br>
+You can view the full results and sort/filter/publish findings here:<br>
+<a href="https://<%= @link_host %>/#finding?burn_id=<%= @burn.id %>">http://<%= @link_host %>/#finding?burn_id=<%= @burn.id %></a>
+<% @findings.each do |finding| %>
+  <% if finding.status == 0 %>
+    <br>
+    <hr>
+    <table style="border:0px;font-size:14px;">
+      <tr>
+        <td style="float:left;"><b>Description: </b></td>
+        <td style="float:left;clear:right;"><%= finding.description %></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>Severity: </b></td>
+        <td style="float:left;clear:right;"><%= finding.severity %></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>Details: </b></td>
+        <td style="float:left;clear:right;"><%= finding.detail %></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>Scanner: </b></td>
+        <td style="float:left;clear:right;"><%= finding.scanner %></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>File: </b></td>
+        <td style="float:left;clear:right;"><a href="<%= @burn.repo_url %>/blob/<%= @burn.revision %>/<%= finding.file %>#L<%= finding.line%>"><%= finding.file %></a></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>Line: </b></td>
+        <td style="float:left;clear:right;"><%= finding.line %></td>
+      </tr>
+      <tr>
+        <td style="float:left;"><b>Code: </b></td>
+        <td style="float:left;clear:right;"><pre><code><%= finding.code %></code></pre></td>
+      </tr>
+    </table>
+  <% end %>
+<% end %>
+

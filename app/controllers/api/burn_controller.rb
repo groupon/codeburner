@@ -1,0 +1,225 @@
+class Api::BurnController < ApplicationController
+  protect_from_forgery
+  respond_to :json, :html
+
+  # START ServiceDiscovery
+  # resource: burns.index
+  # description: Search burns
+  # method: GET
+  # path: /burn
+  #
+  # request:
+  #   parameters:
+  #     id:
+  #       type: integer
+  #       required: false
+  #       location: query
+  #       description: A comma-separated list of burn IDs
+  #     service_id:
+  #       type: integer
+  #       required: false
+  #       location: query
+  #       description: A comma-separated list of service IDs
+  #     service_name:
+  #       type: string
+  #       required: false
+  #       location: query
+  #       description: A case-insensitve search for a specific service name (short or long form)
+  #     revision:
+  #       type: string
+  #       required: false
+  #       location: query
+  #       description: The commit SHA or tag of a specific service revision
+  #     status:
+  #       type: string
+  #       required: false
+  #       location: query
+  #       description: One of created, burning, done, failed representing the current burn status
+  #     sort_by:
+  #       type: string
+  #       required: false
+  #       location: query
+  #       description: The field to sort by, supported fields are id, service_id, service_name, revision, code_lang, repo_url, status
+  #     per_page:
+  #       type: integer
+  #       required: false
+  #       location: query
+  #       description: number of results per page, only used in conjunction with the page param
+  #     page:
+  #       type: integer
+  #       required: false
+  #       location: query
+  #       description: current page of results to display, used in conjunction with the per_page param
+  #
+  # response:
+  #   name: burns
+  #   description: Hash containing a count of total results and an Array of results per pagination options
+  #   type: object
+  #   properties:
+  #     count:
+  #       type: integer
+  #       description: number of total results
+  #     results:
+  #       type: array
+  #       description: list of burns
+  #       items:
+  #         $ref: burns.show.response
+  # END ServiceDiscovery
+  def index
+    if params[:page] == '1' and params[:per_page] == '10' and params[:sort_by] == 'count' and params[:order] == 'desc'
+      burn_list = Rails.cache.fetch('burn_list') { CodeburnerUtil.get_burn_list }
+      return render(:json => {count: Rails.cache.fetch('stats'){CodeburnerUtil.get_stats}[:burns], results: burn_list })
+    end
+
+    safe_sorts = ['id', 'service_id', 'service_name', 'revision', 'code_lang', 'repo_url', 'status']
+    sort_by = 'burns.id'
+    order = nil
+
+    if params[:sort_by] == 'service_name'
+      sort_by = "services.pretty_name"
+    else
+      sort_by = "#{params[:sort_by]}" if safe_sorts.include? params[:sort_by]
+    end
+
+    unless params[:order].nil?
+      order = params[:order].upcase if ['ASC','DESC'].include? params[:order].upcase
+    end
+
+    burns = Burn.id(params[:id]) \
+      .service_id(params[:service_id]) \
+      .service_name(params[:service_name]) \
+      .revision(params[:revision]) \
+      .status(params[:status]) \
+      .order("#{sort_by} #{order}") \
+      .page(params[:page]) \
+      .per(params[:per_page]) \
+
+    render(:json => {count: burns.total_count, results: burns})
+  end
+
+  # START ServiceDiscovery
+  # resource: burns.show
+  # description: show a burn
+  # method: GET
+  # path: /burn/:id
+  #
+  # request:
+  #   parameters:
+  #     id:
+  #       type: integer
+  #       descritpion: Burn ID
+  #       location: url
+  #       required: true
+  #
+  # response:
+  #   name: burn
+  #   description: a burn object
+  #   type: object
+  #   properties:
+  #     id:
+  #       type: integer
+  #       description: burn ID
+  #     revision:
+  #       type: string
+  #       description: commit SHA or git tag for a specific service revision
+  #     status:
+  #       type: string
+  #       description: the current burn status
+  #     repo_url:
+  #       type: string
+  #       description: the github repository URL
+  #     code_lang:
+  #       type: string
+  #       description: a comma-separated list of code languages detected
+  #     num_files:
+  #       type: integer
+  #       description: the number of files scanned
+  #     num_lines:
+  #       type: integer
+  #       description: the number of lines scanned
+  #     service_id:
+  #       type: integer
+  #       description: the service ID
+  #     service_portal:
+  #       type: boolean
+  #       description: is this a service known to service portal?
+  #     status_reason:
+  #       type: string
+  #       description: the reason for the current status
+  # END ServiceDiscovery
+  def show
+    render(:json => Burn.find(params[:id]).as_json)
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no burn with that id found}"}, :status => 404)
+  end
+
+  # START ServiceDiscovery
+  # resource: burns.create
+  # description: Initiates a scan of a specific revision of code stored in github
+  # method: POST
+  # path: /burn
+  #
+  # request:
+  #   parameters:
+  #     service_name:
+  #       type: string
+  #       description: a reference to the service_id in service-portal
+  #       location: body
+  #       required: true
+  #     service_portal:
+  #       type: boolean
+  #       description: is this a service portal service?
+  #       location: body
+  #       required: false
+  #     repo_url:
+  #       type: string
+  #       description: The github repository URL, required for service_portal = false
+  #       location: body
+  #       required: false
+  #     revision:
+  #       type: string
+  #       description: the git tag/sha of the release to be scanned
+  #       location: body
+  #       required: true
+  # response:
+  #   name: result
+  #   description: Result of the call
+  #   type: object
+  #   properties:
+  #     service_name:
+  #       type: string
+  #       description: The identifying service name
+  #     revision:
+  #       type: string
+  #       description: the revision
+  #     status:
+  #       type: string
+  #       description: created
+  # END ServiceDiscovery
+  def create
+    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name) and params.has_key?(:revision) and params.has_key?(:repo_url)
+
+    duplicate_burn = Burn.service_short_name(params[:service_name]).revision(params[:revision])
+    if duplicate_burn.count > 0
+      unless duplicate_burn.status('failed').count > 0 and duplicate_burn.status('done').count == 0
+        return render(:json => {error: "Already burning #{params[:service_name]} release #{params[:revision]}"}, :status => 409)
+      end
+    end
+
+    service = Service.find_by_short_name(params[:service_name])
+    if service.nil?
+      service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]})
+    end
+
+    burn = Burn.create({:service => service, :revision => params[:revision], :repo_url => params[:repo_url], :status_reason => "created on #{Time.now}"})
+
+    if params.has_key?(:notify)
+      Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})
+    end
+
+    render(:json => {burn_id: burn.id, service_id: service.id, service_name: params[:service_name], revision: burn.revision, status: burn.status})
+
+    BurnWorker.perform_async(burn.id)
+  end
+
+end

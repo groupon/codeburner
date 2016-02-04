@@ -1,0 +1,97 @@
+<div class="container-fluid">
+  <div id="finding_publish">
+  </div>
+
+  <div id="finding_publish_results">
+  </div>
+
+  <div class="row">
+    <div class="col-lg-2">
+      <div class="form-group label-floating no-margin">
+        <label for="filter" class="control-label">Filter Services</label>
+        <input type="text" class="form-control" id="filter">
+        <span class="help-block">Use * for wildcard</span>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="togglebutton"><label class="toggle-label">Show Published &nbsp;&nbsp;<input type="checkbox" id="show-publish" <% if(publish){ %>checked <% } %>></label>&nbsp;&nbsp;<label class="toggle-label">Show Hidden &nbsp;&nbsp;<input type="checkbox" id="show-hidden" <% if(hidden){ %>checked <% } %>></label>&nbsp;&nbsp;<label class="toggle-label">Show Filtered &nbsp;&nbsp;<input type="checkbox" id="show-filtered" <% if(filtered){ %>checked <% } %>></label></div>
+    </div>
+
+  </div>
+  <br>
+
+  <div class="row">
+    <div class="col-lg-2 service-sidebar" id="service-list">
+    </div>
+
+    <div class="col-lg-5">
+      <div id="finding-list">
+      </div>
+      <div class="row paginater"> </div>
+    </div>
+
+    <div class="col-lg-5" id="detail">
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="publishDialog" tabindex="-1" role="dialog" aria-labelledby="publishFindingDialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="publishFindingDialog"><center>Publish Finding</center></h4><p>
+      </div>
+      <p>
+      <form id="publish-form" class="form-horizontal">
+      <div id="publish-dialog-spinner" aria-hidden="true">
+        <img class="center" alt="spinner" src="/images/loader.gif">
+      </div>
+      <div id="publish-dialog-body" class="modal-body">
+        <div class="form-group">
+          <div class="radio radio-inline">
+            <label>
+              <input type="radio" name="ticket-option" value="github" checked>
+                <img src="/images/github_logo.png" alt="GitHub">
+            </label>
+          </div>
+          <div class="radio radio-inline">
+            <label>
+              <input type="radio" name="ticket-option" value="jira">
+                <img src="/images/jira_logo.png" alt="JIRA">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body" id="publish-dialog-body-jira">
+      </div>
+      <div class="modal-body" id="publish-dialog-results" aria-hidden="true">
+      </div>
+      <p>
+      <div class="modal-footer">
+        <button type="reset" class="btn btn-default btn-flat" data-dismiss="modal"><i class="material-icons">close</i> Close</button>
+        <button type="reset" class="btn btn-primary btn-flat" disabled id="publish-submit"><i class="material-icons">check</i> Publish</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="filterModalLabel"><center>Add A Filter</center><br>
+          <small>Select the combination of fields you'd like to exclude from future results.  With default settings, this will filter a specific code snippet/vulnerability from an entire file (to avoid false positives when you refactor).</small>
+        </h4>
+      </div>
+      <div class="modal-body" id="filter-dialog-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-flat" data-dismiss="modal"><i class="mdi-navigation-close"></i> Close</button>
+        <button type="button" class="btn btn-primary btn-flat" data-dismiss="modal" id="create-filter-btn"><i class="mdi-navigation-check"></i> Create Filter</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="form-group label-floating">
+  <label for="service-name" class="control-label">Service Name</label>
+  <input id="service-name" required class="form-control validated" type="text">
+  <span class="help-block">Enter service's short name from Service Portal to tie this burn to an existing service</span>
+</div>
+<div class="form-group label-floating">
+  <label for="repo_url" class="control-label">Repository URL</label>
+  <input type="url" id="repo_url" required class="form-control validated">
+  <span class="help-block">Enter the full URL (including https://) for your project on GitHub</span>
+</div>
+<div class="form-group label-floating">
+  <label for="revision" class="control-label">Revision</label>
+  <input type="text" id="revision" required class="form-control validated">
+  <span class="help-block">Enter a specific commit SHA or git tag to scan</span>
+</div>
+<div class="form-group label-floating">
+  <label for="notify" class="control-label">Notify (optional)</label>
+  <input type="email" id="notify" class="form-control validated">
+  <span class="help-block">Enter an e-mail address to be notified this burn completes</span>
+</div>
+<br>

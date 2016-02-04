@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  service: one
+  severity: 3
+  fingerprint: abcdefg1234567890
+  scanner: test_scanner
+  description: test_description
+  detail: test_detail
+  file: app/test.rb
+  line: '1'
+  code: some_test_code()
+
+two:
+  service: two
+  severity: 3
+  fingerprint: gfedcba0987654321
+  scanner: test_scanner
+  description: test_description
+  detail: test_detail_2
+  file: app/test2.rb
+  line: '1'
+  code: some_test_code2()

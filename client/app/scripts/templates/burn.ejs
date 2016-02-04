@@ -1,0 +1,9 @@
+<% burns.forEach(function(burn) { %>
+  <tr class="burn-list" data-id="<%= burn.get('id') %>" data-service="<%= burn.get('service_id') %>">
+    <td><%= services[_.findIndex(services, {id: burn.get('service_id')})].get('pretty_name') %></td>
+    <td><%= burn.get('revision') %></td>
+    <td><%= burn.get('repo_url') %></td>
+    <td><%= burn.get('code_lang') %></td>
+    <td data-toggle="tooltip" data-placement="left" data-original-title="Status Reason:  <%= burn.get('status_reason') %>"><%= burn.get('status') %></td>
+  </tr>
+<% }); %>

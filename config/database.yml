@@ -1,0 +1,37 @@
+common: &common
+  adapter: mysql2
+  pool: 5
+  wait_timeout: 50
+  connect_timeout: 200
+  read_timeout: 2000
+  write_timeout: 2000
+  reconnect: true
+
+local: &local
+  <<: *common
+  host: 127.0.0.1
+  password:
+  username: root
+  wait_timeout: 10000
+
+development:
+  <<: *local
+  database: codeburner_development
+
+test:
+  <<: *local
+  database: codeburner_test
+
+staging:
+  <<: *common
+  database: codeburner_staging
+  host: my_staging_db_host
+  password: my_staging_db_password
+  username: my_staging_db_username
+
+production:
+  <<: *common
+  database: codeburner_production
+  host: my_production_db_host
+  password: my_production_db_password
+  username: my_production_db_username

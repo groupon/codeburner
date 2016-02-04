@@ -1,0 +1,7 @@
+<table class="table borderless">
+  <tbody>
+  <% services.forEach(function(service){ %>
+    <tr class="service-list" data-id="<%= service.get('id') %>"><td><%= service.get('pretty_name') %></td></tr>
+  <% }) %>
+  </tbody>
+</table>

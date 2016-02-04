@@ -1,0 +1,51 @@
+#!/bin/bash -xe
+ cp /Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE LICENSE
+
+ for i in `git ls-files "**/*.java"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.java' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.yml"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.yml' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.rb"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.rb' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.coffee"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.coffee' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.ejs"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.ejs' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.jelly"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.jelly' -e 'd}' $i
+   fi
+ done
+
+ for i in `git ls-files "**/*.jsx"`
+ do
+   if ggrep -v "Copyright (c) 2016, Groupon, Inc." $i; then
+     gsed -i -e '2{x;G};1{h;r/Users/alock/code/Groupon-Opensource-License-Adder/MIT/LICENSE.jsx' -e 'd}' $i
+   fi
+ done

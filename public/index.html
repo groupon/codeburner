@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="UTF-8">
+    <title>Codeburner</title>
+
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+
+    <link rel="stylesheet" href="styles/main.css">
+
+    <link rel="stylesheet" href="styles/vendor.css">
+
+    <link rel="shortcut icon" href="favicon.ico">
+    <script src="//www.google.com/jsapi" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <div class="modal fade" id="confirm-dialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <center><h4 class="modal-title" id="confirm-title">CONFIRM DIALOG</h4></center><p>
+          </p></div>
+          <form>
+            <div class="modal-body" id="confirm-body">
+              <center>
+                <button class="btn btn-default btn-flat confirm-btn" data-dismiss="modal" id="confirm-no-btn"><i class="material-icons">close</i> No</button>
+                <button class="btn btn-primary btn-flat confirm-btn" data-dismiss="modal" id="confirm-yes-btn"><i class="material-icons">check</i> Yes</button>
+              </center>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="alert-dialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <center><h4 class="modal-title" id="alert-title">ALERT!</h4></center>
+          </div>
+          <br>
+          <div align="center" class="modal-body" id="alert-body">
+          </div>
+          <form>
+            <div class="modal-footer" id="alert-footer">
+              <center>
+                <button class="btn btn-primary btn-flat alert-btn" data-dismiss="modal" id="alert-yes-btn"><i class="material-icons">check</i> OK</button>
+              </center>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#"><span><img src="images/fire.png"></span>&nbsp;Codeburner</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#finding">Findings</a></li>
+          <li><a href="#filter">Filters</a></li>
+          <li><a href="#stats">Statistics</a></li>
+        </ul>
+      </div>
+    </div>
+    </nav>
+
+    <div id="content">
+    </div>
+
+
+    <div class="container-fluid footer">
+      <hr>
+      <p>
+      <a href="https://wiki.groupondev.com/Application_Security" target="_blank">Documentation</a>
+      |
+      <a href="https://github.groupondev.com/ApplicationSecurity/codeburner" target="_blank">GitHub</a>
+      </p>
+
+      <div class="small">
+        &copy; 2016 Application Security
+      </div>
+    </div>
+
+    <script src="scripts/vendor.js"></script>
+
+    <script src="scripts/plugins.js"></script>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

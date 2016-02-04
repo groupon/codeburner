@@ -1,0 +1,48 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row form-control-wrapper">
+            <div class="col-sm-2">
+              <select id="service-list" class="service-list">
+                <optgroup label="System">
+                  <option value="-1" selected>All Services</option>
+                </optgroup>
+                <optgroup label="Services">
+                  <% services.forEach(function(service) { %>
+                    <option value="<%= service.get('id') %>"><%= service.get('pretty_name') %></option>
+                  <% }); %>
+                </optgroup>
+              </select>
+            </div>
+            <div class="col-sm-2 form-group no-margin label-static">
+              <label for="start-date" class="control-label">Start Date</label>
+              <input type="text" id="start-date" class="datepicker form-control">
+            </div>
+            <div class="col-sm-2 form-group no-margin label-static">
+              <label for="end-date" class="control-label">End Date</label>
+              <input type="text" id="end-date" class="datepicker form-control">
+            </div>
+            <div class="col-sm-2">
+              <div class="slider-label">Resolution: <b><span id="resolution-label">30 minutes</span></b></div>
+              <div style="height:18px;"></div>
+              <div id="resolution" class="slider slider-default"></div>
+            </div>
+            <div class="col-sm-1 pull-left">
+              <button id="redraw" class="btn btn-xs" style="display:none;">Redraw</button>
+            </div>
+          </div>
+          <div class="row" style="height:40px;"></div>
+          <div class="row">
+            <div class="col-lg-4"><div id="finding_breakdown" style="height:400px;"></div></div>
+            <div class="col-lg-8"><div id="burn_history" style="height:400px;"></div></div>
+          </div>
+          <div class="row">
+            <div id="finding_history" style="height:400px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

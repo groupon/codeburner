@@ -1,0 +1,67 @@
+<div class="container-fluid">
+  <div class="modal fade" id="submitDialog" tabindex="-1" role="dialog" aria-labelledby="submitBurnDialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <center><h4 class="modal-title" id="submitBurnDialog">Submit A Burn</h4></center><p>
+        </div>
+        <form>
+        <div class="modal-body" id="burn-submit-body">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-default btn-flat" data-dismiss="modal"><i class="material-icons">close</i> Close</button>
+          <button class="btn btn-primary btn-flat" disabled data-dismiss="modal" id="submit-burn"><i class="material-icons">check</i> Submit</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" id="burn_stats">
+  </div>
+
+  <div class="col-xs-12" style="height:50px;"></div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h4>Recent Burns: <button class="btn btn-raised btn-fab btn-fab-mini pull-right" data-toggle="tooltip" data-placement="left" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="material-icons">add</i></button></h4>
+    </div>
+    <div class="col-xs-12" style="height:10px;"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="panel panel-default">
+        <table class="table table-bordered">
+          <thead class="borderless" bgcolor="#F6F6F6">
+            <tr>
+              <th class="header" data-id="service_name" width="18%">
+                Service
+                <span class="sorting hidden"><span class="caret"></span></span>
+              </th>
+              <th class="header" data-id="revision" width="22%">
+                Revision
+                <span class="sorting hidden"><span class="caret"></span></span>
+              </th>
+              <th class="header" data-id="repo_url" width="35%">
+                Repository
+                <span class="sorting hidden"><span class="caret"></span></span>
+              </th>
+              <th class="header" data-id="code_lang" width="22%">
+                Language(s)
+                <span class="sorting hidden"><span class="caret"></span></span>
+              </th>
+              <th class="header" data-id="status" width="3%">
+                Status
+                <span class="sorting hidden"><span class="caret"></span></span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="borderless" id="burn_list">
+          </tbody>
+        </table>
+      </div>
+      <div class="row paginater"> </div>
+    </div>
+  </div>
+</div>

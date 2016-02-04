@@ -1,0 +1,66 @@
+<% if (filtered_by) { %>
+  <div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    Currently showing only findings filtered by filter #<%= filtered_by %>.  <a href="#finding?status=0" class="alert-link">Show all findings.</a>
+  </div>
+<% } %>
+<% if (burn_id && service_id && models.length > 0) { %>
+  <div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    Currently showing only findings for burn #<%= burn_id %>.  <a href="#finding?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %>.</a>
+  </div>
+<% } %>
+<% if (models.length > 0) { %>
+  <table class="table">
+    <thead class="table-bordered" bgcolor="#F6F6F6">
+      <tr>
+        <th class="header" data-id="burn_id" width="10%">
+          Burn
+          <span class="sorting hidden" data-id="burn_id"><span class="caret" data-id="burn_id"></span></span>
+        </th>
+        <th class="header" data-id="description" width="62%">
+          Description
+          <span class="sorting hidden" data-id="description"><span class="caret" data-id="description"></span></span>
+        </th>
+        <th class="header" data-id="severity" width="14%">
+          Severity
+          <span class="sorting hidden" data-id="severity"><span class="caret" data-id="severity"></span></span>
+        </th>
+        <th class="header" data-id="status" width="14%">
+          Status
+          <span class="sorting hidden" data-id="status"><span class="caret" data-id="status"></span></span>
+        </th>
+      </tr>
+    </thead>
+    <tbody id="finding-list" rules="rows" class="table-bordered" frame="hsides">
+    <% models.forEach(function(model) { %>
+      <%
+      if (model.get('severity') == '3') {
+        color_class = 'sev3'
+      } else if (model.get('severity') == '2') {
+        color_class = 'sev2'
+      } else if (model.get('severity') == '1') {
+        color_class = 'sev1'
+      } else {
+        color_class = 'sev0'
+      }
+
+      display_severity = window.constants.display_severity[model.get('severity')]
+      display_status = window.constants.display_status[model.get('status')]
+      %>
+
+      <tr class="<%= color_class %> finding-row" id="finding-row" selected="false" data-id="<%= model.get('id') %>">
+        <td class="show-detail"><%= model.get('burn_id') %></td>
+        <td class="show-detail"><%= model.get('description') %></td>
+        <td class="show-detail"><%= display_severity %></td>
+        <td class="show-detail"><%= display_status %></td>
+      </tr>
+  <% }); %>
+    </tbody>
+  </table>
+<% } else { %>
+  <div class="alert alert-info alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    No findings match the current criteria. <% if (burn_id != null) { %>Currently showing findings only for burn #<%= burn_id %>.  <a href="#finding?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %></a><% } %>
+  </div>
+<% } %>

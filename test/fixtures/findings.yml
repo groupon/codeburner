@@ -1,0 +1,29 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  service: one
+  burn: one
+  filter: one
+  description: Finding One
+  severity: 3
+  fingerprint: abcdefg123456789
+  detail: Details about finding one
+  status: 1
+  scanner: Brakeman
+  file: app/test.rb
+  line: 100
+  code: test_code(running).code
+
+two:
+  service: two
+  burn: two
+  filter:
+  description: Finding Two
+  severity: 2
+  fingerprint: 123456789abcdefg
+  detail: Details about finding two
+  status: 1
+  scanner: Checkmarx
+  file: app/test2.rb
+  line: 50
+  code: test_code_2(stopped).code

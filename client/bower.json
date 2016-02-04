@@ -1,0 +1,40 @@
+{
+  "name": "codeburner-frontend",
+  "version": "1.0.0",
+  "authors": [
+    "Alex Lock <alock@groupon.com>",
+    "Michael Chang <qzhang@groupon.com>"
+  ],
+  "description": "dashboard to monitor codeburner",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Autolinker.js": "~0.22.0",
+    "backbone": "~1.2.3",
+    "backbone.paginator": "~2.0.2",
+    "bootstrap-sass-official": "~3.3.6",
+    "highlightjs": "~9.0.0",
+    "jquery": "~2.2.0",
+    "moment": "~2.11.0",
+    "moment-timezone": "~0.5.0",
+    "lodash": "~3.10.1",
+    "arrive": "~2.3.0",
+    "bootstrap-material-design": "~0.5.8",
+    "bootstrap-material-datetimepicker": "~2.5.3",
+    "nouislider": "~8.2.1",
+    "selectize": "~0.12.1"
+  },
+  "resolutions": {
+    "jquery": "~2.1.4",
+    "bootstrap-material-design": "~0.5.8"
+  },
+  "devDependencies": {
+    "chai": "~3.4.2",
+    "mocha": "~2.3.4"
+  }
+}

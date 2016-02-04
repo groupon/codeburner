@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="UTF-8">
+    <title>Codeburner</title>
+
+    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+    <!-- build:css(app) styles/vendor.css -->
+    <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css">
+    <link rel="stylesheet" href="bower_components/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css">
+    <link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.default.css">
+    <!-- endbuild -->
+
+    <link rel="shortcut icon" href="favicon.ico" />
+    <script src='//www.google.com/jsapi' type='text/javascript'></script>
+  </head>
+
+  <body>
+    <div class="modal fade" id="confirm-dialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <center><h4 class="modal-title" id="confirm-title">CONFIRM DIALOG</h4></center><p>
+          </div>
+          <form>
+            <div class="modal-body" id="confirm-body">
+              <center>
+                <button class="btn btn-default btn-flat confirm-btn" data-dismiss="modal" id="confirm-no-btn"><i class="material-icons">close</i> No</button>
+                <button class="btn btn-primary btn-flat confirm-btn" data-dismiss="modal" id="confirm-yes-btn"><i class="material-icons">check</i> Yes</button>
+              </center>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="alert-dialog" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <center><h4 class="modal-title" id="alert-title">ALERT!</h4></center>
+          </div>
+          <br>
+          <div align="center" class="modal-body" id="alert-body">
+          </div>
+          <form>
+            <div class="modal-footer" id="alert-footer">
+              <center>
+                <button class="btn btn-primary btn-flat alert-btn" data-dismiss="modal" id="alert-yes-btn"><i class="material-icons">check</i> OK</button>
+              </center>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#"><span><img src="images/fire.png"></span>&nbsp;Codeburner</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#finding">Findings</a></li>
+          <li><a href="#filter">Filters</a></li>
+          <li><a href="#stats">Statistics</a></li>
+        </ul>
+      </div>
+    </div>
+    </nav>
+
+    <div id="content">
+    </div>
+
+
+    <div class="container-fluid footer small">
+      <p>
+        &copy; 2016 Groupon, Inc. All Rights Reserved.
+        |
+        <a href="https://github.groupondev.com/ApplicationSecurity/codeburner/docs" target="_blank">Documentation</a>
+        |
+        <a href="https://github.groupondev.com/ApplicationSecurity/codeburner" target="_blank">GitHub</a>
+      </p>
+    </div>
+
+    <!-- build:js scripts/vendor.js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/backbone/backbone.js"></script>
+    <script src="bower_components/backbone.paginator/lib/backbone.paginator.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>
+    <script src="bower_components/Autolinker.js/dist/Autolinker.js"></script>
+    <script src="bower_components/nouislider/distribute/nouislider.js"></script>
+    <script src="bower_components/selectize/dist/js/standalone/selectize.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js scripts/plugins.js -->
+    <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/arrive/src/arrive.js"></script>
+    <script src="bower_components/bootstrap-material-design/dist/js/material.js"></script>
+    <script src="bower_components/bootstrap-material-design/dist/js/ripples.js"></script>
+    <script src="bower_components/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/main.js -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/helpers/utilities.js"></script>
+    <script src="scripts/models/burn.js"></script>
+    <script src="scripts/models/filter.js"></script>
+    <script src="scripts/models/finding.js"></script>
+    <script src="scripts/models/service.js"></script>
+    <script src="scripts/collections/burn.js"></script>
+    <script src="scripts/collections/filter.js"></script>
+    <script src="scripts/collections/finding.js"></script>
+    <script src="scripts/collections/service.js"></script>
+    <script src="scripts/templates.js"></script>
+    <script src="scripts/views/burn.js"></script>
+    <script src="scripts/views/filter.js"></script>
+    <script src="scripts/views/finding.js"></script>
+    <script src="scripts/views/stats.js"></script>
+    <script src="scripts/routers/main.js"></script>
+    <script src="scripts/highlight.pack.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>

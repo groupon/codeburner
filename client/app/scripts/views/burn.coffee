@@ -1,0 +1,92 @@
+'use strict'
+
+Codeburner.Views.BurnList = Backbone.View.extend
+  el: $('#content')
+  currentPage: 1
+  initialize: (@burnCollection, @serviceCollection) ->
+    do @undelegateEvents
+  events:
+    'click .header': (e) ->
+      if @burnCollection.state.sortKey is e.target.dataset.id
+        @burnCollection.state.order *= -1
+      else
+        @burnCollection.state.order = -1
+
+      if @burnCollection.state.order is -1
+        $(e.target).find('.sorting').addClass 'dropup'
+      else
+        $(e.target).find('.sorting').removeClass 'dropup'
+
+      $('.sorting').addClass 'hidden'
+      $(e.target).find('.sorting').removeClass 'hidden'
+
+      @burnCollection.state.sortKey = e.target.dataset.id
+      do @renderBurns
+
+    'click .pagination': (e) ->
+      @currentPage = parseInt e.target.dataset.page, 10
+      do @renderBurns
+
+    'click #submit-burn-btn': ->
+      $('#burn-submit-body').html JST['app/scripts/templates/burn_submit.ejs']
+      do $('#submitDialog').show
+      do $('#submitDialog').modal
+
+    'click #submit-burn': ->
+      postData = {'service_name': $('#service-name').val().trim(), 'revision': $('#revision').val().trim(), 'repo_url': $('#repo_url').val().trim(), 'service_portal': false}
+      if $('#notify').val()
+        postData['notify'] = $('#notify').val().trim()
+      Codeburner.Utilities.postRequest '/api/burn', postData, ((data) =>
+        @serviceCollection.fetch().done =>
+          do @renderBurns
+      ), (data) ->
+        Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+    'click .burn-list': (e) ->
+      burn_id = $(e.target).parent().data 'id'
+      service_id = $(e.target).parent().data 'service'
+      window.router.navigate "finding?burn_id=#{burn_id}&service_id=#{service_id}", {trigger: true, replace: true}
+
+    'keyup .validated': (e) ->
+      $('.floating-label').removeClass 'invalid'
+      if $('.validated:invalid').length > 0
+        $('#submit-burn').prop 'disabled', true
+      else
+        $('#submit-burn').prop 'disabled', false
+
+    'click .validated': (e) ->
+      $('.floating-label').removeClass 'invalid'
+      if e.target.validity.valid
+        $(e.target).parent().find('.floating-label').removeClass 'invalid'
+      else
+        $(e.target).parent().find('.floating-label').addClass 'invalid'
+
+  renderStats: ->
+    url = '/api/stats'
+    Codeburner.Utilities.getRequest url, (data) ->
+      $('#burn_stats').html JST['app/scripts/templates/burn_stats.ejs']
+        stats: data
+
+  renderBurns: ->
+    @burnCollection.getPage(@currentPage).done =>
+      $('#burn_list').html JST['app/scripts/templates/burn.ejs']
+        burns: @burnCollection.models
+        services: @serviceCollection.models
+
+      Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize
+
+  clearRefreshInterval: ->
+    clearInterval @burnRefreshInterval
+
+  render: ->
+    do @delegateEvents
+    @$el.html JST['app/scripts/templates/burn_page.ejs']
+    do @renderStats
+    do @renderBurns
+
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
+
+    @burnRefreshInterval = setInterval =>
+      do @renderStats
+      do @renderBurns
+    , window.constants.refresh_interval

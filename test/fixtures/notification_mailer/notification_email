@@ -1,0 +1,18 @@
+<html>
+  <body>
+    <h3>Codeburner Report</h3>
+<p>Codeburner has finished burning Test Service - <a href="http://github.com/a/path/tree/abcdefg123456789">abcdefg123456789</a>.
+<p>You can view the full results and sort/create jira issues here:
+<p><a href="https://localhost:8000/#finding?burn_id=980190962">http://localhost:8000/#finding?burn_id=980190962</a>
+<hr>
+  <p>
+  <b>Description: </b> Finding One<br>
+  <b>Severity: </b> 3<br>
+  <b>Details: </b> Details about finding one<br>
+  <b>Scanner: </b>Brakeman<br>
+  <b>File: </b><a href="http://github.com/a/path/blob/abcdefg123456789/app/test.rb#L100">app/test.rb</a><br>
+  <b>Line: </b>100<br>
+  <b>Code: </b><pre><code>test_code(running).code</code></pre><br>
+
+  </body>
+</html>

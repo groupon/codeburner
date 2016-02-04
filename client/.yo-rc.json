@@ -1,0 +1,12 @@
+{
+  "generator-backbone": {
+    "appPath": "app",
+    "appName": "Codeburner",
+    "testFramework": "mocha",
+    "templateFramework": "lodash",
+    "sassBootstrap": true,
+    "coffee": true,
+    "includeRequireJS": false
+  },
+  "generator-mocha": {}
+}

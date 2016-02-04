@@ -1,0 +1,41 @@
+name: codeburner
+deploy:
+  branch: master
+github:
+  api_endpoint: https://api.github.com/
+  api_access_token: my_github_api_token
+  link_host: https://www.github.com
+jira:
+  username: my_jira_user
+  password: my_jira_password
+  host: https://my_jira_host
+  context_path: ''
+  use_ssl: false
+  link_host: https://my_jira_host
+mail:
+  from: '"Codeburner" <codeburner@mydomain.com>'
+  link_host:
+    development: localhost:9000
+    staging: my_staging_host
+    production: my_production_host
+    test: localhost:9000
+pipeline:
+  npm_registry: https://registry.npmjs.org/
+  tasks_for:
+    Ruby:
+      - BundleAudit
+      - Brakeman
+    JavaScript:
+      - RetireJS
+      - NodeSecurityProject
+    CoffeeScript:
+      - RetireJS
+      - NodeSecurityProject
+    Java:
+      -
+    Python:
+      -
+  checkmarx_server: my_checkmarx_server
+  checkmarx_user: my_checkmarx_user
+  checkmarx_password: my_checkmarx_password
+  checkmarx_log: my_checkmarx_logfile
