@@ -2,8 +2,8 @@
   "name": "codeburner-frontend",
   "version": "1.0.0",
   "authors": [
-    "Alex Lock <alock@groupon.com>",
-    "Michael Chang <qzhang@groupon.com>"
+    "Alex Lock <alex@clanlock.com>",
+    "Michael Chang <github@micbase.com>"
   ],
   "description": "dashboard to monitor codeburner",
   "ignore": [

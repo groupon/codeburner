@@ -1,7 +1,7 @@
 ![Codeburner](client/app/images/fire.png?raw=true "Codeburner") Codeburner
 ==========
 
-Static code analysis triggered by service portal deploy notifications
+One static analysis tool to rule them all.
 
   * [Local Development](#local-development)
     * [Environment](#environment)
@@ -14,12 +14,23 @@ Static code analysis triggered by service portal deploy notifications
     * [Sidekiq Capistrano](#sidekiq-capistrano)
   * [API](#api)
 
+## What is Codeburner?
+Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?
+
+Codeburner uses the OWASP pipeline project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.
+
+Some key features:
+* Fully asynchronous scanning that scales well
+* Publish issues to JIRA or GitHub
+* Advanced false positive filtering
+* Statistics/charts show trends over time
+
 
 ## Local Development
 You need, minimally, mysqld and redis-server installed and running.
 
 ### Environment
-Clone the repo:
+Clone the repository:
 
 ```
 git clone https://github.com/groupon/codeburner
@@ -31,29 +42,26 @@ bundle install
 Create the mysql database:
 
 ```
-rake db:create
-rake db:schema:load
+rake db:setup
 ```
 
+### App Server
+For development we recommend the standard WEBrick server with the spring gem for fast iteration:
+
+```
+bundle exec rails s -p 8080
+```
+Running in a production environment, codeburner has been tested and works well with both puma and unicorn.  While we haven't tested it with anything else, it should play nicely with most standard rack servers.
+
 ### Sidekiq
-Codeburner uses sidekiq for asynchronous work.  To "do" anything useful you must first run:
+Codeburner uses sidekiq for asynchronous work.  To "do" anything useful (actually scan the code) you must first run:
 
 ```
 bundle exec sidekiq ./config/sidekiq.yml
 ```
 
-If you have sidekiq pro (and modified the Gemfile accordingly), you can reach the sidekiq web interface at /sidekiq to check the status of queues, view failure exceptions, etc.
-
-### Rack Server
-Codeburner should work with any standard Rack server.  By default we're using Unicorn in production and the standard WEBrick rails server with the spring gem (on port 8080) for fast local iteration:
-
-```
-bundle exec rails s -p 8080
-```
-
 ### Web Client
-The code for the javascript client can be found in ./client:
-[https://github.com/groupon/codeburner/client](https://github.com/groupon/codeburner/client)
+The code for the javascript client can be found in [./client](client).
 
 The default cap deploy will build the client and pull the results into /public.  To do this manually, use the following cap task:
 
@@ -74,7 +82,7 @@ cap <env> deploy
 ```
 
 ### Sidekiq Capistrano
-The default deployment **_DOES NOT_** start/restart sidekiq on the remote host.  You can start it the first time with:
+The default deployment shouldn't start/restart sidekiq on the remote host.  You can start it the first time with:
 
 ```
 cap <env> sidekiq:start
@@ -87,8 +95,8 @@ cap <env> sidekiq:restart
 ```
 
 ## API
-To trigger a code burn, send it a payload containing a service name and code revision:
+To trigger a code burn automatically, send it a payload containing a service name, code revision, and repository URL:
 
 ```
-curl -H "Content-Type: application/json" -X POST -d '{"service_name":"my_cool_service", "revision":"abcdefg1234567890", "repo_url":"https://github.com/my/repo/url"}' http://localhost:8080/burn
+curl -H "Content-Type: application/json" -X POST -d '{"service_name":"my_cool_service", "revision":"abcdefg1234567890", "repo_url":"https://github.com/my/repo/url"}' http://localhost:8080/api/burn
 ```

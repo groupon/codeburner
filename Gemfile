@@ -1,3 +1,5 @@
+source 'https://rubygems.org'
+
 # sidekiq
 gem 'sidekiq', '>= 3.4.2'
 gem 'sinatra', :require => false # for the UI
@@ -44,10 +46,10 @@ group :test do
 end
 
 # for our global $app_config struct
-gem 'deepstruct'
+gem 'deep_struct'
 
-# rack server
-gem 'unicorn', '~> 4.9.0', '>= 4.9.0'
+# respond_to
+gem 'responders'
 
 # rest-client for general use
 gem 'rest-client'
@@ -57,9 +59,7 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'pipeline', '>= 0.8.2'
-gem 'brakeman', '>= 3.1.0'
-gem 'bundler-audit', '>= 0.4.0'
+gem 'owasp-pipeline', '>= 0.8.3'
 gem 'whenever'
 gem 'chronic'
 

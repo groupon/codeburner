@@ -5,6 +5,8 @@ Codeburner Client
 As a pre-requisite, you'll need node.js installed and the 'npm' command should work properly.
 
 ```
+npm install -g bower
+npm install -g grunt-cli
 npm install
 bower install
 ```

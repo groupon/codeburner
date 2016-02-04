@@ -4,15 +4,15 @@
   "version": "1.0.0",
   "author": {
     "name": "Michael Chang",
-    "email": "qzhang@groupon.com"
+    "email": "github@micbase.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.groupondev.com/ApplicationSecurity/codeburner-frontend"
+    "url": "https://github.com/groupon/codeburner"
   },
   "scripts": {
-    "start": "lineman run",
-    "test": "lineman spec-ci"
+    "start": "grunt serve",
+    "test": "grunt test"
   },
   "devDependencies": {
     "apache-server-configs": "^2.14.0",

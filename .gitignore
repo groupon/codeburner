@@ -1,0 +1,24 @@
+.idea
+*.rbc
+*.sassc
+.sass-cache
+capybara-*.html
+.rspec
+/.bundle
+/vendor/bundle
+/log/*
+/tmp/*
+/db/*.sqlite3
+/public/system/*
+/public/assets/*
+/coverage/
+/spec/tmp/*
+**.orig
+rerun.txt
+pickle-email-*.html
+REVISION
+.DS_Store
+gem_graph.png
+
+# redis
+dump.rdb
