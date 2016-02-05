@@ -143,6 +143,7 @@ class Burn < ActiveRecord::Base
 
       if pipeline_options[:run_tasks].count > 0
         # run separately and first for checkmarx to make sure it doesn't scan all our downloaded node deps later
+        pipeline_options[:run_tasks] << 'Checkmarx' if Rails.env == 'test'
         if pipeline_options[:run_tasks].map{|t| t.downcase}.include?('checkmarx')
           checkmarx_options = pipeline_options
           checkmarx_options[:run_tasks] = 'Checkmarx'

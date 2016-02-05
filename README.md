@@ -45,6 +45,25 @@ Create the mysql database:
 rake db:setup
 ```
 
+### Configuration
+You'll probably want to configure a few things before you start anything up.  Notably [config/database.yml](config/database.yml) and [config/app.yml](config/app.yml).
+
+#### Database
+Database configuration is in [config/database.yml](config/database.yml).  The defaults should be fine for development/test, you'll obviously want to configure staging and production as appropriate to your own environment.
+
+#### Redis
+Redis is configured in [config/application.rb](config/application.rb).  The defaults should be fine for local development, but you'll probably want to tweak them for a prod/HA deployment.
+
+#### GitHub
+Github is configured in [config/app.yml](config/app.yml).  For public github, you just need to set api_access_token to one that you generate from 'Account Settings/Personal access tokens' on GitHub.
+
+#### JIRA
+JIRA authentication is currently username/password, both of which can be configured in [config/app.yml](config/app.yml).  You'll also need to minimally set the host (for api connections) and link_host (a base url for generating clickable links) here.
+
+#### Mail
+Mail for burn notifications is configured in [config/app.yml](config/app.yml).  The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.
+
+
 ### App Server
 For development we recommend the standard WEBrick server with the spring gem for fast iteration:
 
@@ -59,6 +78,17 @@ Codeburner uses sidekiq for asynchronous work.  To "do" anything useful (actuall
 ```
 bundle exec sidekiq ./config/sidekiq.yml
 ```
+
+### Scanning tools
+While we're working on a more universal method of handling tools, support for individual scanning tools (that aren't included as ruby gems via pipeline:  bundler-audit, brakeman, dawnscanner) currently requires manual installation on your codeburner host.
+
+#### RetireJS
+
+#### NodeSecurityProject
+
+#### PMD
+
+#### Checkmarx
 
 ### Web Client
 The code for the javascript client can be found in [./client](client).

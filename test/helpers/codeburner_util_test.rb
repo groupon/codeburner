@@ -28,19 +28,49 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     @service_json ||= File.read('test/fixtures/service.json')
   end
 
-  # test "gets code languages" do
-  #   languages = {
-  #     "Ruby" => 100,
-  #     "Java" => 50
-  #   }
-  #   github = mock('github')
-  #   github.responds_like(GithubExplorer.new('','',true,3,nil))
-  #   GithubExplorer.expects(:new).returns(github).twice
-  #   github.expects(:get_languages).returns(languages.to_json).twice
-  #
-  #   assert_equal languages, CodeburnerUtil.get_code_lang('http://github.com/test/path'), "languages mismatch"
-  #   assert_equal languages, CodeburnerUtil.get_code_lang('http://test.com/fake/path'), "silly extra test for completion"
-  # end
+  test "converts severity to text" do
+    assert_equal "High", CodeburnerUtil.severity_to_text(3)
+  end
+
+  test "goes inside_github_archive" do
+    tempfile = Tempfile.new('testfile')
+    $github.expects(:archive_link).returns(tempfile)
+
+    begin
+      CodeburnerUtil.inside_github_archive('http://some_url/', 'abcdefg') do |dir|
+        true
+      end
+    ensure
+      File.unlink tempfile
+    end
+  end
+
+  test "escalates StandardError on failure" do
+    FileUtils.expects(:remove_entry_secure).returns(true)
+    Dir.expects(:mktmpdir).raises(StandardError)
+
+    assert_raises StandardError do
+      CodeburnerUtil.inside_github_archive('http://some_url', 'abcdefg'){|a| true}
+    end
+  end
+
+  test "gets service info" do
+    result = mock('service_info_result')
+    result.expects(:body).returns(services(:one).attributes.to_json.to_s)
+    RestClient.expects(:get).returns(result)
+
+    assert_equal services(:one).attributes, CodeburnerUtil.get_service_info('test_service'), "service info differs"
+  end
+
+  # TODO: add a real test here w/ simulated Sawyer::Resource for the octokit return
+  test "gets code lang" do
+    expected = {
+      "Ruby" => 100,
+    }
+    $github.expects(:languages).returns({"Ruby" => 100})
+
+    assert_equal expected, CodeburnerUtil.get_code_lang('test/test'), "this test isn't ideal"
+  end
 
   test "tallies code" do
     filelist = {
@@ -60,5 +90,58 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
       end
       assert_equal CodeburnerUtil.tally_code('some_dir', key.split(',')), [ 10*files.count, 5000*files.count ], "num_files and num_lines tallies are incorrect"
     end
+  end
+
+  test "creates new system_stat on first run" do
+    SystemStat.expects(:first).returns(nil)
+    CodeburnerUtil.expects(:get_history_range).returns(true)
+
+    assert_difference('SystemStat.count') do
+      CodeburnerUtil.update_system_stats
+    end
+  end
+
+  test "gets service history range" do
+    service_id = services(:one).id
+    mock_stat = mock('mock_stat')
+    mock_stat.expects(:versions).returns(ServiceStat.all)
+    mock_service = mock('mock_service')
+    mock_service.expects(:service_stat).returns(mock_stat)
+    Service.expects(:find).returns(mock_service)
+    CodeburnerUtil.get_history_range service_id
+  end
+
+  test "returns correct history resolution" do
+    assert_equal 4.hour, CodeburnerUtil.history_resolution(1.day.ago, Time.now)
+    assert_equal 12.hours, CodeburnerUtil.history_resolution(7.days.ago, Time.now)
+    assert_equal 1.day, CodeburnerUtil.history_resolution(21.days.ago, Time.now)
+    assert_equal 3.days, CodeburnerUtil.history_resolution(1.month.ago, Time.now)
+    assert_equal 5.days, CodeburnerUtil.history_resolution(3.months.ago, Time.now)
+    assert_equal 1.week, CodeburnerUtil.history_resolution(9.months.ago, Time.now)
+  end
+
+  test "gets system history" do
+    mock_stat = mock('mock_stat')
+    mock_stat.expects(:versions).returns(SystemStat.all)
+    mock_stat.expects(:version_at).returns(SystemStat.first).twice
+    SystemStat.expects(:first).returns(mock_stat)
+
+    assert_equal 1, CodeburnerUtil.get_history[:services][0][1]
+  end
+
+  test "gets service history" do
+    mock_stat = mock('mock_stat')
+    mock_stat.expects(:versions).returns(ServiceStat.all)
+    mock_stat.expects(:version_at).returns(ServiceStat.first)
+    mock_where = mock('mock_where')
+    mock_where.expects(:first).returns(mock_stat)
+    ServiceStat.expects(:where).returns(mock_where)
+
+    assert_equal 1, CodeburnerUtil.get_history(Time.now.to_s,Time.now.to_s,1.hour,nil,services(:one).id)[:burns][0][1]
+  end
+
+  test "gets burn history" do
+    assert_equal Burn.count, CodeburnerUtil.get_burn_history[0][1]
+    assert_equal Burn.count, CodeburnerUtil.get_burn_history(Time.now.to_s, Time.now.to_s)[0][1]
   end
 end

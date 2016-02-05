@@ -21,28 +21,13 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-case ENV['RAILS_ENV']
-when 'production'
-  $redis_options = {
-    :host => 'localhost',
-    :port => 6379
-  }
-when 'staging'
-  $redis_options = {
-    :host => 'localhost',
-    :port => 6379
-  }
-else
-  $redis_options = {
-    :host => 'localhost',
-    :port => 6379
-  }
-end
+require 'test_helper'
 
-$redis = Redis.new($redis_options)
+class BurnWorkerTest < ActiveSupport::TestCase
+  test "kicks off ignition" do
+    burns(:one).expects(:ignite).returns(true).once
+    Burn.expects(:find).returns(burns(:one))
 
-module Codeburner
-  class Application < Rails::Application
-    config.cache_store = :redis_store, $redis_options, { expires_in: 60.minutes }
+    BurnWorker.new.perform(burns(:one).id)
   end
 end

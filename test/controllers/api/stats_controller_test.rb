@@ -21,10 +21,38 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-# require 'test_helper'
+require 'test_helper'
 
-# class StatsControllerTest < ActionController::TestCase
-#   # test "the truth" do
-#   #   assert true
-#   # end
-# end
+class Api::StatsControllerTest < ActionController::TestCase
+  test "indexes correctly" do
+    get(:index)
+    assert_response :success
+    assert_equal CodeburnerUtil.get_stats.as_json, JSON.parse(@response.body)
+  end
+
+  test "gets range" do
+    CodeburnerUtil.expects(:get_history_range).returns({:start_date => 1.day.ago, :end_date => Time.now}).twice
+    get(:range)
+    assert_response :success
+    assert_equal CodeburnerUtil.get_history_range.as_json, JSON.parse(@response.body)
+  end
+
+  test "gets resolution" do
+    get(:resolution, {:start_date => 1.day.ago.to_s, :end_date => Time.now.to_s})
+    assert_response :success
+    assert_equal CodeburnerUtil.history_resolution(1.day.ago, Time.now).to_i, @response.body.to_i
+  end
+
+  test "gets history" do
+    CodeburnerUtil.expects(:get_history).returns({:foo => 'bar'}.as_json).twice
+    get(:history)
+    assert_response :success
+    assert_equal CodeburnerUtil.get_history.as_json, JSON.parse(@response.body)
+  end
+
+  test "gets burns" do
+    get(:burns)
+    assert_response :success
+    assert_equal CodeburnerUtil.get_burn_history.as_json, JSON.parse(@response.body)
+  end
+end

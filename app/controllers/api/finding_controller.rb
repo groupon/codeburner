@@ -232,6 +232,8 @@ class Api::FindingController < ApplicationController
 
     Rails.cache.write('stats', CodeburnerUtil.get_stats)
     render(:json => finding.as_json)
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no finding with that id found}"}, :status => 404)
   end
 
   # START ServiceDiscovery
@@ -291,7 +293,7 @@ class Api::FindingController < ApplicationController
       ticket = "#{repo} - Issue ##{result.number}"
       link = result.html_url
     else
-      return render(:json => {error: "unsupported publishing method", :status => 400})
+      return render(:json => {error: "unsupported publishing method"}, :status => 400)
     end
 
     if ticket.nil? or link.nil?
@@ -299,6 +301,8 @@ class Api::FindingController < ApplicationController
     end
 
     render(:json => {:ticket => ticket, :link => link})
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no finding with that id found}"}, :status => 404)
   end
 
   def publish_to_github (finding_id, repo)

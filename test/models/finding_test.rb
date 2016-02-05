@@ -74,22 +74,4 @@ class FindingTest < ActiveSupport::TestCase
     assert_equal findings(:one).inspect, Finding.id(findings(:one).id).first.inspect, "finding multiselect not correct for single value"
     assert_equal findings(:one).inspect, Finding.service_name('test_service').first.inspect, "finding by service_name invalid"
   end
-
-  test "publishes to jira successfully" do
-    jira = mock('jira')
-    mock_issue = mock('Issue')
-    GrouponJira.expects(:new).returns(jira).twice
-
-    jira.expects(:Issue).returns(mock_issue).twice
-    mock_issue.expects(:build).returns(mock_issue).twice
-    mock_issue.expects(:save).returns(true).once
-    mock_issue.expects(:attrs).returns(true).once
-
-    assert_equal true, findings(:one).publish, "finding result is incorrect"
-    assert_equal 2, findings(:one).status, ":one status is not 2"
-
-    mock_issue.expects(:save).returns(nil).once
-
-    assert_equal nil, findings(:two).publish, "isn't returning empty hash on publish == nil"
-  end
 end

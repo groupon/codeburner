@@ -27,15 +27,15 @@ one:
   service: one
   burn: one
   filter: one
-  description: Finding One
+  description: test_description
   severity: 3
   fingerprint: abcdefg123456789
-  detail: Details about finding one
+  detail: test_detail
   status: 1
-  scanner: Brakeman
+  scanner: test_scanner
   file: app/test.rb
-  line: 100
-  code: test_code(running).code
+  line: 1
+  code: some_test_code()
 
 two:
   service: two

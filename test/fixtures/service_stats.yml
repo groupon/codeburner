@@ -24,7 +24,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  service_id: 
+  service: one
   burns: 1
   total_findings: 1
   open_findings: 1
@@ -33,7 +33,7 @@ one:
   published_findings: 1
 
 two:
-  service_id: 
+  service: two
   burns: 1
   total_findings: 1
   open_findings: 1

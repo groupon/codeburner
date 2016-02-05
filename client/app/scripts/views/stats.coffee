@@ -47,6 +47,9 @@ Codeburner.Views.Stats = Backbone.View.extend
       ), (data) ->
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
+    'click .selectize-control': (e) ->
+      $('#service-list')[0].selectize.clear()
+
     'change #service-list': (e) ->
       service = $('#service-list').val()
       if service == '-1'
@@ -69,7 +72,8 @@ Codeburner.Views.Stats = Backbone.View.extend
           endDatePicker.val(moment().format('MMMM DD, YYYY'))
 
           @resolutionSlider.noUiSlider.set(data.resolution)
-          $('#redraw').show()
+          @drawCharts(true)
+          $('#redraw').hide()
         ), (data) ->
           Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
@@ -190,13 +194,13 @@ Codeburner.Views.Stats = Backbone.View.extend
       dataTable.addColumn('datetime', 'Date')
       dataTable.addColumn('number', 'Open')
       dataTable.addColumn('number', 'Filtered')
-      dataTable.addColumn('number', 'Hidden')
       dataTable.addColumn('number', 'Published')
+      dataTable.addColumn('number', 'Hidden')
       dataTable.addColumn('number', 'Total')
 
       for i in [0...data.open_findings.length]
         row = []
-        row.push new Date(data.open_findings[i][0]), data.open_findings[i][1], data.filtered_findings[i][1], data.hidden_findings[i][1], data.published_findings[i][1], data.total_findings[i][1]
+        row.push new Date(data.open_findings[i][0]), data.open_findings[i][1], data.filtered_findings[i][1], data.published_findings[i][1], data.hidden_findings[i][1], data.total_findings[i][1]
         dataTable.addRow row
 
       options =
@@ -205,6 +209,11 @@ Codeburner.Views.Stats = Backbone.View.extend
         hAxis: {format: 'MM/dd/yyyy HH:mm:ss'},
         animation: {startup: true, duration: 750},
         explorer: {}
+        series:
+          0: {color: '#dc3912'}
+          1: {color: '#3366cc'}
+          2: {color: '#ff9900'}
+          3: {color: '#109618'}
 
       $('#finding_history').html ''
       chart = new google.visualization.LineChart(@$('#finding_history').get(0))
@@ -217,5 +226,5 @@ Codeburner.Views.Stats = Backbone.View.extend
     do @delegateEvents
     @$el.html JST['app/scripts/templates/stats_page.ejs']
       services: @serviceCollection.models
-    $('#service-list').selectize({lockOptgroupOrder: true})
+    @serviceSelect = $('#service-list').selectize({lockOptgroupOrder: true})
     do @renderCharts

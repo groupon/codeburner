@@ -48,7 +48,7 @@ class ServiceTest < ActiveSupport::TestCase
   end
 
   test "searchable named scopes work as expected" do
-    assert_equal Service.all.sort.inspect, Service.id(nil).short_name(nil).pretty_name(nil).sort.inspect, "chained scopes don't equal Service.all"
+    assert_equal Service.all.sort.inspect, Service.id(nil).short_name(nil).pretty_name(nil).has_findings.has_burns.sort.inspect, "chained scopes don't equal Service.all"
     assert_equal services(:one), Service.pretty_name('Test Service').first, "Service.pretty_name('Test Service') is not services(:one)"
     assert_equal services(:one), Service.id(services(:one).id).first, "single select service doesn't work"
   end

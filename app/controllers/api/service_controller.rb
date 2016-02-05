@@ -136,10 +136,7 @@ class Api::ServiceController < ApplicationController
   def stats
     service = Service.find(params[:id])
 
-    respond_to do |format|
-      format.html { render(:json => CodeburnerUtil.get_service_stats(service.id)) }
-      format.json { render(:json => CodeburnerUtil.get_service_stats(service.id)) }
-    end
+    render(:json => CodeburnerUtil.get_service_stats(service.id))
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "Service or findings not found}"}, :status => 404)
   end
@@ -161,6 +158,9 @@ class Api::ServiceController < ApplicationController
   end
 
   def burns
-    render(:json => CodeburnerUtil.get_burn_history(params[:start_date], params[:end_date], params[:id]))
+    service = Service.find(params[:id])
+    render(:json => CodeburnerUtil.get_burn_history(params[:start_date], params[:end_date], service.id))
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "Service or findings not found}"}, :status => 404)
   end
 end

@@ -21,9 +21,6 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-name: codeburner
-deploy:
-  branch: master
 github:
   api_endpoint: https://api.github.com/
   api_access_token: my_github_api_token

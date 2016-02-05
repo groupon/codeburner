@@ -34,4 +34,15 @@ class NotificationTest < ActiveSupport::TestCase
       notifications(:one).notify(burns(:one).id, {})
     end
   end
+
+  test "fails and destroys itself" do
+    assert_difference('Notification.count', -1) do
+      failure_email = mock('failure_email')
+      failure_email.expects(:deliver_now).returns(true).once
+      NotificationMailer.expects(:failure_email).returns(failure_email).once
+
+      notifications(:one).burn = burns(:one).id
+      notifications(:one).fail(burns(:one).id)
+    end
+  end
 end

@@ -22,14 +22,13 @@
 #THE SOFTWARE.
 #
 require 'test_helper'
-require 'pipeline/finding'
+require 'pipeline'
 
 class BurnTest < ActiveSupport::TestCase
 
   def setup_basic
     CodeburnerUtil.stubs(:get_service_info).returns({ 'repository' => { 'url' => 'http://fake.server/a/path', 'language' => 'Ruby'}})
     CodeburnerUtil.stubs(:tally_code).returns(1,1)
-    CodeburnerUtil.stubs(:prep_node_project).returns(true)
 
     @github = mock('github')
     @tracker = mock('tracker')
@@ -48,11 +47,10 @@ class BurnTest < ActiveSupport::TestCase
       mock_findings << finding_mock
     end
 
-    @github.expects(:inside_github_archive).yields('test_dir').once
-    GithubExplorer.expects(:new).returns(@github).once
+    CodeburnerUtil.expects(:inside_github_archive).yields('test_dir').once
 
-    @tracker.expects(:findings).returns(mock_findings).once
-    Pipeline.expects(:run).returns(@tracker).once
+    @tracker.expects(:findings).returns(mock_findings).twice
+    Pipeline.expects(:run).returns(@tracker).twice
   end
 
   test "only valid with service and revision set" do
@@ -69,15 +67,13 @@ class BurnTest < ActiveSupport::TestCase
     refute burn.valid?, "Valid with duplicate service and revision combo"
   end
 
-  # test "ignites properly" do
-  #   setup_basic
-  #   setup_ignite
-  #   File.expects(:exist?).returns(true).once
-  #   CodeburnerUtil.expects(:prep_node_project).returns(true).once
-  #
-  #   burns(:one).ignite
-  #   assert_equal 'done', burns(:one).status, "Status is not done"
-  # end
+  test "ignites properly" do
+    setup_basic
+    setup_ignite
+
+    burns(:one).ignite
+    assert_equal 'done', burns(:one).status, "Status is not done"
+  end
 
   test "updates code_lang and repo_url on nil" do
     setup_basic
@@ -113,12 +109,11 @@ class BurnTest < ActiveSupport::TestCase
     assert_equal 'failed', burns(:four).status, "Status is not done"
   end
 
-  # test "fails on DownloadError" do
-  #   setup_basic
-  #   @github.stubs(:inside_github_archive).raises(DownloadError, 'Error downloading github archive')
-  #   GithubExplorer.expects(:new).returns(@github).once
-  #   burns(:two).ignite
-  #   assert_equal 'failed', burns(:two).status, "ignite didn't fail on DownloadError"
-  # end
+  test "fails on StandardError" do
+    setup_basic
+    CodeburnerUtil.expects(:inside_github_archive).raises(StandardError, 'Error downloading github archive')
+    burns(:two).ignite
+    assert_equal 'failed', burns(:two).status, "ignite didn't fail on StandardError"
+  end
 
 end

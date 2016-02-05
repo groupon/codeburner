@@ -51,5 +51,27 @@ module Codeburner
     config.autoload_paths += %W[#{config.root}/app/validators/]
 
     $app_config = DeepStruct.from_file('./config/app.yml')
+
+    case ENV['RAILS_ENV']
+    when 'production'
+      $redis_options = {
+        :host => 'localhost',
+        :port => 6379
+      }
+    when 'staging'
+      $redis_options = {
+        :host => 'localhost',
+        :port => 6379
+      }
+    else
+      $redis_options = {
+        :host => 'localhost',
+        :port => 6379
+      }
+    end
+
+    $redis = Redis.new($redis_options)
+
+    config.cache_store = :redis_store, $redis_options, { expires_in: 60.minutes }
   end
 end

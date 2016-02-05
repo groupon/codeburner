@@ -23,6 +23,7 @@
 #
 require 'open-uri'
 require 'tempfile'
+require 'pipeline'
 
 module CodeburnerUtil
 
@@ -50,7 +51,7 @@ module CodeburnerUtil
 
     yield Dir.glob("#{dir}/*/").max_by {|f| File.mtime(f)}
   rescue StandardError => e
-    Rails.logger.error "Error inside_github_archive #{e.message}"
+    Rails.logger.error "Error inside_github_archive #{e.message}" unless Rails.env == 'test'
     raise e
   ensure
     FileUtils.remove_entry_secure(dir)
@@ -64,10 +65,6 @@ module CodeburnerUtil
 
   def self.get_code_lang repo_url
     $github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
-  end
-
-  def self.prep_node_project dir
-    system("cd #{dir} && npm install --registry=http://npm-registry --ignore-scripts")
   end
 
   def self.tally_code dir, languages
@@ -192,24 +189,18 @@ module CodeburnerUtil
 
   def self.history_resolution start_date, end_date
     case end_date - start_date
-    when 0..5.minutes.to_i then
-      5.seconds
-    when 5.minutes.to_i..1.hour.to_i then
-      1.minute
-    when 1.hour.to_i..4.hours.to_i then
-      5.minutes
-    when 4.hours.to_i..12.hours.to_i then
-      15.minutes
-    when 12.hours.to_i..3.day.to_i then
+    when 0..12.hours.to_i then
       1.hour
+    when 12.hours.to_i..3.day.to_i then
+      4.hour
     when 3.days.to_i..14.days.to_i then
-      6.hours
-    when 14.days.to_i..1.month.to_i then
       12.hours
-    when 1.month.to_i..2.months.to_i then
+    when 14.days.to_i..1.month.to_i then
       1.day
-    when 2.months.to_i..6.months.to_i then
+    when 1.month.to_i..2.months.to_i then
       3.days
+    when 2.months.to_i..6.months.to_i then
+      5.days
     else
       1.week
     end
