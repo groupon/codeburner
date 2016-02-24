@@ -234,7 +234,7 @@ class Api::BurnController < ApplicationController
       service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]})
     end
 
-    burn = Burn.create({:service => service, :revision => params[:revision], :repo_url => params[:repo_url], :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:service => service, :revision => params[:revision], :repo_url => params[:repo_url].gsub('.git',''), :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})
