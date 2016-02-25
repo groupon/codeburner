@@ -1,6 +1,5 @@
 GEM
-  remote: http://rubygems/
-  remote: https://a0c0a686:3f046ee6@gems.contribsys.com/
+  remote: https://rubygems.org/
   specs:
     actionmailer (4.2.5.1)
       actionpack (= 4.2.5.1)
@@ -42,8 +41,6 @@ GEM
     arel (6.0.3)
     attribute-defaults (0.7.0)
       activerecord (>= 4.0.0, < 5.0.0)
-    binding_of_caller (0.7.2)
-      debug_inspector (>= 0.0.1)
     brakeman (3.1.5)
       erubis (~> 2.6)
       fastercsv (~> 1.5)
@@ -77,8 +74,6 @@ GEM
     concurrent-ruby (1.0.0)
     connection_pool (2.2.0)
     curb (0.8.8)
-    daemons (1.2.3)
-    debug_inspector (0.0.2)
     deep_struct (1.1.0)
     docile (1.1.5)
     domain_name (0.5.20160216)
@@ -91,7 +86,6 @@ GEM
       activesupport (>= 4.1.0)
     haml (4.0.7)
       tilt
-    hashie (3.4.3)
     highline (1.7.8)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -105,7 +99,6 @@ GEM
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    kgio (2.9.3)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -151,10 +144,6 @@ GEM
       activerecord (>= 3.0, < 6.0)
       activesupport (>= 3.0, < 6.0)
       request_store (~> 1.1)
-    pest (1.0.12)
-      capistrano
-      json
-    phone_home (0.0.1)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -193,7 +182,6 @@ GEM
       activesupport (= 4.2.5.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    raindrops (0.13.0)
     rake (10.5.0)
     redis (3.2.2)
     redis-actionpack (4.0.1)
@@ -235,10 +223,6 @@ GEM
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.2, >= 3.2.1)
-    sidekiq-failures (0.4.5)
-      sidekiq (>= 2.16.0)
-    sidekiq-pro (3.0.5)
-      sidekiq (>= 4.0.0)
     simplecov (0.11.2)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -248,13 +232,6 @@ GEM
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    skeletor_rails_gem (0.2.0)
-      capistrano (~> 2.0)
-      hashie (~> 3.4)
-      pest (~> 1.0)
-      phone_home (~> 0.0.1)
-      rails (>= 4.2)
-      steno_logger (~> 0.7)
     slim (3.0.6)
       temple (~> 0.7.3)
       tilt (>= 1.3.3, < 2.1)
@@ -267,12 +244,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    steno_logger (0.7.0)
-      activesupport
-      multi_json (~> 1)
-      uuidtools (~> 2)
-    steno_logger_rails (0.1.0)
-      steno_logger (~> 0.3)
     temple (0.7.6)
     terminal-table (1.5.2)
     thor (0.19.1)
@@ -283,16 +254,6 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    unicorn (4.9.0)
-      kgio (~> 2.6)
-      rack
-      raindrops (~> 0.7)
-    uuidtools (2.1.5)
-    web-console (2.3.0)
-      activemodel (>= 4.0)
-      binding_of_caller (>= 0.7.2)
-      railties (>= 4.0)
-      sprockets-rails (>= 2.0, < 4.0)
     whenever (0.9.4)
       chronic (>= 0.6.3)
 
@@ -305,39 +266,26 @@ DEPENDENCIES
   capistrano-rails
   capistrano-sidekiq
   chronic
-  curb (= 0.8.8)
-  daemons
   deep_struct
   jira-ruby
   kaminari
-  kgio (= 2.9.3)
   minitest-reporters
   mocha
   mysql2 (~> 0.3.20, >= 0.3.20)
-  nokogiri (= 1.6.6.2)
   octokit
   owasp-pipeline (>= 0.8.3)
   paper_trail (>= 4.0.0)
   pry-byebug
   pry-rails
   rails (= 4.2.5.1)
-  raindrops (= 0.13.0)
   redis-rails
-  responders (~> 2.0)
+  responders
   rest-client
   sidekiq (>= 3.4.2)
-  sidekiq-failures
-  sidekiq-pro!
   simplecov
   sinatra
-  skeletor_rails_gem (>= 0.0.5)
   slim
   spring
-  steno_logger (>= 0.7.0)
-  steno_logger_rails (>= 0.1.0)
-  unf_ext (= 0.0.7.1)
-  unicorn (~> 4.9.0, >= 4.9.0)
-  web-console (~> 2.0)
   whenever
 
 BUNDLED WITH
