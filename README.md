@@ -79,17 +79,6 @@ Codeburner uses sidekiq for asynchronous work.  To "do" anything useful (actuall
 bundle exec sidekiq ./config/sidekiq.yml
 ```
 
-### Scanning tools
-While we're working on a more universal method of handling tools, support for individual scanning tools (that aren't included as ruby gems via pipeline:  bundler-audit, brakeman, dawnscanner) currently requires manual installation on your codeburner host.
-
-#### RetireJS
-
-#### NodeSecurityProject
-
-#### PMD
-
-#### Checkmarx
-
 ### Web Client
 The code for the javascript client can be found in [./client](client).
 
@@ -97,6 +86,25 @@ The default cap deploy will build the client and pull the results into /public. 
 
 ```
 cap frontend:build
+```
+
+If you want to do development work on the frontend, please see the [README.md](client/README.md) file in the /client directory for more details.
+
+### Scanning tools
+While we're working on a more universal method of handling tools, support for individual scanning tools (that aren't included as ruby gems via pipeline:  bundler-audit, brakeman, dawnscanner) currently requires manual installation on your codeburner host.
+
+#### RetireJS
+Install RetireJS as a global node package:
+
+```
+npm install -g retire
+```
+
+#### NodeSecurityProject
+NSP is also installed as a node package:
+
+```
+npm install -g nsp
 ```
 
 ### Notifications
