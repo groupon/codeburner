@@ -1,0 +1,54 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "What is Codeburner?\n\u00b6\n\n\nCodeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?\n\n\nCodeburner uses the \nOWASP pipeline\n project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.\n\n\nKey Features\n\u00b6\n\n\n\n\nAsynchronous scanning (via sidekiq) that scales\n\n\nAdvanced false positive filtering\n\n\nPublish legit issues via GitHub or JIRA\n\n\nTracks statistics and graphs security trends in your applications\n\n\nIntegrates with a variety of open source and commercial scanning tools\n\n\n\n\nSupported Tools\n\u00b6\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nCheckmarx\n\n\nDawnscanner\n\n\nFindSecurityBugs\n\n\nNode Security Project\n\n\nPMD\n\n\nRetire.js", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#what-is-codeburner", 
+            "text": "Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?  Codeburner uses the  OWASP pipeline  project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.", 
+            "title": "What is Codeburner?"
+        }, 
+        {
+            "location": "/#key-features", 
+            "text": "Asynchronous scanning (via sidekiq) that scales  Advanced false positive filtering  Publish legit issues via GitHub or JIRA  Tracks statistics and graphs security trends in your applications  Integrates with a variety of open source and commercial scanning tools", 
+            "title": "Key Features"
+        }, 
+        {
+            "location": "/#supported-tools", 
+            "text": "Brakeman  Bundler-Audit  Checkmarx  Dawnscanner  FindSecurityBugs  Node Security Project  PMD  Retire.js", 
+            "title": "Supported Tools"
+        }, 
+        {
+            "location": "/install/quickstart/", 
+            "text": "", 
+            "title": "Quickstart"
+        }, 
+        {
+            "location": "/user/burn/", 
+            "text": "", 
+            "title": "Submit a burn"
+        }, 
+        {
+            "location": "/user/findings/", 
+            "text": "", 
+            "title": "Act on findings"
+        }, 
+        {
+            "location": "/user/filter/", 
+            "text": "", 
+            "title": "Filter false positives"
+        }, 
+        {
+            "location": "/development/setup/", 
+            "text": "", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/development/api/", 
+            "text": "", 
+            "title": "API Documentation"
+        }
+    ]
+}
