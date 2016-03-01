@@ -1,0 +1,1 @@
+Codeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using [RVM](http://rvm.io) or [rbenv](http://rbenv.org) we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.2+ before proceeding.

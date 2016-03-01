@@ -1,0 +1,20 @@
+site_name: Codeburner
+site_url: http://groupon.github.io/codeburner
+site_description: Project documentation for Codeburner
+site_author: Groupon, Inc.
+site_favicon: favicon.ico
+repo_url: https://github.com/groupon/codeburner
+pages:
+  - Home: 'index.md'
+  - Installation: 'install.md'
+markdown_extensions:
+  - toc:
+      permalink: True
+  - admonition
+  - codehilite(css_class=code)
+theme: 'material'
+extra:
+  logo: 'images/fire.png'
+  palette:
+    primary: 'light green'
+    accent: 'green'
