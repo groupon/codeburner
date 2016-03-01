@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "What is Codeburner?\n\u00b6\n\n\nCodeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?\n\n\nCodeburner uses the \nOWASP pipeline\n project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.\n\n\nKey Features\n\u00b6\n\n\n\n\nAsynchronous scanning (via sidekiq) that scales\n\n\nAdvanced false positive filtering\n\n\nPublish legit issues via GitHub or JIRA\n\n\nTracks statistics and graphs security trends in your applications\n\n\nIntegrates with a variety of open source and commercial scanning tools\n\n\n\n\nSupported Tools\n\u00b6\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nCheckmarx\n\n\nDawnscanner\n\n\nFindSecurityBugs\n\n\nNode Security Project\n\n\nPMD\n\n\nRetire.js", 
+            "text": "What is Codeburner?\n#\n\n\nCodeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?\n\n\nCodeburner uses the \nOWASP pipeline\n project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.\n\n\nKey Features\n#\n\n\n\n\nAsynchronous scanning (via sidekiq) that scales\n\n\nAdvanced false positive filtering\n\n\nPublish issues via GitHub or JIRA\n\n\nTrack statistics and graph security trends in your applications\n\n\nIntegrates with a variety of open source and commercial scanning tools\n\n\n\n\nSupported Tools\n#\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nCheckmarx\n**\n\n\nDawnscanner\n\n\nFindSecurityBugs\n\n\nNodeSecurityProject\n\n\nPMD\n\n\nRetire.js\n\n\n\n\n** commercial license required", 
             "title": "Home"
         }, 
         {
@@ -12,43 +12,198 @@
         }, 
         {
             "location": "/#key-features", 
-            "text": "Asynchronous scanning (via sidekiq) that scales  Advanced false positive filtering  Publish legit issues via GitHub or JIRA  Tracks statistics and graphs security trends in your applications  Integrates with a variety of open source and commercial scanning tools", 
+            "text": "Asynchronous scanning (via sidekiq) that scales  Advanced false positive filtering  Publish issues via GitHub or JIRA  Track statistics and graph security trends in your applications  Integrates with a variety of open source and commercial scanning tools", 
             "title": "Key Features"
         }, 
         {
             "location": "/#supported-tools", 
-            "text": "Brakeman  Bundler-Audit  Checkmarx  Dawnscanner  FindSecurityBugs  Node Security Project  PMD  Retire.js", 
+            "text": "Brakeman  Bundler-Audit  Checkmarx **  Dawnscanner  FindSecurityBugs  NodeSecurityProject  PMD  Retire.js   ** commercial license required", 
             "title": "Supported Tools"
         }, 
         {
-            "location": "/install/quickstart/", 
-            "text": "", 
-            "title": "Quickstart"
+            "location": "/setup/installation/", 
+            "text": "Download\n#\n\n\nYou can download the latest release of Codeburner here: \nhttps://github.com/groupon/codeburner/releases\n\n\nThe rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:\n\n\ngit clone https://github.com/groupon/codeburner\n\n\n\n\nRuby\n#\n\n\nCodeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using \nRVM\n or \nrbenv\n we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.\n\n\nBundler\n#\n\n\nGem\n#\n\n\nFirst you'll need to install the bundler gem if you don't already have it:\n\n\ngem install bundler\n\n\n\n\nBundle Install\n#\n\n\nOnce you have bundler, you can use it to install the local gems for Codeburner:\n\n\nbundle install", 
+            "title": "Installation"
         }, 
         {
-            "location": "/user/burn/", 
-            "text": "", 
-            "title": "Submit a burn"
+            "location": "/setup/installation/#download", 
+            "text": "You can download the latest release of Codeburner here:  https://github.com/groupon/codeburner/releases  The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:  git clone https://github.com/groupon/codeburner", 
+            "title": "Download"
         }, 
         {
-            "location": "/user/findings/", 
-            "text": "", 
-            "title": "Act on findings"
+            "location": "/setup/installation/#ruby", 
+            "text": "Codeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using  RVM  or  rbenv  we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.", 
+            "title": "Ruby"
         }, 
         {
-            "location": "/user/filter/", 
+            "location": "/setup/installation/#bundler", 
             "text": "", 
-            "title": "Filter false positives"
+            "title": "Bundler"
         }, 
         {
-            "location": "/development/setup/", 
+            "location": "/setup/installation/#gem", 
+            "text": "First you'll need to install the bundler gem if you don't already have it:  gem install bundler", 
+            "title": "Gem"
+        }, 
+        {
+            "location": "/setup/installation/#bundle-install", 
+            "text": "Once you have bundler, you can use it to install the local gems for Codeburner:  bundle install", 
+            "title": "Bundle Install"
+        }, 
+        {
+            "location": "/setup/configuration/", 
+            "text": "Database\n#\n\n\nInstallation\n#\n\n\nYou'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.\n\n\nAuthentication\n#\n\n\nIf you use a password for the 'root' user on MySQL locally, you'll need to add that password to the local block of \nconfig/database.yml\n\n\nIf you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_\n' and grant access to it:\n\n\nmysql -u root -p\n\nmysql\n create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql\n grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)\n\n\n\n\nOnce that's done you'll want to make sure the new username/password are in \nconfig/database.yml\n.\n\n\nSetup\n#\n\n\nOnce the mysql service is running and you've configured the password, you can initialize the database like so:\n\n\nbundle exec rake db:setup\n\n\n\n\n\n\nRedis\n#\n\n\nInstallation\n#\n\n\nCodeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.\n\n\nConfiguration\n#\n\n\nUsing default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost or a port other than the default (6379), you can configure it by changing the relevant $redis_options line in \nconfig/application.rb\n\n\n\n\nGitHub\n#\n\n\nGenerate a Token\n#\n\n\nMost of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml.\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.\n\n\n\n\nJIRA\n#\n\n\nConfiguration\n#\n\n\nIf you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in \nconfig/app.yml.\n\n\nMinimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.\n\n\n\n\nE-mail\n#\n\n\nConfiguration\n#\n\n\nMail for burn notifications is configured in \nconfig/app.yml\n.  Currently it assumes you have a local MTA running that will accept and deliver mail properly.  The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/configuration/#database", 
             "text": "", 
+            "title": "Database"
+        }, 
+        {
+            "location": "/setup/configuration/#installation", 
+            "text": "You'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/setup/configuration/#authentication", 
+            "text": "If you use a password for the 'root' user on MySQL locally, you'll need to add that password to the local block of  config/database.yml  If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_ ' and grant access to it:  mysql -u root -p\n\nmysql  create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql  grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)  Once that's done you'll want to make sure the new username/password are in  config/database.yml .", 
+            "title": "Authentication"
+        }, 
+        {
+            "location": "/setup/configuration/#setup", 
+            "text": "Once the mysql service is running and you've configured the password, you can initialize the database like so:  bundle exec rake db:setup", 
             "title": "Setup"
         }, 
         {
-            "location": "/development/api/", 
+            "location": "/setup/configuration/#redis", 
             "text": "", 
-            "title": "API Documentation"
+            "title": "Redis"
+        }, 
+        {
+            "location": "/setup/configuration/#installation_1", 
+            "text": "Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/setup/configuration/#configuration", 
+            "text": "Using default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost or a port other than the default (6379), you can configure it by changing the relevant $redis_options line in  config/application.rb", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/configuration/#github", 
+            "text": "", 
+            "title": "GitHub"
+        }, 
+        {
+            "location": "/setup/configuration/#generate-a-token", 
+            "text": "Most of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:  https://help.github.com/articles/creating-an-access-token-for-command-line-use/", 
+            "title": "Generate a Token"
+        }, 
+        {
+            "location": "/setup/configuration/#configuration_1", 
+            "text": "Once you have an access token, you can add it to  config/app.yml.  If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/configuration/#jira", 
+            "text": "", 
+            "title": "JIRA"
+        }, 
+        {
+            "location": "/setup/configuration/#configuration_2", 
+            "text": "If you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in  config/app.yml.  Minimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/configuration/#e-mail", 
+            "text": "", 
+            "title": "E-mail"
+        }, 
+        {
+            "location": "/setup/configuration/#configuration_3", 
+            "text": "Mail for burn notifications is configured in  config/app.yml .  Currently it assumes you have a local MTA running that will accept and deliver mail properly.  The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/scanning_tools/", 
+            "text": "Ruby Gems\n#\n\n\nA few of the scanning tools used by Codeburner are installed automatically as gem dependencies of \npipeline\n.  Those tools are:\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nDawnscanner\n\n\n\n\nThe rest of the tools need to be installed manually...\n\n\nCheckmarx\n#\n\n\nCheckmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: \nhttps://www.checkmarx.com/plugins/\n.\n\n\nMake sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in \nconfig/app.yml\n.\n\n\nAlso, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/\n in \nconfig/app.yml\n:\n\n\n  tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n\n\n\n\nSince Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.\n\n\nFindSecurityBugs\n#\n\n\nJava\n#\n\n\nThe find-sec-bugs CLI requires a working installation of Java, and the compilation step from \npipeline\n to generate bytecode requires \nmaven\n.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.\n\n\nInstall\n#\n\n\nYou can download the latest release of findsecbugs-cli here: \nhttps://github.com/find-sec-bugs/find-sec-bugs/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in \nconfig/app.yml\n.\n\n\nNodeSecurityProject\n#\n\n\nNodeSecurityProject is distrubted as a node package.  You need \nnpm\n to install it.  Once you have npm, you can install NodeSecurityProject with:\n\n\nnpm install -g nsp\n\n\n\n\nMake sure that the installed 'nsp' command is in the $PATH for Codeburner.\n\n\nPMD\n#\n\n\nJava\n#\n\n\nAs with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.\n\n\nInstall\n#\n\n\nPMD can be downloaded here: \nhttps://github.com/pmd/pmd/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in \nconfig/app.yml\n.\n\n\nRetire.js\n#\n\n\nRetire.js is another node package.  It can be installed just like nsp:\n\n\nnpm install -g retire", 
+            "title": "Scanning Tools"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#ruby-gems", 
+            "text": "A few of the scanning tools used by Codeburner are installed automatically as gem dependencies of  pipeline .  Those tools are:   Brakeman  Bundler-Audit  Dawnscanner   The rest of the tools need to be installed manually...", 
+            "title": "Ruby Gems"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#checkmarx", 
+            "text": "Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here:  https://www.checkmarx.com/plugins/ .  Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in  config/app.yml .  Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/  in  config/app.yml :    tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs  Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.", 
+            "title": "Checkmarx"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#findsecuritybugs", 
+            "text": "", 
+            "title": "FindSecurityBugs"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#java", 
+            "text": "The find-sec-bugs CLI requires a working installation of Java, and the compilation step from  pipeline  to generate bytecode requires  maven .  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.", 
+            "title": "Java"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#install", 
+            "text": "You can download the latest release of findsecbugs-cli here:  https://github.com/find-sec-bugs/find-sec-bugs/releases/latest  Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in  config/app.yml .", 
+            "title": "Install"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#nodesecurityproject", 
+            "text": "NodeSecurityProject is distrubted as a node package.  You need  npm  to install it.  Once you have npm, you can install NodeSecurityProject with:  npm install -g nsp  Make sure that the installed 'nsp' command is in the $PATH for Codeburner.", 
+            "title": "NodeSecurityProject"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#pmd", 
+            "text": "", 
+            "title": "PMD"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#java_1", 
+            "text": "As with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.", 
+            "title": "Java"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#install_1", 
+            "text": "PMD can be downloaded here:  https://github.com/pmd/pmd/releases/latest  Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in  config/app.yml .", 
+            "title": "Install"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#retirejs", 
+            "text": "Retire.js is another node package.  It can be installed just like nsp:  npm install -g retire", 
+            "title": "Retire.js"
+        }, 
+        {
+            "location": "/setup/startup/", 
+            "text": "Start Sidekiq\n#\n\n\nCodeburner uses \nSidekiq\n for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually \"do\" anything useful.  The default configuration options should work fine in most environments.\n\n\nConfiguration\n#\n\n\nIf you do need to customize sidekiq, it is configured in \nconfig/sidekiq.yml\n.\n\n\nStartup\n#\n\n\nFor local development/testing you can start sidekiq via:\n\n\nbundle exec sidekiq\n\n\n\n\nIf you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:\n\n\nbundle exec cap \nrails_env\n sidekiq:start\n\n\n\n\nStart Codeburner!\n#\n\n\nCodeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both \nunicorn\n and \npuma.\n\n\nFor local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:\n\n\nbundle exec rails s -p 8080\n\n\n\n\nThat will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at \nhttp://localhost:8080/\n.\n\n\nIn a production environment, we recommend serving the root static content (\npublic/\n) with something like \nhttpd\n or \nnginx\n.\n\n\n\n\nDevelopers\n\n\nIf you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.", 
+            "title": "Start Burning!"
+        }, 
+        {
+            "location": "/setup/startup/#start-sidekiq", 
+            "text": "Codeburner uses  Sidekiq  for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually \"do\" anything useful.  The default configuration options should work fine in most environments.", 
+            "title": "Start Sidekiq"
+        }, 
+        {
+            "location": "/setup/startup/#configuration", 
+            "text": "If you do need to customize sidekiq, it is configured in  config/sidekiq.yml .", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/startup/#startup", 
+            "text": "For local development/testing you can start sidekiq via:  bundle exec sidekiq  If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:  bundle exec cap  rails_env  sidekiq:start", 
+            "title": "Startup"
+        }, 
+        {
+            "location": "/setup/startup/#start-codeburner", 
+            "text": "Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both  unicorn  and  puma.  For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:  bundle exec rails s -p 8080  That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at  http://localhost:8080/ .  In a production environment, we recommend serving the root static content ( public/ ) with something like  httpd  or  nginx .   Developers  If you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.", 
+            "title": "Start Codeburner!"
         }
     ]
 }

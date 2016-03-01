@@ -4,7 +4,7 @@
     
     <url>
      <loc>http://groupon.github.io/codeburner/</loc>
-     <lastmod>2016-03-01</lastmod>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,46 +12,26 @@
     
         
     <url>
-     <loc>http://groupon.github.io/codeburner/install/quickstart/</loc>
-     <lastmod>2016-03-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>http://groupon.github.io/codeburner/user/burn/</loc>
-     <lastmod>2016-03-01</lastmod>
+     <loc>http://groupon.github.io/codeburner/setup/installation/</loc>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>http://groupon.github.io/codeburner/user/findings/</loc>
-     <lastmod>2016-03-01</lastmod>
+     <loc>http://groupon.github.io/codeburner/setup/configuration/</loc>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>http://groupon.github.io/codeburner/user/filter/</loc>
-     <lastmod>2016-03-01</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>http://groupon.github.io/codeburner/development/setup/</loc>
-     <lastmod>2016-03-01</lastmod>
+     <loc>http://groupon.github.io/codeburner/setup/scanning_tools/</loc>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>http://groupon.github.io/codeburner/development/api/</loc>
-     <lastmod>2016-03-01</lastmod>
+     <loc>http://groupon.github.io/codeburner/setup/startup/</loc>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

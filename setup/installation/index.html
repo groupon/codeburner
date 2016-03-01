@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Act on findings - Codeburner</title>
+        <title>Installation - Codeburner</title>
       
       
       
-        <link rel="canonical" href="http://groupon.github.io/codeburner/user/findings/">
+        <link rel="canonical" href="http://groupon.github.io/codeburner/setup/installation/">
       
       
         <meta name="author" content="Groupon, Inc.">
       
     
-    <meta property="og:url" content="http://groupon.github.io/codeburner/user/findings/">
+    <meta property="og:url" content="http://groupon.github.io/codeburner/setup/installation/">
     <meta property="og:title" content="Codeburner">
-    <meta property="og:image" content="http://groupon.github.io/codeburner/user/findings//../../images/fire.png">
+    <meta property="og:image" content="http://groupon.github.io/codeburner/setup/installation//../../images/fire.png">
     <meta name="apple-mobile-web-app-title" content="Codeburner">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -47,9 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-b64b728552.css">
-    
-      <link rel="stylesheet" href="../../assets/stylesheets/palettes-05ab2406df.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-adf335ae35.css">
     
     
       
@@ -66,13 +64,23 @@
       </style>
     
     
-    <script src="../../assets/javascripts/modernizr-4ab42b99fd.js"></script>
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-adf335ae35.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-bcec8dff0c.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes-2d6c5d2926.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes.css">
+    
+    <script src="../../assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
   </head>
   
   
   
-  <body class="palette-primary-light-green palette-accent-green">
+  <body class=" ">
     
       
       
@@ -97,15 +105,25 @@
           <span class="path">
             
               
-                User Guide <i class="icon icon-link"></i>
+                Setup Guide <i class="icon icon-link"></i>
               
             
           </span>
         
-        Act on findings
+        Installation
       </div>
     </div>
     
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/GrouponEng" title="@GrouponEng on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/groupon" title="@groupon on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
     
     <div class="button button-search" role="button" aria-label="Search">
       <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
@@ -117,7 +135,7 @@
     </div>
     <div class="stretch">
       <div class="field">
-        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
       </div>
     </div>
     <div class="button button-reset" role="button" aria-label="Search">
@@ -180,46 +198,37 @@
           
             
   <li>
-    <span class="section">Installation</span>
+    <span class="section">Setup Guide</span>
     <ul>
       
         
   <li>
-    <a class="" title="Quickstart" href="../../install/quickstart/">
-      Quickstart
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-            
-  <li>
-    <span class="section">User Guide</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Submit a burn" href="../burn/">
-      Submit a burn
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="current" title="Act on findings" href="./">
-      Act on findings
+    <a class="current" title="Installation" href="./">
+      Installation
     </a>
     
       
       
         <ul>
           
+            <li class="anchor">
+              <a title="Download" href="#download">
+                Download
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Ruby" href="#ruby">
+                Ruby
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Bundler" href="#bundler">
+                Bundler
+              </a>
+            </li>
+          
         </ul>
       
     
@@ -228,8 +237,26 @@
       
         
   <li>
-    <a class="" title="Filter false positives" href="../filter/">
-      Filter false positives
+    <a class="" title="Configuration" href="../configuration/">
+      Configuration
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Scanning Tools" href="../scanning_tools/">
+      Scanning Tools
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Start Burning!" href="../startup/">
+      Start Burning!
     </a>
     
   </li>
@@ -239,34 +266,28 @@
   </li>
 
           
+        </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
             
-  <li>
-    <span class="section">Development</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Setup" href="../../development/setup/">
-      Setup
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="API Documentation" href="../../development/api/">
-      API Documentation
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-        </ul>
+              
+              <li>
+                <a href="https://twitter.com/GrouponEng" target="_blank" title="@GrouponEng on Twitter">
+                  @GrouponEng on Twitter
+                </a>
+              </li>
+            
+            
+              
+              <li>
+                <a href="https://github.com/groupon" target="_blank" title="@groupon on GitHub">
+                  @groupon on GitHub
+                </a>
+              </li>
+            
+          </ul>
         
       </div>
     </div>
@@ -276,9 +297,25 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>Act on findings</h1>
+            <h1>Installation</h1>
           
-          
+          <h2 id="download">Download<a class="headerlink" href="#download" title="Permanent link">#</a></h2>
+<p>You can download the latest release of Codeburner here: <a href="https://github.com/groupon/codeburner/releases" target="_blank">https://github.com/groupon/codeburner/releases</a></p>
+<p>The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:</p>
+<pre class="code"><code class="language-shell">git clone https://github.com/groupon/codeburner</code></pre>
+
+
+<h2 id="ruby">Ruby<a class="headerlink" href="#ruby" title="Permanent link">#</a></h2>
+<p>Codeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using <a href="http://rvm.io">RVM</a> or <a href="http://rbenv.org">rbenv</a> we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.</p>
+<h2 id="bundler">Bundler<a class="headerlink" href="#bundler" title="Permanent link">#</a></h2>
+<h3 id="gem">Gem<a class="headerlink" href="#gem" title="Permanent link">#</a></h3>
+<p>First you'll need to install the bundler gem if you don't already have it:</p>
+<pre class="code"><code class="language-shell">gem install bundler</code></pre>
+
+
+<h3 id="bundle-install">Bundle Install<a class="headerlink" href="#bundle-install" title="Permanent link">#</a></h3>
+<p>Once you have bundler, you can use it to install the local gems for Codeburner:</p>
+<pre class="code"><code class="language-shell">bundle install</code></pre>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -295,7 +332,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../burn/" title="Submit a burn">
+        <a href="../.." title="Home">
           <span class="direction">
             Previous
           </span>
@@ -305,7 +342,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                Submit a burn
+                Home
               </div>
             </div>
           </div>
@@ -314,14 +351,14 @@
     </div>
     <div class="next">
       
-        <a href="../filter/" title="Filter false positives">
+        <a href="../configuration/" title="Configuration">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Filter false positives
+                Configuration
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">
@@ -335,7 +372,8 @@
 
             </footer>
           
-        </div></article>
+        </div>
+      </article>
       <div class="results" role="status" aria-live="polite">
         <div class="scrollable">
           <div class="wrapper">
@@ -349,7 +387,15 @@
       var base_url = '../..';
       var repo_id  = 'groupon/codeburner';
     </script>
-    <script src="../../assets/javascripts/application-a10a824a49.js"></script>
+    <script src="../../assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="../../theme/assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="../../theme/assets/javascripts/application.js"></script>
+    
+      <script src="../../theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
+    
+      <script src="../../theme/assets/javascripts/modernizr.js"></script>
     
     
   </body>

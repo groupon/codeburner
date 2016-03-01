@@ -49,9 +49,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="./assets/stylesheets/application-b64b728552.css">
-    
-      <link rel="stylesheet" href="./assets/stylesheets/palettes-05ab2406df.css">
+    <link rel="stylesheet" href="./assets/stylesheets/application-adf335ae35.css">
     
     
       
@@ -68,13 +66,23 @@
       </style>
     
     
-    <script src="./assets/javascripts/modernizr-4ab42b99fd.js"></script>
+      <link rel="stylesheet" href="./theme/assets/stylesheets/application-adf335ae35.css">
+    
+      <link rel="stylesheet" href="./theme/assets/stylesheets/application-bcec8dff0c.css">
+    
+      <link rel="stylesheet" href="./theme/assets/stylesheets/application.css">
+    
+      <link rel="stylesheet" href="./theme/assets/stylesheets/palettes-2d6c5d2926.css">
+    
+      <link rel="stylesheet" href="./theme/assets/stylesheets/palettes.css">
+    
+    <script src="./assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
   </head>
   
   
   
-  <body class="palette-primary-light-green palette-accent-green">
+  <body class=" ">
     
       
       
@@ -104,6 +112,16 @@
       </div>
     </div>
     
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/GrouponEng" title="@GrouponEng on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/groupon" title="@groupon on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
     
     <div class="button button-search" role="button" aria-label="Search">
       <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
@@ -115,7 +133,7 @@
     </div>
     <div class="stretch">
       <div class="field">
-        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
       </div>
     </div>
     <div class="button button-reset" role="button" aria-label="Search">
@@ -203,31 +221,13 @@
           
             
   <li>
-    <span class="section">Installation</span>
+    <span class="section">Setup Guide</span>
     <ul>
       
         
   <li>
-    <a class="" title="Quickstart" href="install/quickstart/">
-      Quickstart
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-            
-  <li>
-    <span class="section">User Guide</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Submit a burn" href="user/burn/">
-      Submit a burn
+    <a class="" title="Installation" href="setup/installation/">
+      Installation
     </a>
     
   </li>
@@ -235,8 +235,8 @@
       
         
   <li>
-    <a class="" title="Act on findings" href="user/findings/">
-      Act on findings
+    <a class="" title="Configuration" href="setup/configuration/">
+      Configuration
     </a>
     
   </li>
@@ -244,26 +244,8 @@
       
         
   <li>
-    <a class="" title="Filter false positives" href="user/filter/">
-      Filter false positives
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-            
-  <li>
-    <span class="section">Development</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Setup" href="development/setup/">
-      Setup
+    <a class="" title="Scanning Tools" href="setup/scanning_tools/">
+      Scanning Tools
     </a>
     
   </li>
@@ -271,8 +253,8 @@
       
         
   <li>
-    <a class="" title="API Documentation" href="development/api/">
-      API Documentation
+    <a class="" title="Start Burning!" href="setup/startup/">
+      Start Burning!
     </a>
     
   </li>
@@ -284,6 +266,27 @@
           
         </ul>
         
+          <hr>
+          <span class="section">The author</span>
+          <ul>
+            
+              
+              <li>
+                <a href="https://twitter.com/GrouponEng" target="_blank" title="@GrouponEng on Twitter">
+                  @GrouponEng on Twitter
+                </a>
+              </li>
+            
+            
+              
+              <li>
+                <a href="https://github.com/groupon" target="_blank" title="@groupon on GitHub">
+                  @groupon on GitHub
+                </a>
+              </li>
+            
+          </ul>
+        
       </div>
     </div>
   </div>
@@ -294,28 +297,29 @@
           
             <h1>Codeburner</h1>
           
-          <h2 id="what-is-codeburner">What is Codeburner?<a class="headerlink" href="#what-is-codeburner" title="Permanent link">¶</a></h2>
+          <h2 id="what-is-codeburner">What is Codeburner?<a class="headerlink" href="#what-is-codeburner" title="Permanent link">#</a></h2>
 <p>Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?</p>
-<p>Codeburner uses the <a href="https://github.com/OWASP/pipeline">OWASP pipeline</a> project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.</p>
-<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">¶</a></h2>
+<p>Codeburner uses the <a href="https://github.com/OWASP/pipeline" target="_blank">OWASP pipeline</a> project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">#</a></h2>
 <ul>
 <li>Asynchronous scanning (via sidekiq) that scales</li>
 <li>Advanced false positive filtering</li>
-<li>Publish legit issues via GitHub or JIRA</li>
-<li>Tracks statistics and graphs security trends in your applications</li>
+<li>Publish issues via GitHub or JIRA</li>
+<li>Track statistics and graph security trends in your applications</li>
 <li>Integrates with a variety of open source and commercial scanning tools</li>
 </ul>
-<h2 id="supported-tools">Supported Tools<a class="headerlink" href="#supported-tools" title="Permanent link">¶</a></h2>
+<h2 id="supported-tools">Supported Tools<a class="headerlink" href="#supported-tools" title="Permanent link">#</a></h2>
 <ul>
-<li><a href="http://brakemanscanner.org/">Brakeman</a></li>
-<li><a href="https://github.com/rubysec/bundler-audit">Bundler-Audit</a></li>
-<li><a href="https://www.checkmarx.com/technology/static-code-analysis-sca/">Checkmarx</a></li>
-<li><a href="https://github.com/thesp0nge/dawnscanner">Dawnscanner</a></li>
-<li><a href="https://find-sec-bugs.github.io/">FindSecurityBugs</a></li>
-<li><a href="https://nodesecurity.io/">Node Security Project</a></li>
-<li><a href="https://pmd.github.io/">PMD</a></li>
-<li><a href="https://retirejs.github.io/retire.js/">Retire.js</a></li>
+<li><a href="http://brakemanscanner.org/" target="_blank">Brakeman</a></li>
+<li><a href="https://github.com/rubysec/bundler-audit" target="_blank">Bundler-Audit</a></li>
+<li><a href="https://www.checkmarx.com/technology/static-code-analysis-sca/" target="_blank">Checkmarx</a>**</li>
+<li><a href="https://github.com/thesp0nge/dawnscanner" target="_blank">Dawnscanner</a></li>
+<li><a href="https://find-sec-bugs.github.io/" target="_blank">FindSecurityBugs</a></li>
+<li><a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a></li>
+<li><a href="https://pmd.github.io/" target="_blank">PMD</a></li>
+<li><a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a></li>
 </ul>
+<p><small>** commercial license required</small></p>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -335,14 +339,14 @@
     </div>
     <div class="next">
       
-        <a href="install/quickstart/" title="Quickstart">
+        <a href="setup/installation/" title="Installation">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Quickstart
+                Installation
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">
@@ -356,7 +360,8 @@
 
             </footer>
           
-        </div></article>
+        </div>
+      </article>
       <div class="results" role="status" aria-live="polite">
         <div class="scrollable">
           <div class="wrapper">
@@ -370,7 +375,15 @@
       var base_url = '.';
       var repo_id  = 'groupon/codeburner';
     </script>
-    <script src="./assets/javascripts/application-a10a824a49.js"></script>
+    <script src="./assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="./theme/assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="./theme/assets/javascripts/application.js"></script>
+    
+      <script src="./theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
+    
+      <script src="./theme/assets/javascripts/modernizr.js"></script>
     
     
   </body>

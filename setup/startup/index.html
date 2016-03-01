@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Filter false positives - Codeburner</title>
+        <title>Start Burning! - Codeburner</title>
       
       
       
-        <link rel="canonical" href="http://groupon.github.io/codeburner/user/filter/">
+        <link rel="canonical" href="http://groupon.github.io/codeburner/setup/startup/">
       
       
         <meta name="author" content="Groupon, Inc.">
       
     
-    <meta property="og:url" content="http://groupon.github.io/codeburner/user/filter/">
+    <meta property="og:url" content="http://groupon.github.io/codeburner/setup/startup/">
     <meta property="og:title" content="Codeburner">
-    <meta property="og:image" content="http://groupon.github.io/codeburner/user/filter//../../images/fire.png">
+    <meta property="og:image" content="http://groupon.github.io/codeburner/setup/startup//../../images/fire.png">
     <meta name="apple-mobile-web-app-title" content="Codeburner">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -47,9 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-b64b728552.css">
-    
-      <link rel="stylesheet" href="../../assets/stylesheets/palettes-05ab2406df.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-adf335ae35.css">
     
     
       
@@ -66,13 +64,23 @@
       </style>
     
     
-    <script src="../../assets/javascripts/modernizr-4ab42b99fd.js"></script>
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-adf335ae35.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-bcec8dff0c.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/application.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes-2d6c5d2926.css">
+    
+      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes.css">
+    
+    <script src="../../assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
   </head>
   
   
   
-  <body class="palette-primary-light-green palette-accent-green">
+  <body class=" ">
     
       
       
@@ -97,15 +105,25 @@
           <span class="path">
             
               
-                User Guide <i class="icon icon-link"></i>
+                Setup Guide <i class="icon icon-link"></i>
               
             
           </span>
         
-        Filter false positives
+        Start Burning!
       </div>
     </div>
     
+      
+      <div class="button button-twitter" role="button" aria-label="Twitter">
+        <a href="https://twitter.com/GrouponEng" title="@GrouponEng on Twitter" target="_blank" class="toggle-button icon icon-twitter"></a>
+      </div>
+    
+    
+      
+      <div class="button button-github" role="button" aria-label="GitHub">
+        <a href="https://github.com/groupon" title="@groupon on GitHub" target="_blank" class="toggle-button icon icon-github"></a>
+      </div>
     
     <div class="button button-search" role="button" aria-label="Search">
       <label class="toggle-button icon icon-search" title="Search" for="toggle-search"></label>
@@ -117,7 +135,7 @@
     </div>
     <div class="stretch">
       <div class="field">
-        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck>
+        <input class="query" type="text" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
       </div>
     </div>
     <div class="button button-reset" role="button" aria-label="Search">
@@ -180,31 +198,13 @@
           
             
   <li>
-    <span class="section">Installation</span>
+    <span class="section">Setup Guide</span>
     <ul>
       
         
   <li>
-    <a class="" title="Quickstart" href="../../install/quickstart/">
-      Quickstart
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-            
-  <li>
-    <span class="section">User Guide</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Submit a burn" href="../burn/">
-      Submit a burn
+    <a class="" title="Installation" href="../installation/">
+      Installation
     </a>
     
   </li>
@@ -212,8 +212,8 @@
       
         
   <li>
-    <a class="" title="Act on findings" href="../findings/">
-      Act on findings
+    <a class="" title="Configuration" href="../configuration/">
+      Configuration
     </a>
     
   </li>
@@ -221,14 +221,35 @@
       
         
   <li>
-    <a class="current" title="Filter false positives" href="./">
-      Filter false positives
+    <a class="" title="Scanning Tools" href="../scanning_tools/">
+      Scanning Tools
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="current" title="Start Burning!" href="./">
+      Start Burning!
     </a>
     
       
       
         <ul>
           
+            <li class="anchor">
+              <a title="Start Sidekiq" href="#start-sidekiq">
+                Start Sidekiq
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Start Codeburner!" href="#start-codeburner">
+                Start Codeburner!
+              </a>
+            </li>
+          
         </ul>
       
     
@@ -239,34 +260,28 @@
   </li>
 
           
+        </ul>
+        
+          <hr>
+          <span class="section">The author</span>
+          <ul>
             
-  <li>
-    <span class="section">Development</span>
-    <ul>
-      
-        
-  <li>
-    <a class="" title="Setup" href="../../development/setup/">
-      Setup
-    </a>
-    
-  </li>
-
-      
-        
-  <li>
-    <a class="" title="API Documentation" href="../../development/api/">
-      API Documentation
-    </a>
-    
-  </li>
-
-      
-    </ul>
-  </li>
-
-          
-        </ul>
+              
+              <li>
+                <a href="https://twitter.com/GrouponEng" target="_blank" title="@GrouponEng on Twitter">
+                  @GrouponEng on Twitter
+                </a>
+              </li>
+            
+            
+              
+              <li>
+                <a href="https://github.com/groupon" target="_blank" title="@groupon on GitHub">
+                  @groupon on GitHub
+                </a>
+              </li>
+            
+          </ul>
         
       </div>
     </div>
@@ -276,9 +291,33 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>Filter false positives</h1>
+            <h1>Start Burning!</h1>
           
-          
+          <h2 id="start-sidekiq">Start Sidekiq<a class="headerlink" href="#start-sidekiq" title="Permanent link">#</a></h2>
+<p>Codeburner uses <a href="http://sidekiq.org" target="_blank">Sidekiq</a> for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually "do" anything useful.  The default configuration options should work fine in most environments.</p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
+<p>If you do need to customize sidekiq, it is configured in <a href="https://github.com/groupon/codeburner/blob/master/config/sidekiq.yml" target="blank">config/sidekiq.yml</a>.</p>
+<h3 id="startup">Startup<a class="headerlink" href="#startup" title="Permanent link">#</a></h3>
+<p>For local development/testing you can start sidekiq via:</p>
+<pre class="code"><code>bundle exec sidekiq</code></pre>
+
+
+<p>If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:</p>
+<pre class="code"><code>bundle exec cap &lt;rails_env&gt; sidekiq:start</code></pre>
+
+
+<h2 id="start-codeburner">Start Codeburner!<a class="headerlink" href="#start-codeburner" title="Permanent link">#</a></h2>
+<p>Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both <a href="https://unicorn.bogomips.org/" target="_blank">unicorn</a> and <a href="http://puma.io" target="_blank">puma.</a></p>
+<p>For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:</p>
+<pre class="code"><code>bundle exec rails s -p 8080</code></pre>
+
+
+<p>That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at <a href="http://localhost:8080/" target="_blank">http://localhost:8080/</a>.</p>
+<p>In a production environment, we recommend serving the root static content (<a href="https://github.com/groupon/codeburner/tree/master/public" target="_blank">public/</a>) with something like <a href="https://httpd.apache.org/" target="_blank">httpd</a> or <a href="http://www.nginx.com" target="_blank">nginx</a>.</p>
+<div class="admonition developers">
+<p class="admonition-title">Developers</p>
+<p>If you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.</p>
+</div>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -295,7 +334,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../findings/" title="Act on findings">
+        <a href="../scanning_tools/" title="Scanning Tools">
           <span class="direction">
             Previous
           </span>
@@ -305,7 +344,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                Act on findings
+                Scanning Tools
               </div>
             </div>
           </div>
@@ -314,28 +353,13 @@
     </div>
     <div class="next">
       
-        <a href="../../development/setup/" title="Setup">
-          <span class="direction">
-            Next
-          </span>
-          <div class="page">
-            <div class="stretch">
-              <div class="title">
-                Setup
-              </div>
-            </div>
-            <div class="button button-next" role="button" aria-label="Next">
-              <i class="icon icon-forward"></i>
-            </div>
-          </div>
-        </a>
-      
     </div>
   </nav>
 
             </footer>
           
-        </div></article>
+        </div>
+      </article>
       <div class="results" role="status" aria-live="polite">
         <div class="scrollable">
           <div class="wrapper">
@@ -349,7 +373,15 @@
       var base_url = '../..';
       var repo_id  = 'groupon/codeburner';
     </script>
-    <script src="../../assets/javascripts/application-a10a824a49.js"></script>
+    <script src="../../assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="../../theme/assets/javascripts/application-dfb6964a49.js"></script>
+    
+      <script src="../../theme/assets/javascripts/application.js"></script>
+    
+      <script src="../../theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
+    
+      <script src="../../theme/assets/javascripts/modernizr.js"></script>
     
     
   </body>
