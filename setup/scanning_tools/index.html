@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-b0857bc6fe.css">
     
     
       
@@ -422,15 +422,18 @@ checkmarx_log: my_checkmarx_logfile</code></pre>
       - BundleAudit
       - Brakeman
       - Dawnscanner
+      - Checkmarx
     JavaScript:
       - RetireJS
       - NodeSecurityProject
+      - Checkmarx
     CoffeeScript:
       - RetireJS
       - NodeSecurityProject
     Java:
       - PMD
-      - FindSecurityBugs</code></pre>
+      - FindSecurityBugs
+      - Checkmarx</code></pre>
 
 
 <p>Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.</p>
@@ -439,7 +442,10 @@ checkmarx_log: my_checkmarx_logfile</code></pre>
 <p>The find-sec-bugs CLI requires a working installation of Java, and the compilation step from <a href="https://github.com/OWASP/pipeline" target="_blank">pipeline</a> to generate bytecode requires <a href="https://maven.apache.org/" target="_blank">maven</a>.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.</p>
 <h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h3>
 <p>You can download the latest release of findsecbugs-cli here: <a href="https://github.com/find-sec-bugs/find-sec-bugs/releases/latest" target="_blank">https://github.com/find-sec-bugs/find-sec-bugs/releases/latest</a></p>
-<p>Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>.</p>
+<p>Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">findsecbugs_path: /path/to/findsecbugs/install</code></pre>
+
+
 <h2 id="nodesecurityproject"><a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a><a class="headerlink" href="#nodesecurityproject" title="Permanent link">#</a></h2>
 <p>NodeSecurityProject is distrubted as a node package.  You need <a href="https://www.npmjs.com/" target="_blank">npm</a> to install it.  Once you have npm, you can install NodeSecurityProject with:</p>
 <pre class="code"><code class="language-bash">npm install -g nsp</code></pre>
@@ -451,10 +457,16 @@ checkmarx_log: my_checkmarx_logfile</code></pre>
 <p>As with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.</p>
 <h3 id="install_1">Install<a class="headerlink" href="#install_1" title="Permanent link">#</a></h3>
 <p>PMD can be downloaded here: <a href="https://github.com/pmd/pmd/releases/latest" target="_blank">https://github.com/pmd/pmd/releases/latest</a></p>
-<p>Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>.</p>
+<p>Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">pmd_path: /path/to/pmd/install</code></pre>
+
+
 <h2 id="retirejs"><a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a><a class="headerlink" href="#retirejs" title="Permanent link">#</a></h2>
 <p>Retire.js is another node package.  It can be installed just like nsp:</p>
 <pre class="code"><code class="language-bash">npm install -g retire</code></pre>
+
+
+<hr />
           <aside class="copyright" role="note">
             
             Documentation built with

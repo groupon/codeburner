@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-b0857bc6fe.css">
     
     
       
@@ -397,7 +397,7 @@
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h3>
 <p>You'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.</p>
 <h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">#</a></h3>
-<p>If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed the the Setup step.</p>
+<p>If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.</p>
 <p>If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:</p>
 <pre class="code"><code class="language-sql">mysql -u root -p
 
@@ -460,7 +460,7 @@ end</code></pre>
   link_host: https://www.github.com</code></pre>
 
 
-<p>If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.</p>
+<p>If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.</p>
 <hr />
 <h2 id="jira">JIRA<a class="headerlink" href="#jira" title="Permanent link">#</a></h2>
 <h3 id="configuration_2">Configuration<a class="headerlink" href="#configuration_2" title="Permanent link">#</a></h3>
@@ -489,6 +489,7 @@ end</code></pre>
 
 
 <p>The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.</p>
+<hr />
           <aside class="copyright" role="note">
             
             Documentation built with

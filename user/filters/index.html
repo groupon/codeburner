@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-b0857bc6fe.css">
     
     
       
@@ -388,9 +388,34 @@
             <h1>Filtering</h1>
           
           <h2 id="filtering-vs-hiding">Filtering vs. Hiding<a class="headerlink" href="#filtering-vs-hiding" title="Permanent link">#</a></h2>
+<p>As mentioned in the <a href="../../user/findings/">Findings</a> documentation, hiding a finding is limited to that <strong>exact</strong> finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.</p>
+<p>Filtering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.</p>
+<hr />
 <h2 id="create-a-filter">Create a filter<a class="headerlink" href="#create-a-filter" title="Permanent link">#</a></h2>
+<p>You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.</p>
+<p><img alt="filter_finding" src="../images/filter_finding.png" /></p>
+<p>The default behavior selects every field <strong>except</strong> line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).</p>
+<p><img alt="filter_default" src="../images/filter_default.png" /></p>
+<p>As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields "Service Name" and "Scanner" you'll do just that:</p>
+<p><img alt="filter_more" src="../images/filter_more.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.</p>
+</div>
+<hr />
 <h2 id="view-existing-filters">View existing filters<a class="headerlink" href="#view-existing-filters" title="Permanent link">#</a></h2>
+<p>You can view the currently active filters by clicking on the "Filters" option in the nav bar, or by visiting the URL <a href="http://localhost:8080/#filter">http://localhost:8080/#filter</a></p>
+<p>Click the "expand" button to show more details about a specific filter:</p>
+<p><img alt="filter_expand" src="../images/filter_expand.png" /></p>
+<p>Clicking it on an expanded filter collapses it again:</p>
+<p><img alt="filter_collapse" src="../images/filter_collapse.png" /></p>
+<p>If you click either the numbered badge or the "N findings" link next to the "Filtering:" heading you'll be taken to the findings page and shown <strong>just the findings filtered by that filter</strong>:</p>
+<p><img alt="filter_click" src="../images/filter_click.png" /></p>
+<hr />
 <h2 id="delete-a-filter">Delete a filter<a class="headerlink" href="#delete-a-filter" title="Permanent link">#</a></h2>
+<p>You can click the "X" icon to delete a filter.  Deleting a filter will also set the status of any issues caught by that filter back to "open".</p>
+<p><img alt="filter_delete" src="../images/filter_delete.png" /></p>
+<hr />
           <aside class="copyright" role="note">
             
             Documentation built with

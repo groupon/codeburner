@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-b0857bc6fe.css">
     
     
       
@@ -363,7 +363,7 @@
           
             <h1>Submit a Burn</h1>
           
-          <p>The home page for Codeburner is the 'burns' page.  It can be access via the URL: <a href="http://localhost:8080/#burn" target="_blank">http://localhost:8080/#burn</a>, or by clicking the 'Codeburner' title/logo in the navigation bar.</p>
+          <p>The home page for Codeburner is the 'burns' page.  It can be access via the URL: <a href="http://localhost:8080/#burn" target="_blank">http://localhost:8080/</a>, or by clicking the 'Codeburner' title/logo in the navigation bar.</p>
 <p>To submit a new burn, click on the "Submit Burn" button:</p>
 <p><img alt="burn_submit" src="../images/burn_submit.png" /></p>
 <p>Fill out the form that pops up:</p>
@@ -372,6 +372,11 @@
 <p>The list of 'Recent Burns' will refresh automatically, and the status should change to 'done' when it's complete.</p>
 <p>If you highlight/click on a specific burn from the list, you'll be taken to the findings page and shown the findings for <strong>just that one burn</strong>:</p>
 <p><img alt="burn_list" src="../images/burn_list.png" /></p>
+<p>You can also submit a burn through the REST API (useful for scripting or as part of a CI process):</p>
+<pre class="code"><code class="language-bash">curl -X POST -d '{&quot;service_name&quot;:&quot;codeburner&quot;,&quot;repo_url&quot;:&quot;https://github.com/groupon/codeburner&quot;}' http://localhost:8080/api/burn</code></pre>
+
+
+<hr />
           <aside class="copyright" role="note">
             
             Documentation built with

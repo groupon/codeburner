@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-b0857bc6fe.css">
     
     
       
@@ -276,8 +276,8 @@
         <ul>
           
             <li class="anchor">
-              <a title="Google API requirement" href="#google-api-requirement">
-                Google API requirement
+              <a title="Google API" href="#google-api">
+                Google API
               </a>
             </li>
           
@@ -296,6 +296,12 @@
             <li class="anchor">
               <a title="Tweak history resolution" href="#tweak-history-resolution">
                 Tweak history resolution
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Redraw" href="#redraw">
+                Redraw
               </a>
             </li>
           
@@ -387,10 +393,31 @@
           
             <h1>Statistics/Charts</h1>
           
-          <h2 id="google-api-requirement">Google API requirement<a class="headerlink" href="#google-api-requirement" title="Permanent link">#</a></h2>
+          <p><img alt="stats_page" src="../images/stats_page.png" /></p>
+<h2 id="google-api">Google API<a class="headerlink" href="#google-api" title="Permanent link">#</a></h2>
+<p>The statistics page uses the <a href="https://developers.google.com/chart/" target="_blank">Google Charts API</a> to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.</p>
+<hr />
 <h2 id="select-a-service">Select a service<a class="headerlink" href="#select-a-service" title="Permanent link">#</a></h2>
+<p>On the left you can select a specific service (the default is <strong>All Services</strong>) with substring matching:</p>
+<p><img alt="stats_service_list" src="../images/stats_service_list.png" /></p>
+<p>If you select a new service, the charts will redraw automatically using default values.</p>
+<hr />
 <h2 id="choose-a-date-range">Choose a date range<a class="headerlink" href="#choose-a-date-range" title="Permanent link">#</a></h2>
+<p>If you click on either the "Start Date" or "End Date" fields a date picker will appear letting you narrow down the date range of the stats generated:</p>
+<p><img alt="stats_date" src="../images/stats_date.png" /></p>
+<p><img alt="stats_datepicker" src="../images/stats_datepicker.png" /></p>
+<hr />
 <h2 id="tweak-history-resolution">Tweak history resolution<a class="headerlink" href="#tweak-history-resolution" title="Permanent link">#</a></h2>
+<p>Codeburner does a fairly good job of choosing a resolution for your statistics based on the length of time between start date and end date to generate nice trend lines.  If you want more control over the graphs produced and want to change the level of detail, you can slide the resolution slider left or right to adjust the resolution:</p>
+<p><img alt="stats_resolution" src="../images/stats_resolution.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a <strong>very</strong> large number of database queries and cause considerable slowdown.</p>
+</div>
+<hr />
+<h2 id="redraw">Redraw<a class="headerlink" href="#redraw" title="Permanent link">#</a></h2>
+<p>After setting a new combination of start date, end date, and resolution you need to click the newly-revealed "Redraw" button to redraw the charts:</p>
+<p><img alt="stats_redraw" src="../images/stats_redraw.png" /></p>
           <aside class="copyright" role="note">
             
             Documentation built with

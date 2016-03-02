@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "What is Codeburner?\n#\n\n\nCodeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?\n\n\nCodeburner uses the \nOWASP pipeline\n project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.\n\n\nKey Features\n#\n\n\n\n\nAsynchronous scanning (via sidekiq) that scales\n\n\nAdvanced false positive filtering\n\n\nPublish issues via GitHub or JIRA\n\n\nTrack statistics and graph security trends in your applications\n\n\nIntegrates with a variety of open source and commercial scanning tools\n\n\n\n\nSupported Tools\n#\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nCheckmarx\n**\n\n\nDawnscanner\n\n\nFindSecurityBugs\n\n\nNodeSecurityProject\n\n\nPMD\n\n\nRetire.js\n\n\n\n\n** commercial license required", 
+            "text": "What is Codeburner?\n#\n\n\nCodeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?\n\n\nCodeburner uses the \nOWASP pipeline\n project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.\n\n\nKey Features\n#\n\n\n\n\nAsynchronous scanning (via sidekiq) that scales\n\n\nAdvanced false positive filtering\n\n\nPublish issues via GitHub or JIRA\n\n\nTrack statistics and graph security trends in your applications\n\n\nIntegrates with a variety of open source and commercial scanning tools\n\n\nFull REST API for extension and integration with other tools, CI processes, etc.\n\n\n\n\nSupported Tools\n#\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nCheckmarx\n**\n\n\nDawnscanner\n\n\nFindSecurityBugs\n\n\nNodeSecurityProject\n\n\nPMD\n\n\nRetire.js\n\n\n\n\n** commercial license required", 
             "title": "Home"
         }, 
         {
@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/#key-features", 
-            "text": "Asynchronous scanning (via sidekiq) that scales  Advanced false positive filtering  Publish issues via GitHub or JIRA  Track statistics and graph security trends in your applications  Integrates with a variety of open source and commercial scanning tools", 
+            "text": "Asynchronous scanning (via sidekiq) that scales  Advanced false positive filtering  Publish issues via GitHub or JIRA  Track statistics and graph security trends in your applications  Integrates with a variety of open source and commercial scanning tools  Full REST API for extension and integration with other tools, CI processes, etc.", 
             "title": "Key Features"
         }, 
         {
@@ -52,7 +52,7 @@
         }, 
         {
             "location": "/setup/configuration/", 
-            "text": "Database\n#\n\n\nInstallation\n#\n\n\nYou'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.\n\n\nAuthentication\n#\n\n\nIf you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed the the Setup step.\n\n\nIf you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:\n\n\nmysql -u root -p\n\nmysql\n create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql\n grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)\n\n\n\n\nOnce that's done you'll want to make sure the new username/password are in \nconfig/database.yml\n:\n\n\nlocal: \nlocal\n  \n: *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000\n\n\n\n\nSetup\n#\n\n\nOnce the mysql service is running and you've configured the password, you can initialize the database like so:\n\n\nbundle exec rake db:setup\n\n\n\n\n\n\nRedis\n#\n\n\nInstallation\n#\n\n\nCodeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.\n\n\nConfiguration\n#\n\n\nUsing default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in \nconfig/application.rb\n:\n\n\ncase ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nelse\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nend\n\n\n\n\n\n\nGitHub\n#\n\n\nGenerate a Token\n#\n\n\nMost of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml\n:\n\n\ngithub:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com\n\n\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.\n\n\n\n\nJIRA\n#\n\n\nConfiguration\n#\n\n\nIf you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in \nconfig/app.yml\n:\n\n\njira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: false\n  link_host: https://my_jira_host\n\n\n\n\nMinimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.\n\n\n\n\nE-mail\n#\n\n\nConfiguration\n#\n\n\nMail notifications assume you have a local MTA running that will accept and deliver mail properly.  You can configure some options for e-mail in \nconfig/app.yml\n:\n\n\nmail:\n  from: '\nCodeburner\n \ncodeburner@myserver.com\n'\n  link_host:\n    development: localhost:9000\n    staging: localhost:9000\n    production: localhost:9000\n    test: localhost:9000\n\n\n\n\nThe 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
+            "text": "Database\n#\n\n\nInstallation\n#\n\n\nYou'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.\n\n\nAuthentication\n#\n\n\nIf you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.\n\n\nIf you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:\n\n\nmysql -u root -p\n\nmysql\n create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql\n grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)\n\n\n\n\nOnce that's done you'll want to make sure the new username/password are in \nconfig/database.yml\n:\n\n\nlocal: \nlocal\n  \n: *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000\n\n\n\n\nSetup\n#\n\n\nOnce the mysql service is running and you've configured the password, you can initialize the database like so:\n\n\nbundle exec rake db:setup\n\n\n\n\n\n\nRedis\n#\n\n\nInstallation\n#\n\n\nCodeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.\n\n\nConfiguration\n#\n\n\nUsing default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in \nconfig/application.rb\n:\n\n\ncase ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nelse\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nend\n\n\n\n\n\n\nGitHub\n#\n\n\nGenerate a Token\n#\n\n\nMost of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml\n:\n\n\ngithub:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com\n\n\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.\n\n\n\n\nJIRA\n#\n\n\nConfiguration\n#\n\n\nIf you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in \nconfig/app.yml\n:\n\n\njira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: false\n  link_host: https://my_jira_host\n\n\n\n\nMinimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.\n\n\n\n\nE-mail\n#\n\n\nConfiguration\n#\n\n\nMail notifications assume you have a local MTA running that will accept and deliver mail properly.  You can configure some options for e-mail in \nconfig/app.yml\n:\n\n\nmail:\n  from: '\nCodeburner\n \ncodeburner@myserver.com\n'\n  link_host:\n    development: localhost:9000\n    staging: localhost:9000\n    production: localhost:9000\n    test: localhost:9000\n\n\n\n\nThe 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
             "title": "Configuration"
         }, 
         {
@@ -67,7 +67,7 @@
         }, 
         {
             "location": "/setup/configuration/#authentication", 
-            "text": "If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed the the Setup step.  If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:  mysql -u root -p\n\nmysql  create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql  grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)  Once that's done you'll want to make sure the new username/password are in  config/database.yml :  local:  local\n   : *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000", 
+            "text": "If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.  If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:  mysql -u root -p\n\nmysql  create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql  grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)  Once that's done you'll want to make sure the new username/password are in  config/database.yml :  local:  local\n   : *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000", 
             "title": "Authentication"
         }, 
         {
@@ -102,7 +102,7 @@
         }, 
         {
             "location": "/setup/configuration/#configuration_1", 
-            "text": "Once you have an access token, you can add it to  config/app.yml :  github:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com  If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.", 
+            "text": "Once you have an access token, you can add it to  config/app.yml :  github:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com  If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.", 
             "title": "Configuration"
         }, 
         {
@@ -127,7 +127,7 @@
         }, 
         {
             "location": "/setup/scanning_tools/", 
-            "text": "Ruby Gems\n#\n\n\nA few of the scanning tools used by Codeburner are installed automatically as gem dependencies of \npipeline\n.  Those tools are:\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nDawnscanner\n\n\n\n\nThe rest of the tools need to be installed manually...\n\n\nCheckmarx\n#\n\n\nCheckmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: \nhttps://www.checkmarx.com/plugins/\n.\n\n\nMake sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in \nconfig/app.yml\n:\n\n\ncheckmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile\n\n\n\n\nAlso, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/\n in \nconfig/app.yml\n:\n\n\n  tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n\n\n\n\nSince Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.\n\n\nFindSecurityBugs\n#\n\n\nJava\n#\n\n\nThe find-sec-bugs CLI requires a working installation of Java, and the compilation step from \npipeline\n to generate bytecode requires \nmaven\n.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.\n\n\nInstall\n#\n\n\nYou can download the latest release of findsecbugs-cli here: \nhttps://github.com/find-sec-bugs/find-sec-bugs/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in \nconfig/app.yml\n.\n\n\nNodeSecurityProject\n#\n\n\nNodeSecurityProject is distrubted as a node package.  You need \nnpm\n to install it.  Once you have npm, you can install NodeSecurityProject with:\n\n\nnpm install -g nsp\n\n\n\n\nMake sure that the installed 'nsp' command is in the $PATH for Codeburner.\n\n\nPMD\n#\n\n\nJava\n#\n\n\nAs with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.\n\n\nInstall\n#\n\n\nPMD can be downloaded here: \nhttps://github.com/pmd/pmd/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in \nconfig/app.yml\n.\n\n\nRetire.js\n#\n\n\nRetire.js is another node package.  It can be installed just like nsp:\n\n\nnpm install -g retire", 
+            "text": "Ruby Gems\n#\n\n\nA few of the scanning tools used by Codeburner are installed automatically as gem dependencies of \npipeline\n.  Those tools are:\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nDawnscanner\n\n\n\n\nThe rest of the tools need to be installed manually...\n\n\nCheckmarx\n#\n\n\nCheckmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: \nhttps://www.checkmarx.com/plugins/\n.\n\n\nMake sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in \nconfig/app.yml\n:\n\n\ncheckmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile\n\n\n\n\nAlso, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/\n in \nconfig/app.yml\n:\n\n\n  tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx\n\n\n\n\nSince Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.\n\n\nFindSecurityBugs\n#\n\n\nJava\n#\n\n\nThe find-sec-bugs CLI requires a working installation of Java, and the compilation step from \npipeline\n to generate bytecode requires \nmaven\n.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.\n\n\nInstall\n#\n\n\nYou can download the latest release of findsecbugs-cli here: \nhttps://github.com/find-sec-bugs/find-sec-bugs/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\nfindsecbugs_path: /path/to/findsecbugs/install\n\n\n\n\nNodeSecurityProject\n#\n\n\nNodeSecurityProject is distrubted as a node package.  You need \nnpm\n to install it.  Once you have npm, you can install NodeSecurityProject with:\n\n\nnpm install -g nsp\n\n\n\n\nMake sure that the installed 'nsp' command is in the $PATH for Codeburner.\n\n\nPMD\n#\n\n\nJava\n#\n\n\nAs with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.\n\n\nInstall\n#\n\n\nPMD can be downloaded here: \nhttps://github.com/pmd/pmd/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\npmd_path: /path/to/pmd/install\n\n\n\n\nRetire.js\n#\n\n\nRetire.js is another node package.  It can be installed just like nsp:\n\n\nnpm install -g retire", 
             "title": "Scanning Tools"
         }, 
         {
@@ -137,7 +137,7 @@
         }, 
         {
             "location": "/setup/scanning_tools/#checkmarx", 
-            "text": "Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here:  https://www.checkmarx.com/plugins/ .  Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in  config/app.yml :  checkmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile  Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/  in  config/app.yml :    tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs  Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.", 
+            "text": "Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here:  https://www.checkmarx.com/plugins/ .  Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in  config/app.yml :  checkmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile  Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/  in  config/app.yml :    tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx  Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.", 
             "title": "Checkmarx"
         }, 
         {
@@ -152,7 +152,7 @@
         }, 
         {
             "location": "/setup/scanning_tools/#install", 
-            "text": "You can download the latest release of findsecbugs-cli here:  https://github.com/find-sec-bugs/find-sec-bugs/releases/latest  Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in  config/app.yml .", 
+            "text": "You can download the latest release of findsecbugs-cli here:  https://github.com/find-sec-bugs/find-sec-bugs/releases/latest  Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in  config/app.yml :  findsecbugs_path: /path/to/findsecbugs/install", 
             "title": "Install"
         }, 
         {
@@ -172,7 +172,7 @@
         }, 
         {
             "location": "/setup/scanning_tools/#install_1", 
-            "text": "PMD can be downloaded here:  https://github.com/pmd/pmd/releases/latest  Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in  config/app.yml .", 
+            "text": "PMD can be downloaded here:  https://github.com/pmd/pmd/releases/latest  Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in  config/app.yml :  pmd_path: /path/to/pmd/install", 
             "title": "Install"
         }, 
         {
@@ -207,113 +207,138 @@
         }, 
         {
             "location": "/user/burns/", 
-            "text": "The home page for Codeburner is the 'burns' page.  It can be access via the URL: \nhttp://localhost:8080/#burn\n, or by clicking the 'Codeburner' title/logo in the navigation bar.\n\n\nTo submit a new burn, click on the \"Submit Burn\" button:\n\n\n\n\nFill out the form that pops up:\n\n\n\n\nThe only required fields are 'Service Name' and 'Repository URL'.  You can optionally specify a specific commit/tag to scan and an e-mail address to notify when the burn is complete.\n\n\nThe list of 'Recent Burns' will refresh automatically, and the status should change to 'done' when it's complete.\n\n\nIf you highlight/click on a specific burn from the list, you'll be taken to the findings page and shown the findings for \njust that one burn\n:", 
+            "text": "The home page for Codeburner is the 'burns' page.  It can be access via the URL: \nhttp://localhost:8080/\n, or by clicking the 'Codeburner' title/logo in the navigation bar.\n\n\nTo submit a new burn, click on the \"Submit Burn\" button:\n\n\n\n\nFill out the form that pops up:\n\n\n\n\nThe only required fields are 'Service Name' and 'Repository URL'.  You can optionally specify a specific commit/tag to scan and an e-mail address to notify when the burn is complete.\n\n\nThe list of 'Recent Burns' will refresh automatically, and the status should change to 'done' when it's complete.\n\n\nIf you highlight/click on a specific burn from the list, you'll be taken to the findings page and shown the findings for \njust that one burn\n:\n\n\n\n\nYou can also submit a burn through the REST API (useful for scripting or as part of a CI process):\n\n\ncurl -X POST -d '{\nservice_name\n:\ncodeburner\n,\nrepo_url\n:\nhttps://github.com/groupon/codeburner\n}' http://localhost:8080/api/burn", 
             "title": "Submit a Burn"
         }, 
         {
             "location": "/user/findings/", 
-            "text": "Service List\n#\n\n\nFindings List\n#\n\n\nDetails Pane\n#\n\n\nHide Issues\n#\n\n\nPublish Issues\n#\n\n\nFiltering\n#", 
+            "text": "The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking \"Findings\" in the menu bar or visiting the URL \nhttp://localhost:8080/#finding\n.\n\n\n\n\n\n\nService List\n#\n\n\nOn the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and should honor it anywhere in the query string.\n\n\nClick a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.\n\n\n\n\n\n\nFindings List\n#\n\n\nThe middle column of the findings page is the findings list.  By default it shows \nopen\n findings for all services, or for the service selected in the service list on the left.\n\n\nYou can use the toggles at the top to show \nhidden/published/filtered\n findings (more on that later), and click any of the column headings to sort on that field.  A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high--\nunknown.\n\n\nClick on any finding to show more details on the right.\n\n\n\n\nDetails Pane\n#\n\n\nThe details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information generally depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with full syntax highlighting.\n\n\n\n\nClicking the revision link will take you to the root of that commit in GitHub:\n\n\n\n\nIf the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:\n\n\n\n\nPublish Issues\n#\n\n\nThe first action provided in the details pane is \"publish\".  The publish action will publish the finding as either a GitHub or JIRA issue.\n\n\n\n\nBy default, clicking publish will create a new GitHub issue for you with all the finding details available:\n\n\n\n\nIf you select JIRA in the publish dialog, you'll also need to enter the JIRA project to use for creating your issue:\n\n\n\n\nHide Issues\n#\n\n\nIf you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.  Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details combined as a big string), hiding here will ensure \nthat exact finding\n isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.  \n\n\n\n\nIn the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".\n\n\nFor cases where you want more control over filtering future results like this one, you'll want to use the Filter interface described below.\n\n\nFiltering\n#\n\n\nSince fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.  As an example, let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported.  That's where filtering comes in:\n\n\n\n\nThe \nFiltering\n section covers the use of filters in more detail.", 
             "title": "Interact with Findings"
         }, 
         {
             "location": "/user/findings/#service-list", 
-            "text": "", 
+            "text": "On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and should honor it anywhere in the query string.  Click a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.", 
             "title": "Service List"
         }, 
         {
             "location": "/user/findings/#findings-list", 
-            "text": "", 
+            "text": "The middle column of the findings page is the findings list.  By default it shows  open  findings for all services, or for the service selected in the service list on the left.  You can use the toggles at the top to show  hidden/published/filtered  findings (more on that later), and click any of the column headings to sort on that field.  A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high-- unknown.  Click on any finding to show more details on the right.", 
             "title": "Findings List"
         }, 
         {
             "location": "/user/findings/#details-pane", 
-            "text": "", 
+            "text": "The details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information generally depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with full syntax highlighting.   Clicking the revision link will take you to the root of that commit in GitHub:   If the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:", 
             "title": "Details Pane"
         }, 
         {
-            "location": "/user/findings/#hide-issues", 
-            "text": "", 
-            "title": "Hide Issues"
-        }, 
-        {
             "location": "/user/findings/#publish-issues", 
-            "text": "", 
+            "text": "The first action provided in the details pane is \"publish\".  The publish action will publish the finding as either a GitHub or JIRA issue.   By default, clicking publish will create a new GitHub issue for you with all the finding details available:   If you select JIRA in the publish dialog, you'll also need to enter the JIRA project to use for creating your issue:", 
             "title": "Publish Issues"
         }, 
         {
+            "location": "/user/findings/#hide-issues", 
+            "text": "If you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.  Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details combined as a big string), hiding here will ensure  that exact finding  isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.     In the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".  For cases where you want more control over filtering future results like this one, you'll want to use the Filter interface described below.", 
+            "title": "Hide Issues"
+        }, 
+        {
             "location": "/user/findings/#filtering", 
-            "text": "", 
+            "text": "Since fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.  As an example, let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported.  That's where filtering comes in:   The  Filtering  section covers the use of filters in more detail.", 
             "title": "Filtering"
         }, 
         {
             "location": "/user/filters/", 
-            "text": "Filtering vs. Hiding\n#\n\n\nCreate a filter\n#\n\n\nView existing filters\n#\n\n\nDelete a filter\n#", 
+            "text": "Filtering vs. Hiding\n#\n\n\nAs mentioned in the \nFindings\n documentation, hiding a finding is limited to that \nexact\n finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.\n\n\nFiltering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.\n\n\n\n\nCreate a filter\n#\n\n\nYou can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.\n\n\n\n\nThe default behavior selects every field \nexcept\n line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).\n\n\n\n\nAs a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:\n\n\n\n\n\n\nNote\n\n\nThe filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.\n\n\n\n\n\n\nView existing filters\n#\n\n\nYou can view the currently active filters by clicking on the \"Filters\" option in the nav bar, or by visiting the URL \nhttp://localhost:8080/#filter\n\n\nClick the \"expand\" button to show more details about a specific filter:\n\n\n\n\nClicking it on an expanded filter collapses it again:\n\n\n\n\nIf you click either the numbered badge or the \"N findings\" link next to the \"Filtering:\" heading you'll be taken to the findings page and shown \njust the findings filtered by that filter\n:\n\n\n\n\n\n\nDelete a filter\n#\n\n\nYou can click the \"X\" icon to delete a filter.  Deleting a filter will also set the status of any issues caught by that filter back to \"open\".", 
             "title": "Filtering"
         }, 
         {
             "location": "/user/filters/#filtering-vs-hiding", 
-            "text": "", 
+            "text": "As mentioned in the  Findings  documentation, hiding a finding is limited to that  exact  finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.  Filtering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.", 
             "title": "Filtering vs. Hiding"
         }, 
         {
             "location": "/user/filters/#create-a-filter", 
-            "text": "", 
+            "text": "You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.   The default behavior selects every field  except  line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).   As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:    Note  The filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.", 
             "title": "Create a filter"
         }, 
         {
             "location": "/user/filters/#view-existing-filters", 
-            "text": "", 
+            "text": "You can view the currently active filters by clicking on the \"Filters\" option in the nav bar, or by visiting the URL  http://localhost:8080/#filter  Click the \"expand\" button to show more details about a specific filter:   Clicking it on an expanded filter collapses it again:   If you click either the numbered badge or the \"N findings\" link next to the \"Filtering:\" heading you'll be taken to the findings page and shown  just the findings filtered by that filter :", 
             "title": "View existing filters"
         }, 
         {
             "location": "/user/filters/#delete-a-filter", 
-            "text": "", 
+            "text": "You can click the \"X\" icon to delete a filter.  Deleting a filter will also set the status of any issues caught by that filter back to \"open\".", 
             "title": "Delete a filter"
         }, 
         {
             "location": "/user/stats/", 
-            "text": "Google API requirement\n#\n\n\nSelect a service\n#\n\n\nChoose a date range\n#\n\n\nTweak history resolution\n#", 
+            "text": "Google API\n#\n\n\nThe statistics page uses the \nGoogle Charts API\n to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.\n\n\n\n\nSelect a service\n#\n\n\nOn the left you can select a specific service (the default is \nAll Services\n) with substring matching:\n\n\n\n\nIf you select a new service, the charts will redraw automatically using default values.\n\n\n\n\nChoose a date range\n#\n\n\nIf you click on either the \"Start Date\" or \"End Date\" fields a date picker will appear letting you narrow down the date range of the stats generated:\n\n\n\n\n\n\n\n\nTweak history resolution\n#\n\n\nCodeburner does a fairly good job of choosing a resolution for your statistics based on the length of time between start date and end date to generate nice trend lines.  If you want more control over the graphs produced and want to change the level of detail, you can slide the resolution slider left or right to adjust the resolution:\n\n\n\n\n\n\nWarning\n\n\nBe careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a \nvery\n large number of database queries and cause considerable slowdown.\n\n\n\n\n\n\nRedraw\n#\n\n\nAfter setting a new combination of start date, end date, and resolution you need to click the newly-revealed \"Redraw\" button to redraw the charts:", 
             "title": "Statistics/Charts"
         }, 
         {
-            "location": "/user/stats/#google-api-requirement", 
-            "text": "", 
-            "title": "Google API requirement"
+            "location": "/user/stats/#google-api", 
+            "text": "The statistics page uses the  Google Charts API  to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.", 
+            "title": "Google API"
         }, 
         {
             "location": "/user/stats/#select-a-service", 
-            "text": "", 
+            "text": "On the left you can select a specific service (the default is  All Services ) with substring matching:   If you select a new service, the charts will redraw automatically using default values.", 
             "title": "Select a service"
         }, 
         {
             "location": "/user/stats/#choose-a-date-range", 
-            "text": "", 
+            "text": "If you click on either the \"Start Date\" or \"End Date\" fields a date picker will appear letting you narrow down the date range of the stats generated:", 
             "title": "Choose a date range"
         }, 
         {
             "location": "/user/stats/#tweak-history-resolution", 
-            "text": "", 
+            "text": "Codeburner does a fairly good job of choosing a resolution for your statistics based on the length of time between start date and end date to generate nice trend lines.  If you want more control over the graphs produced and want to change the level of detail, you can slide the resolution slider left or right to adjust the resolution:    Warning  Be careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a  very  large number of database queries and cause considerable slowdown.", 
             "title": "Tweak history resolution"
         }, 
         {
+            "location": "/user/stats/#redraw", 
+            "text": "After setting a new combination of start date, end date, and resolution you need to click the newly-revealed \"Redraw\" button to redraw the charts:", 
+            "title": "Redraw"
+        }, 
+        {
             "location": "/developer/backend/", 
-            "text": "", 
+            "text": "Rails backend\n#", 
             "title": "Rails Backend"
         }, 
         {
-            "location": "/developer/pipeline/", 
+            "location": "/developer/backend/#rails-backend", 
             "text": "", 
+            "title": "Rails backend"
+        }, 
+        {
+            "location": "/developer/pipeline/", 
+            "text": "What is pipeline?\n#", 
             "title": "Pipeline"
         }, 
         {
+            "location": "/developer/pipeline/#what-is-pipeline", 
+            "text": "", 
+            "title": "What is pipeline?"
+        }, 
+        {
             "location": "/developer/client/", 
+            "text": "JavaScript Client\n#", 
+            "title": "JavaScript Client"
+        }, 
+        {
+            "location": "/developer/client/#javascript-client", 
             "text": "", 
             "title": "JavaScript Client"
         }, 
         {
             "location": "/developer/api/", 
-            "text": "", 
+            "text": "API documentation\n#", 
             "title": "API Reference"
+        }, 
+        {
+            "location": "/developer/api/#api-documentation", 
+            "text": "", 
+            "title": "API documentation"
         }
     ]
 }
