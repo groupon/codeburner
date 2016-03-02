@@ -32,11 +32,7 @@ Codeburner uses the [OWASP pipeline](https://github.com/OWASP/pipeline) project 
 You can find full documentation for Codeburner at <a href="http://groupon.github.io/codeburner" target="_blank">http://groupon.github.io/codeburner</a>
 
 ## Installation
-See our <a href="https://groupon.github.io/codeburner/install/" target="_blank">Installation Guide</a> for complete install instructions.
+See our <a href="https://groupon.github.io/codeburner/setup/installation/" target="_blank">Installation Guide</a> for complete install instructions.
 
-## API
-To trigger a code burn automatically, send it a payload containing a service name, code revision, and repository URL:
-
-```
-curl -H "Content-Type: application/json" -X POST -d '{"service_name":"my_cool_service", "revision":"abcdefg1234567890", "repo_url":"https://github.com/my/repo/url"}' http://localhost:8080/api/burn
-```
+## User Guide
+The <a href="https://groupon.github.io/codeburner/user/burns/" target="_blank">User Guide</a> will give you an overview of how to use Codeburner once you have things up and running.

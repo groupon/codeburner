@@ -45,6 +45,7 @@ pipeline:
     Ruby:
       - BundleAudit
       - Brakeman
+      - Dawnscanner
     JavaScript:
       - RetireJS
       - NodeSecurityProject
@@ -52,9 +53,10 @@ pipeline:
       - RetireJS
       - NodeSecurityProject
     Java:
-      -
-    Python:
-      -
+      - PMD
+      - FindSecurityBugs
+  pmd_path: /path/to/pmd/install
+  findsecbugs_path: /path/to/findsecbugs/install
   checkmarx_server: my_checkmarx_server
   checkmarx_user: my_checkmarx_user
   checkmarx_password: my_checkmarx_password
