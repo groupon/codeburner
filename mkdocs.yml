@@ -4,17 +4,36 @@ site_description: Project documentation for Codeburner
 site_author: Groupon, Inc.
 site_favicon: favicon.ico
 repo_url: https://github.com/groupon/codeburner
+extra_css:
+  - css/prism.css
+extra_javascript:
+  - js/prism.js
+
 pages:
-  - Home: 'index.md'
-  - Installation: 'install.md'
+  - Home: index.md
+  - Setup Guide:
+    - Installation: setup/installation.md
+    - Configuration: setup/configuration.md
+    - Scanning Tools: setup/scanning_tools.md
+    - Start Burning!: setup/startup.md
+  - User Guide:
+    - Submit a Burn: user/burns.md
+    - Interact with Findings: user/findings.md
+    - Filtering: user/filters.md
+    - Statistics/Charts: user/stats.md
+  - Developer Guide:
+    - Rails Backend: developer/backend.md
+    - Pipeline: developer/pipeline.md
+    - JavaScript Client: developer/client.md
+    - API Reference: developer/api.md
 markdown_extensions:
   - toc:
-      permalink: True
+      permalink: '#'
   - admonition
   - codehilite(css_class=code)
-theme: 'material'
+theme_dir: ./docs/theme
 extra:
-  logo: 'images/fire.png'
-  palette:
-    primary: 'light green'
-    accent: 'green'
+  logo: images/fire.png
+  author:
+    github: groupon
+    twitter: GrouponEng
