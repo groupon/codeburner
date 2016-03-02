@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-adf335ae35.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
     
     
       
@@ -64,15 +64,7 @@
       </style>
     
     
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-adf335ae35.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-bcec8dff0c.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes-2d6c5d2926.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes.css">
+      <link rel="stylesheet" href="../../css/prism.css">
     
     <script src="../../assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
@@ -284,6 +276,96 @@
   </li>
 
           
+            
+  <li>
+    <span class="section">User Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Submit a Burn" href="../../user/burns/">
+      Submit a Burn
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Interact with Findings" href="../../user/findings/">
+      Interact with Findings
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Filtering" href="../../user/filters/">
+      Filtering
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Statistics/Charts" href="../../user/stats/">
+      Statistics/Charts
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
+            
+  <li>
+    <span class="section">Developer Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Rails Backend" href="../../developer/backend/">
+      Rails Backend
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="API Reference" href="../../developer/api/">
+      API Reference
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
         </ul>
         
           <hr>
@@ -327,7 +409,13 @@
 <p>The rest of the tools need to be installed manually...</p>
 <h2 id="checkmarx"><a href="http://www.checkmarx.com" target="_blank">Checkmarx</a><a class="headerlink" href="#checkmarx" title="Permanent link">#</a></h2>
 <p>Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: <a href="https://www.checkmarx.com/plugins/" target="_blank">https://www.checkmarx.com/plugins/</a>.</p>
-<p>Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>.</p>
+<p>Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">checkmarx_server: my_checkmarx_server
+checkmarx_user: my_checkmarx_user
+checkmarx_password: my_checkmarx_password
+checkmarx_log: my_checkmarx_logfile</code></pre>
+
+
 <p>Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/<your_language> in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
 <pre class="code"><code class="language-yaml">  tasks_for:
     Ruby:
@@ -354,7 +442,7 @@
 <p>Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>.</p>
 <h2 id="nodesecurityproject"><a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a><a class="headerlink" href="#nodesecurityproject" title="Permanent link">#</a></h2>
 <p>NodeSecurityProject is distrubted as a node package.  You need <a href="https://www.npmjs.com/" target="_blank">npm</a> to install it.  Once you have npm, you can install NodeSecurityProject with:</p>
-<pre class="code"><code>npm install -g nsp</code></pre>
+<pre class="code"><code class="language-bash">npm install -g nsp</code></pre>
 
 
 <p>Make sure that the installed 'nsp' command is in the $PATH for Codeburner.</p>
@@ -366,7 +454,7 @@
 <p>Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>.</p>
 <h2 id="retirejs"><a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a><a class="headerlink" href="#retirejs" title="Permanent link">#</a></h2>
 <p>Retire.js is another node package.  It can be installed just like nsp:</p>
-<pre class="code"><code>npm install -g retire</code></pre>
+<pre class="code"><code class="language-bash">npm install -g retire</code></pre>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -440,13 +528,7 @@
     </script>
     <script src="../../assets/javascripts/application-dfb6964a49.js"></script>
     
-      <script src="../../theme/assets/javascripts/application-dfb6964a49.js"></script>
-    
-      <script src="../../theme/assets/javascripts/application.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr.js"></script>
+      <script src="../../js/prism.js"></script>
     
     
   </body>

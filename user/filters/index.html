@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Installation - Codeburner</title>
+        <title>Filtering - Codeburner</title>
       
       
       
-        <link rel="canonical" href="http://groupon.github.io/codeburner/setup/installation/">
+        <link rel="canonical" href="http://groupon.github.io/codeburner/user/filters/">
       
       
         <meta name="author" content="Groupon, Inc.">
       
     
-    <meta property="og:url" content="http://groupon.github.io/codeburner/setup/installation/">
+    <meta property="og:url" content="http://groupon.github.io/codeburner/user/filters/">
     <meta property="og:title" content="Codeburner">
-    <meta property="og:image" content="http://groupon.github.io/codeburner/setup/installation//../../images/fire.png">
+    <meta property="og:image" content="http://groupon.github.io/codeburner/user/filters//../../images/fire.png">
     <meta name="apple-mobile-web-app-title" content="Codeburner">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,12 +97,12 @@
           <span class="path">
             
               
-                Setup Guide <i class="icon icon-link"></i>
+                User Guide <i class="icon icon-link"></i>
               
             
           </span>
         
-        Installation
+        Filtering
       </div>
     </div>
     
@@ -195,41 +195,16 @@
       
         
   <li>
-    <a class="current" title="Installation" href="./">
+    <a class="" title="Installation" href="../../setup/installation/">
       Installation
     </a>
-    
-      
-      
-        <ul>
-          
-            <li class="anchor">
-              <a title="Download" href="#download">
-                Download
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Ruby" href="#ruby">
-                Ruby
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Bundler" href="#bundler">
-                Bundler
-              </a>
-            </li>
-          
-        </ul>
-      
     
   </li>
 
       
         
   <li>
-    <a class="" title="Configuration" href="../configuration/">
+    <a class="" title="Configuration" href="../../setup/configuration/">
       Configuration
     </a>
     
@@ -238,7 +213,7 @@
       
         
   <li>
-    <a class="" title="Scanning Tools" href="../scanning_tools/">
+    <a class="" title="Scanning Tools" href="../../setup/scanning_tools/">
       Scanning Tools
     </a>
     
@@ -247,7 +222,7 @@
       
         
   <li>
-    <a class="" title="Start Burning!" href="../startup/">
+    <a class="" title="Start Burning!" href="../../setup/startup/">
       Start Burning!
     </a>
     
@@ -265,7 +240,7 @@
       
         
   <li>
-    <a class="" title="Submit a Burn" href="../../user/burns/">
+    <a class="" title="Submit a Burn" href="../burns/">
       Submit a Burn
     </a>
     
@@ -274,7 +249,7 @@
       
         
   <li>
-    <a class="" title="Interact with Findings" href="../../user/findings/">
+    <a class="" title="Interact with Findings" href="../findings/">
       Interact with Findings
     </a>
     
@@ -283,16 +258,47 @@
       
         
   <li>
-    <a class="" title="Filtering" href="../../user/filters/">
+    <a class="current" title="Filtering" href="./">
       Filtering
     </a>
+    
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Filtering vs. Hiding" href="#filtering-vs-hiding">
+                Filtering vs. Hiding
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Create a filter" href="#create-a-filter">
+                Create a filter
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="View existing filters" href="#view-existing-filters">
+                View existing filters
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Delete a filter" href="#delete-a-filter">
+                Delete a filter
+              </a>
+            </li>
+          
+        </ul>
+      
     
   </li>
 
       
         
   <li>
-    <a class="" title="Statistics/Charts" href="../../user/stats/">
+    <a class="" title="Statistics/Charts" href="../stats/">
       Statistics/Charts
     </a>
     
@@ -379,25 +385,12 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>Installation</h1>
+            <h1>Filtering</h1>
           
-          <h2 id="download">Download<a class="headerlink" href="#download" title="Permanent link">#</a></h2>
-<p>You can download the latest release of Codeburner here: <a href="https://github.com/groupon/codeburner/releases" target="_blank">https://github.com/groupon/codeburner/releases</a></p>
-<p>The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:</p>
-<pre class="code"><code class="language-bash">git clone https://github.com/groupon/codeburner</code></pre>
-
-
-<h2 id="ruby">Ruby<a class="headerlink" href="#ruby" title="Permanent link">#</a></h2>
-<p>Codeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using <a href="http://rvm.io">RVM</a> or <a href="http://rbenv.org">rbenv</a> we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.</p>
-<h2 id="bundler">Bundler<a class="headerlink" href="#bundler" title="Permanent link">#</a></h2>
-<h3 id="gem">Gem<a class="headerlink" href="#gem" title="Permanent link">#</a></h3>
-<p>First you'll need to install the bundler gem if you don't already have it:</p>
-<pre class="code"><code class="language-bash">gem install bundler</code></pre>
-
-
-<h3 id="bundle-install">Bundle Install<a class="headerlink" href="#bundle-install" title="Permanent link">#</a></h3>
-<p>Once you have bundler, you can use it to install the local gems for Codeburner:</p>
-<pre class="code"><code class="language-bash">bundle install</code></pre>
+          <h2 id="filtering-vs-hiding">Filtering vs. Hiding<a class="headerlink" href="#filtering-vs-hiding" title="Permanent link">#</a></h2>
+<h2 id="create-a-filter">Create a filter<a class="headerlink" href="#create-a-filter" title="Permanent link">#</a></h2>
+<h2 id="view-existing-filters">View existing filters<a class="headerlink" href="#view-existing-filters" title="Permanent link">#</a></h2>
+<h2 id="delete-a-filter">Delete a filter<a class="headerlink" href="#delete-a-filter" title="Permanent link">#</a></h2>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -414,7 +407,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../.." title="Home">
+        <a href="../findings/" title="Interact with Findings">
           <span class="direction">
             Previous
           </span>
@@ -424,7 +417,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                Home
+                Interact with Findings
               </div>
             </div>
           </div>
@@ -433,14 +426,14 @@
     </div>
     <div class="next">
       
-        <a href="../configuration/" title="Configuration">
+        <a href="../stats/" title="Statistics/Charts">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                Configuration
+                Statistics/Charts
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

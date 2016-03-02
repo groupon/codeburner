@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Installation - Codeburner</title>
+        <title>API Reference - Codeburner</title>
       
       
       
-        <link rel="canonical" href="http://groupon.github.io/codeburner/setup/installation/">
+        <link rel="canonical" href="http://groupon.github.io/codeburner/developer/api/">
       
       
         <meta name="author" content="Groupon, Inc.">
       
     
-    <meta property="og:url" content="http://groupon.github.io/codeburner/setup/installation/">
+    <meta property="og:url" content="http://groupon.github.io/codeburner/developer/api/">
     <meta property="og:title" content="Codeburner">
-    <meta property="og:image" content="http://groupon.github.io/codeburner/setup/installation//../../images/fire.png">
+    <meta property="og:image" content="http://groupon.github.io/codeburner/developer/api//../../images/fire.png">
     <meta name="apple-mobile-web-app-title" content="Codeburner">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,12 +97,12 @@
           <span class="path">
             
               
-                Setup Guide <i class="icon icon-link"></i>
+                Developer Guide <i class="icon icon-link"></i>
               
             
           </span>
         
-        Installation
+        API Reference
       </div>
     </div>
     
@@ -195,41 +195,16 @@
       
         
   <li>
-    <a class="current" title="Installation" href="./">
+    <a class="" title="Installation" href="../../setup/installation/">
       Installation
     </a>
-    
-      
-      
-        <ul>
-          
-            <li class="anchor">
-              <a title="Download" href="#download">
-                Download
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Ruby" href="#ruby">
-                Ruby
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Bundler" href="#bundler">
-                Bundler
-              </a>
-            </li>
-          
-        </ul>
-      
     
   </li>
 
       
         
   <li>
-    <a class="" title="Configuration" href="../configuration/">
+    <a class="" title="Configuration" href="../../setup/configuration/">
       Configuration
     </a>
     
@@ -238,7 +213,7 @@
       
         
   <li>
-    <a class="" title="Scanning Tools" href="../scanning_tools/">
+    <a class="" title="Scanning Tools" href="../../setup/scanning_tools/">
       Scanning Tools
     </a>
     
@@ -247,7 +222,7 @@
       
         
   <li>
-    <a class="" title="Start Burning!" href="../startup/">
+    <a class="" title="Start Burning!" href="../../setup/startup/">
       Start Burning!
     </a>
     
@@ -310,7 +285,7 @@
       
         
   <li>
-    <a class="" title="Rails Backend" href="../../developer/backend/">
+    <a class="" title="Rails Backend" href="../backend/">
       Rails Backend
     </a>
     
@@ -319,7 +294,7 @@
       
         
   <li>
-    <a class="" title="Pipeline" href="../../developer/pipeline/">
+    <a class="" title="Pipeline" href="../pipeline/">
       Pipeline
     </a>
     
@@ -328,7 +303,7 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../../developer/client/">
+    <a class="" title="JavaScript Client" href="../client/">
       JavaScript Client
     </a>
     
@@ -337,9 +312,16 @@
       
         
   <li>
-    <a class="" title="API Reference" href="../../developer/api/">
+    <a class="current" title="API Reference" href="./">
       API Reference
     </a>
+    
+      
+      
+        <ul>
+          
+        </ul>
+      
     
   </li>
 
@@ -379,25 +361,9 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>Installation</h1>
+            <h1>API Reference</h1>
           
-          <h2 id="download">Download<a class="headerlink" href="#download" title="Permanent link">#</a></h2>
-<p>You can download the latest release of Codeburner here: <a href="https://github.com/groupon/codeburner/releases" target="_blank">https://github.com/groupon/codeburner/releases</a></p>
-<p>The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:</p>
-<pre class="code"><code class="language-bash">git clone https://github.com/groupon/codeburner</code></pre>
-
-
-<h2 id="ruby">Ruby<a class="headerlink" href="#ruby" title="Permanent link">#</a></h2>
-<p>Codeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using <a href="http://rvm.io">RVM</a> or <a href="http://rbenv.org">rbenv</a> we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.</p>
-<h2 id="bundler">Bundler<a class="headerlink" href="#bundler" title="Permanent link">#</a></h2>
-<h3 id="gem">Gem<a class="headerlink" href="#gem" title="Permanent link">#</a></h3>
-<p>First you'll need to install the bundler gem if you don't already have it:</p>
-<pre class="code"><code class="language-bash">gem install bundler</code></pre>
-
-
-<h3 id="bundle-install">Bundle Install<a class="headerlink" href="#bundle-install" title="Permanent link">#</a></h3>
-<p>Once you have bundler, you can use it to install the local gems for Codeburner:</p>
-<pre class="code"><code class="language-bash">bundle install</code></pre>
+          
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -414,7 +380,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../.." title="Home">
+        <a href="../client/" title="JavaScript Client">
           <span class="direction">
             Previous
           </span>
@@ -424,7 +390,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                Home
+                JavaScript Client
               </div>
             </div>
           </div>
@@ -432,22 +398,6 @@
       
     </div>
     <div class="next">
-      
-        <a href="../configuration/" title="Configuration">
-          <span class="direction">
-            Next
-          </span>
-          <div class="page">
-            <div class="stretch">
-              <div class="title">
-                Configuration
-              </div>
-            </div>
-            <div class="button button-next" role="button" aria-label="Next">
-              <i class="icon icon-forward"></i>
-            </div>
-          </div>
-        </a>
       
     </div>
   </nav>

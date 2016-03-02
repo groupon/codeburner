@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-adf335ae35.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
     
     
       
@@ -64,15 +64,7 @@
       </style>
     
     
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-adf335ae35.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-bcec8dff0c.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes-2d6c5d2926.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes.css">
+      <link rel="stylesheet" href="../../css/prism.css">
     
     <script src="../../assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
@@ -278,6 +270,96 @@
   </li>
 
           
+            
+  <li>
+    <span class="section">User Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Submit a Burn" href="../../user/burns/">
+      Submit a Burn
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Interact with Findings" href="../../user/findings/">
+      Interact with Findings
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Filtering" href="../../user/filters/">
+      Filtering
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Statistics/Charts" href="../../user/stats/">
+      Statistics/Charts
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
+            
+  <li>
+    <span class="section">Developer Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Rails Backend" href="../../developer/backend/">
+      Rails Backend
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="API Reference" href="../../developer/api/">
+      API Reference
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
         </ul>
         
           <hr>
@@ -315,9 +397,9 @@
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h3>
 <p>You'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.</p>
 <h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">#</a></h3>
-<p>If you use a password for the 'root' user on MySQL locally, you'll need to add that password to the local block of <a href="https://github.com/groupon/codeburner/blob/master/config/database.yml" target="_blank">config/database.yml</a></p>
-<p>If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_<rails_env>' and grant access to it:</p>
-<pre class="code"><code class="language-shell">mysql -u root -p
+<p>If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed the the Setup step.</p>
+<p>If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:</p>
+<pre class="code"><code class="language-sql">mysql -u root -p
 
 mysql&gt; create database codeburner_development;
 Query OK, 1 row affected (0.00 sec)
@@ -326,10 +408,18 @@ mysql&gt; grant all privileges on codeburner_development.* to 'my_new_user'@'loc
 Query OK, 0 rows affected (0.01 sec)</code></pre>
 
 
-<p>Once that's done you'll want to make sure the new username/password are in <a href="https://github.com/groupon/codeburner/blob/master/config/database.yml" target="_blank">config/database.yml</a>.</p>
+<p>Once that's done you'll want to make sure the new username/password are in <a href="https://github.com/groupon/codeburner/blob/master/config/database.yml" target="_blank">config/database.yml</a>:</p>
+<pre class="code"><code class="language-yaml">local: &amp;local
+  &lt;&lt;: *common
+  host: 127.0.0.1
+  password:
+  username: root
+  wait_timeout: 10000</code></pre>
+
+
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">#</a></h3>
 <p>Once the mysql service is running and you've configured the password, you can initialize the database like so:</p>
-<pre class="code"><code>bundle exec rake db:setup</code></pre>
+<pre class="code"><code class="language-bash">bundle exec rake db:setup</code></pre>
 
 
 <hr />
@@ -337,24 +427,68 @@ Query OK, 0 rows affected (0.01 sec)</code></pre>
 <h3 id="installation_1">Installation<a class="headerlink" href="#installation_1" title="Permanent link">#</a></h3>
 <p>Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.</p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
-<p>Using default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost or a port other than the default (6379), you can configure it by changing the relevant $redis_options line in <a href="https://github.com/groupon/codeburner/blob/master/config/application.rb" target="_blank">config/application.rb</a></p>
+<p>Using default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in <a href="https://github.com/groupon/codeburner/blob/master/config/application.rb" target="_blank">config/application.rb</a>:</p>
+<pre class="code"><code class="language-ruby">case ENV['RAILS_ENV']
+when 'production'
+  $redis_options = {
+    :host =&gt; 'localhost',
+    :port =&gt; 6379
+  }
+when 'staging'
+  $redis_options = {
+    :host =&gt; 'localhost',
+    :port =&gt; 6379
+  }
+else
+  $redis_options = {
+    :host =&gt; 'localhost',
+    :port =&gt; 6379
+  }
+end</code></pre>
+
+
 <hr />
 <h2 id="github">GitHub<a class="headerlink" href="#github" title="Permanent link">#</a></h2>
 <h3 id="generate-a-token">Generate a Token<a class="headerlink" href="#generate-a-token" title="Permanent link">#</a></h3>
 <p>Most of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:</p>
 <p><a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a></p>
 <h3 id="configuration_1">Configuration<a class="headerlink" href="#configuration_1" title="Permanent link">#</a></h3>
-<p>Once you have an access token, you can add it to <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml.</a></p>
+<p>Once you have an access token, you can add it to <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">github:
+  api_endpoint: https://api.github.com/
+  api_access_token: my_github_api_token
+  link_host: https://www.github.com</code></pre>
+
+
 <p>If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests according to your GHE installation.</p>
 <hr />
 <h2 id="jira">JIRA<a class="headerlink" href="#jira" title="Permanent link">#</a></h2>
 <h3 id="configuration_2">Configuration<a class="headerlink" href="#configuration_2" title="Permanent link">#</a></h3>
-<p>If you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml.</a></p>
+<p>If you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">jira:
+  username: my_jira_user
+  password: my_jira_password
+  host: https://my_jira_host
+  context_path: ''
+  use_ssl: false
+  link_host: https://my_jira_host</code></pre>
+
+
 <p>Minimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.</p>
 <hr />
 <h2 id="e-mail">E-mail<a class="headerlink" href="#e-mail" title="Permanent link">#</a></h2>
 <h3 id="configuration_3">Configuration<a class="headerlink" href="#configuration_3" title="Permanent link">#</a></h3>
-<p>Mail for burn notifications is configured in <a href="../config/app.yml">config/app.yml</a>.  Currently it assumes you have a local MTA running that will accept and deliver mail properly.  The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.</p>
+<p>Mail notifications assume you have a local MTA running that will accept and deliver mail properly.  You can configure some options for e-mail in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">mail:
+  from: '&quot;Codeburner&quot; &lt;codeburner@myserver.com&gt;'
+  link_host:
+    development: localhost:9000
+    staging: localhost:9000
+    production: localhost:9000
+    test: localhost:9000</code></pre>
+
+
+<p>The 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.</p>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -428,13 +562,7 @@ Query OK, 0 rows affected (0.01 sec)</code></pre>
     </script>
     <script src="../../assets/javascripts/application-dfb6964a49.js"></script>
     
-      <script src="../../theme/assets/javascripts/application-dfb6964a49.js"></script>
-    
-      <script src="../../theme/assets/javascripts/application.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr.js"></script>
+      <script src="../../js/prism.js"></script>
     
     
   </body>

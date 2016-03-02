@@ -47,7 +47,7 @@
       	font-style: normal;
       }
     </style>
-    <link rel="stylesheet" href="../../assets/stylesheets/application-adf335ae35.css">
+    <link rel="stylesheet" href="../../assets/stylesheets/application-366d8f7c09.css">
     
     
       
@@ -64,15 +64,7 @@
       </style>
     
     
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-adf335ae35.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application-bcec8dff0c.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/application.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes-2d6c5d2926.css">
-    
-      <link rel="stylesheet" href="../../theme/assets/stylesheets/palettes.css">
+      <link rel="stylesheet" href="../../css/prism.css">
     
     <script src="../../assets/javascripts/modernizr-4a5cc7e01e.js"></script>
     
@@ -260,6 +252,96 @@
   </li>
 
           
+            
+  <li>
+    <span class="section">User Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Submit a Burn" href="../../user/burns/">
+      Submit a Burn
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Interact with Findings" href="../../user/findings/">
+      Interact with Findings
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Filtering" href="../../user/filters/">
+      Filtering
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Statistics/Charts" href="../../user/stats/">
+      Statistics/Charts
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
+            
+  <li>
+    <span class="section">Developer Guide</span>
+    <ul>
+      
+        
+  <li>
+    <a class="" title="Rails Backend" href="../../developer/backend/">
+      Rails Backend
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
+    </a>
+    
+  </li>
+
+      
+        
+  <li>
+    <a class="" title="API Reference" href="../../developer/api/">
+      API Reference
+    </a>
+    
+  </li>
+
+      
+    </ul>
+  </li>
+
+          
         </ul>
         
           <hr>
@@ -299,17 +381,17 @@
 <p>If you do need to customize sidekiq, it is configured in <a href="https://github.com/groupon/codeburner/blob/master/config/sidekiq.yml" target="blank">config/sidekiq.yml</a>.</p>
 <h3 id="startup">Startup<a class="headerlink" href="#startup" title="Permanent link">#</a></h3>
 <p>For local development/testing you can start sidekiq via:</p>
-<pre class="code"><code>bundle exec sidekiq</code></pre>
+<pre class="code"><code class="language-bash">bundle exec sidekiq</code></pre>
 
 
 <p>If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:</p>
-<pre class="code"><code>bundle exec cap &lt;rails_env&gt; sidekiq:start</code></pre>
+<pre class="code"><code class="language-bash">bundle exec cap &lt;rails_env&gt; sidekiq:start</code></pre>
 
 
 <h2 id="start-codeburner">Start Codeburner!<a class="headerlink" href="#start-codeburner" title="Permanent link">#</a></h2>
 <p>Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both <a href="https://unicorn.bogomips.org/" target="_blank">unicorn</a> and <a href="http://puma.io" target="_blank">puma.</a></p>
 <p>For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:</p>
-<pre class="code"><code>bundle exec rails s -p 8080</code></pre>
+<pre class="code"><code class="language-bash">bundle exec rails s -p 8080</code></pre>
 
 
 <p>That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at <a href="http://localhost:8080/" target="_blank">http://localhost:8080/</a>.</p>
@@ -353,6 +435,22 @@
     </div>
     <div class="next">
       
+        <a href="../../user/burns/" title="Submit a Burn">
+          <span class="direction">
+            Next
+          </span>
+          <div class="page">
+            <div class="stretch">
+              <div class="title">
+                Submit a Burn
+              </div>
+            </div>
+            <div class="button button-next" role="button" aria-label="Next">
+              <i class="icon icon-forward"></i>
+            </div>
+          </div>
+        </a>
+      
     </div>
   </nav>
 
@@ -375,13 +473,7 @@
     </script>
     <script src="../../assets/javascripts/application-dfb6964a49.js"></script>
     
-      <script src="../../theme/assets/javascripts/application-dfb6964a49.js"></script>
-    
-      <script src="../../theme/assets/javascripts/application.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr-4a5cc7e01e.js"></script>
-    
-      <script src="../../theme/assets/javascripts/modernizr.js"></script>
+      <script src="../../js/prism.js"></script>
     
     
   </body>

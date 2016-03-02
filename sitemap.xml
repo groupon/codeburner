@@ -37,4 +37,60 @@
         
     
 
+    
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/user/burns/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/user/findings/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/user/filters/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/user/stats/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/developer/backend/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/developer/pipeline/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/developer/client/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>http://groupon.github.io/codeburner/developer/api/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
 </urlset>
