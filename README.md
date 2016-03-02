@@ -16,20 +16,22 @@ Codeburner uses the [OWASP pipeline](https://github.com/OWASP/pipeline) project 
 * Integrates with a variety of open source and commercial scanning tools
 
 ## Supported Tools
-* [Brakeman](http://brakemanscanner.org/)
-* [Bundler-Audit](https://github.com/rubysec/bundler-audit)
-* [Checkmarx](https://www.checkmarx.com/technology/static-code-analysis-sca/)
-* [Dawnscanner](https://github.com/thesp0nge/dawnscanner)
-* [FindSecurityBugs](https://find-sec-bugs.github.io/)
-* [Node Security Project](https://nodesecurity.io/)
-* [PMD](https://pmd.github.io/)
-* [Retire.js](https://retirejs.github.io/retire.js/)
+* <a href="http://brakemanscanner.org/" target="_blank">Brakeman</a>
+* <a href="https://github.com/rubysec/bundler-audit" target="_blank">Bundler-Audit</a>
+* <a href="https://www.checkmarx.com/technology/static-code-analysis-sca/" target="_blank">Checkmarx</a>**
+* <a href="https://github.com/thesp0nge/dawnscanner" target="_blank">Dawnscanner</a>
+* <a href="https://find-sec-bugs.github.io/" target="_blank">FindSecurityBugs</a>
+* <a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a>
+* <a href="https://pmd.github.io/" target="_blank">PMD</a>
+* <a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a>
+
+<small>** commercial license required</small>
 
 ## Documentation
 You can find full documentation for Codeburner at <a href="http://groupon.github.io/codeburner" target="_blank">http://groupon.github.io/codeburner</a>
 
 ## Installation
-See our <a href="https://groupon.github.io/codeburner/install/" target="_blank">Installation Guide</a> for complete install instructions.
+See our <a href="https://groupon.github.io/codeburner/setup/installation/" target="_blank">Installation Guide</a> for complete install instructions.
 
 ## API
 To trigger a code burn automatically, send it a payload containing a service name, code revision, and repository URL:
