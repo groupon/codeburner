@@ -228,8 +228,14 @@
             </li>
           
             <li class="anchor">
-              <a title="Checkmarx" href="#checkmarx">
-                Checkmarx
+              <a title="NodeSecurityProject" href="#nodesecurityproject">
+                NodeSecurityProject
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Retire.js" href="#retirejs">
+                Retire.js
               </a>
             </li>
           
@@ -240,20 +246,14 @@
             </li>
           
             <li class="anchor">
-              <a title="NodeSecurityProject" href="#nodesecurityproject">
-                NodeSecurityProject
-              </a>
-            </li>
-          
-            <li class="anchor">
               <a title="PMD" href="#pmd">
                 PMD
               </a>
             </li>
           
             <li class="anchor">
-              <a title="Retire.js" href="#retirejs">
-                Retire.js
+              <a title="Checkmarx" href="#checkmarx">
+                Checkmarx
               </a>
             </li>
           
@@ -337,8 +337,8 @@
       
         
   <li>
-    <a class="" title="Pipeline" href="../../developer/pipeline/">
-      Pipeline
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
     </a>
     
   </li>
@@ -346,8 +346,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../../developer/client/">
-      JavaScript Client
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
     </a>
     
   </li>
@@ -407,8 +407,45 @@
 <li><a href="http://dawnscanner.org/" target="_blank">Dawnscanner</a></li>
 </ul>
 <p>The rest of the tools need to be installed manually...</p>
+<hr />
+<h2 id="nodesecurityproject"><a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a><a class="headerlink" href="#nodesecurityproject" title="Permanent link">#</a></h2>
+<p>NodeSecurityProject is distrubted as a node package.  You'll need <a href="https://www.npmjs.com/" target="_blank">npm</a> available to install it.  Once you have npm, you can install NodeSecurityProject with:</p>
+<pre class="command-line"><code class="language-bash">npm install -g nsp</code></pre>
+
+<p>Make sure that the installed 'nsp' command is in the $PATH for Codeburner.</p>
+<hr />
+<h2 id="retirejs"><a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a><a class="headerlink" href="#retirejs" title="Permanent link">#</a></h2>
+<p>Retire.js is another node package.  It can be installed just like nsp:</p>
+<pre class="command-line"><code class="language-bash">npm install -g retire</code></pre>
+
+<p>Make sure that the installed 'retire' command is in the $PATH for Codeburner.</p>
+<hr />
+<h2 id="findsecuritybugs"><a href="https://find-sec-bugs.github.io/" target="_blank">FindSecurityBugs</a><a class="headerlink" href="#findsecuritybugs" title="Permanent link">#</a></h2>
+<h3 id="java">Java<a class="headerlink" href="#java" title="Permanent link">#</a></h3>
+<p>The find-sec-bugs CLI requires a working installation of <a href="https://www.java.com/en/download/help/download_options.xml" target="_blank">Java</a>, and the compilation step from <a href="https://github.com/OWASP/pipeline" target="_blank">pipeline</a> to generate bytecode requires <a href="https://maven.apache.org/" target="_blank">maven</a>.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.</p>
+<h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h3>
+<p>You can download the latest release of findsecbugs-cli here: <a href="https://github.com/find-sec-bugs/find-sec-bugs/releases/latest" target="_blank">https://github.com/find-sec-bugs/find-sec-bugs/releases/latest</a></p>
+<p>Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">findsecbugs_path: /path/to/findsecbugs/install</code></pre>
+
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to the requirement of having compiled bytecode available, pipeline currently supports scanning via find-sec-bugs only on maven projects with a valid pom.xml.</p>
+</div>
+<hr />
+<h2 id="pmd"><a href="http://pmd.github.io" target="_blank">PMD</a><a class="headerlink" href="#pmd" title="Permanent link">#</a></h2>
+<h3 id="java_1">Java<a class="headerlink" href="#java_1" title="Permanent link">#</a></h3>
+<p>As with FindSecurityBugs, PMD requires a working installation of <a href="https://www.java.com/en/download/help/download_options.xml" target="_blank">java</a> and the 'java' command available in the Codeburner $PATH.  Unlike FindSecurityBugs, PMD doesn't require compiled bytecode so it should work on most any java project.</p>
+<h3 id="install_1">Install<a class="headerlink" href="#install_1" title="Permanent link">#</a></h3>
+<p>PMD can be downloaded here: <a href="https://github.com/pmd/pmd/releases/latest" target="_blank">https://github.com/pmd/pmd/releases/latest</a></p>
+<p>Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">pmd_path: /path/to/pmd/install</code></pre>
+
+
+<hr />
 <h2 id="checkmarx"><a href="http://www.checkmarx.com" target="_blank">Checkmarx</a><a class="headerlink" href="#checkmarx" title="Permanent link">#</a></h2>
-<p>Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: <a href="https://www.checkmarx.com/plugins/" target="_blank">https://www.checkmarx.com/plugins/</a>.</p>
+<p>Checkmarx is a commercial static analysis tool.  Since it requires a commercial license, the tasks for Checkmarx are not enabled by default in Codeburner.  If you'd like to use Checkmarx with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: <a href="https://www.checkmarx.com/plugins/" target="_blank">https://www.checkmarx.com/plugins/</a>.</p>
 <p>Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
 <pre class="code"><code class="language-yaml">checkmarx_server: my_checkmarx_server
 checkmarx_user: my_checkmarx_user
@@ -436,36 +473,7 @@ checkmarx_log: my_checkmarx_logfile</code></pre>
       - Checkmarx</code></pre>
 
 
-<p>Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.</p>
-<h2 id="findsecuritybugs"><a href="https://find-sec-bugs.github.io/" target="_blank">FindSecurityBugs</a><a class="headerlink" href="#findsecuritybugs" title="Permanent link">#</a></h2>
-<h3 id="java">Java<a class="headerlink" href="#java" title="Permanent link">#</a></h3>
-<p>The find-sec-bugs CLI requires a working installation of Java, and the compilation step from <a href="https://github.com/OWASP/pipeline" target="_blank">pipeline</a> to generate bytecode requires <a href="https://maven.apache.org/" target="_blank">maven</a>.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.</p>
-<h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">#</a></h3>
-<p>You can download the latest release of findsecbugs-cli here: <a href="https://github.com/find-sec-bugs/find-sec-bugs/releases/latest" target="_blank">https://github.com/find-sec-bugs/find-sec-bugs/releases/latest</a></p>
-<p>Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
-<pre class="code"><code class="language-yaml">findsecbugs_path: /path/to/findsecbugs/install</code></pre>
-
-
-<h2 id="nodesecurityproject"><a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a><a class="headerlink" href="#nodesecurityproject" title="Permanent link">#</a></h2>
-<p>NodeSecurityProject is distrubted as a node package.  You need <a href="https://www.npmjs.com/" target="_blank">npm</a> to install it.  Once you have npm, you can install NodeSecurityProject with:</p>
-<pre class="code"><code class="language-bash">npm install -g nsp</code></pre>
-
-
-<p>Make sure that the installed 'nsp' command is in the $PATH for Codeburner.</p>
-<h2 id="pmd"><a href="http://pmd.github.io" target="_blank">PMD</a><a class="headerlink" href="#pmd" title="Permanent link">#</a></h2>
-<h3 id="java_1">Java<a class="headerlink" href="#java_1" title="Permanent link">#</a></h3>
-<p>As with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.</p>
-<h3 id="install_1">Install<a class="headerlink" href="#install_1" title="Permanent link">#</a></h3>
-<p>PMD can be downloaded here: <a href="https://github.com/pmd/pmd/releases/latest" target="_blank">https://github.com/pmd/pmd/releases/latest</a></p>
-<p>Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
-<pre class="code"><code class="language-yaml">pmd_path: /path/to/pmd/install</code></pre>
-
-
-<h2 id="retirejs"><a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a><a class="headerlink" href="#retirejs" title="Permanent link">#</a></h2>
-<p>Retire.js is another node package.  It can be installed just like nsp:</p>
-<pre class="code"><code class="language-bash">npm install -g retire</code></pre>
-
-
+<p>Since Checkmarx does support a few languages not covered by the default open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx as well.</p>
 <hr />
           <aside class="copyright" role="note">
             

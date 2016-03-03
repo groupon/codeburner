@@ -231,14 +231,14 @@
         <ul>
           
             <li class="anchor">
-              <a title="Start Sidekiq" href="#start-sidekiq">
-                Start Sidekiq
+              <a title="Start Codeburner" href="#start-codeburner">
+                Start Codeburner
               </a>
             </li>
           
             <li class="anchor">
-              <a title="Start Codeburner!" href="#start-codeburner">
-                Start Codeburner!
+              <a title="Start Sidekiq" href="#start-sidekiq">
+                Start Sidekiq
               </a>
             </li>
           
@@ -313,8 +313,8 @@
       
         
   <li>
-    <a class="" title="Pipeline" href="../../developer/pipeline/">
-      Pipeline
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
     </a>
     
   </li>
@@ -322,8 +322,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../../developer/client/">
-      JavaScript Client
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
     </a>
     
   </li>
@@ -375,31 +375,29 @@
           
             <h1>Start Burning!</h1>
           
-          <h2 id="start-sidekiq">Start Sidekiq<a class="headerlink" href="#start-sidekiq" title="Permanent link">#</a></h2>
+          <h2 id="start-codeburner">Start Codeburner<a class="headerlink" href="#start-codeburner" title="Permanent link">#</a></h2>
+<p>Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both <a href="https://unicorn.bogomips.org/" target="_blank">unicorn</a> and <a href="http://puma.io" target="_blank">puma.</a></p>
+<p>For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:</p>
+<pre class="command-line"><code class="language-bash">bundle exec rails s -p 8080</code></pre>
+
+<p>That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at <a href="http://localhost:8080/" target="_blank">http://localhost:8080/</a>.</p>
+<div class="admonition developers">
+<p class="admonition-title">Developers</p>
+<p>If you change the port here, just note that you'll also need to change it in the client proxy config for the javascript client to pass API calls correctly.</p>
+</div>
+<p>In a production environment, we recommend serving the root static content (<a href="https://github.com/groupon/codeburner/tree/master/public" target="_blank">public/</a>) with something like <a href="https://httpd.apache.org/" target="_blank">httpd</a> or <a href="http://www.nginx.com" target="_blank">nginx</a>.</p>
+<hr />
+<h2 id="start-sidekiq">Start Sidekiq<a class="headerlink" href="#start-sidekiq" title="Permanent link">#</a></h2>
 <p>Codeburner uses <a href="http://sidekiq.org" target="_blank">Sidekiq</a> for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually "do" anything useful.  The default configuration options should work fine in most environments.</p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
 <p>If you do need to customize sidekiq, it is configured in <a href="https://github.com/groupon/codeburner/blob/master/config/sidekiq.yml" target="blank">config/sidekiq.yml</a>.</p>
 <h3 id="startup">Startup<a class="headerlink" href="#startup" title="Permanent link">#</a></h3>
-<p>For local development/testing you can start sidekiq via:</p>
-<pre class="code"><code class="language-bash">bundle exec sidekiq</code></pre>
+<p>For local development/testing you can start sidekiq with bundle exec:</p>
+<pre class="command-line"><code class="language-bash">bundle exec sidekiq</code></pre>
 
+<p>If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq using cap:</p>
+<pre class="command-line"><code class="language-bash">bundle exec cap <rails_env> sidekiq:start</code></pre>
 
-<p>If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:</p>
-<pre class="code"><code class="language-bash">bundle exec cap &lt;rails_env&gt; sidekiq:start</code></pre>
-
-
-<h2 id="start-codeburner">Start Codeburner!<a class="headerlink" href="#start-codeburner" title="Permanent link">#</a></h2>
-<p>Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both <a href="https://unicorn.bogomips.org/" target="_blank">unicorn</a> and <a href="http://puma.io" target="_blank">puma.</a></p>
-<p>For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:</p>
-<pre class="code"><code class="language-bash">bundle exec rails s -p 8080</code></pre>
-
-
-<p>That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at <a href="http://localhost:8080/" target="_blank">http://localhost:8080/</a>.</p>
-<p>In a production environment, we recommend serving the root static content (<a href="https://github.com/groupon/codeburner/tree/master/public" target="_blank">public/</a>) with something like <a href="https://httpd.apache.org/" target="_blank">httpd</a> or <a href="http://www.nginx.com" target="_blank">nginx</a>.</p>
-<div class="admonition developers">
-<p class="admonition-title">Developers</p>
-<p>If you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.</p>
-</div>
 <hr />
           <aside class="copyright" role="note">
             

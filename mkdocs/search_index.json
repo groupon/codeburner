@@ -22,7 +22,7 @@
         }, 
         {
             "location": "/setup/installation/", 
-            "text": "Download\n#\n\n\nYou can download the latest release of Codeburner here: \nhttps://github.com/groupon/codeburner/releases\n\n\nThe rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:\n\n\ngit clone https://github.com/groupon/codeburner\n\n\n\n\nRuby\n#\n\n\nCodeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using \nRVM\n or \nrbenv\n we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.\n\n\nBundler\n#\n\n\nGem\n#\n\n\nFirst you'll need to install the bundler gem if you don't already have it:\n\n\ngem install bundler\n\n\n\n\nBundle Install\n#\n\n\nOnce you have bundler, you can use it to install the local gems for Codeburner:\n\n\nbundle install", 
+            "text": "Download\n#\n\n\nYou can download the latest release of Codeburner here: \nhttps://github.com/groupon/codeburner/releases\n\n\nThe rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:\n\n\ngit clone https://github.com/groupon/codeburner\n\n\n\nRuby\n#\n\n\nCodeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using \nRVM\n or \nrbenv\n we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.\n\n\n\n\nBundler\n#\n\n\nGem\n#\n\n\nFirst you'll need to install the bundler gem if you don't already have it:\n\n\ngem install bundler\n\n\n\nBundle Install\n#\n\n\nOnce you have bundler, you can use it to install the local gems for Codeburner:\n\n\nbundle install", 
             "title": "Installation"
         }, 
         {
@@ -52,7 +52,7 @@
         }, 
         {
             "location": "/setup/configuration/", 
-            "text": "Database\n#\n\n\nInstallation\n#\n\n\nYou'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.\n\n\nAuthentication\n#\n\n\nIf you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.\n\n\nIf you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:\n\n\nmysql -u root -p\n\nmysql\n create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql\n grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)\n\n\n\n\nOnce that's done you'll want to make sure the new username/password are in \nconfig/database.yml\n:\n\n\nlocal: \nlocal\n  \n: *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000\n\n\n\n\nSetup\n#\n\n\nOnce the mysql service is running and you've configured the password, you can initialize the database like so:\n\n\nbundle exec rake db:setup\n\n\n\n\n\n\nRedis\n#\n\n\nInstallation\n#\n\n\nCodeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.\n\n\nConfiguration\n#\n\n\nUsing default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in \nconfig/application.rb\n:\n\n\ncase ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nelse\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nend\n\n\n\n\n\n\nGitHub\n#\n\n\nGenerate a Token\n#\n\n\nMost of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml\n:\n\n\ngithub:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com\n\n\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.\n\n\n\n\nJIRA\n#\n\n\nConfiguration\n#\n\n\nIf you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in \nconfig/app.yml\n:\n\n\njira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: false\n  link_host: https://my_jira_host\n\n\n\n\nMinimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.\n\n\n\n\nE-mail\n#\n\n\nConfiguration\n#\n\n\nMail notifications assume you have a local MTA running that will accept and deliver mail properly.  You can configure some options for e-mail in \nconfig/app.yml\n:\n\n\nmail:\n  from: '\nCodeburner\n \ncodeburner@myserver.com\n'\n  link_host:\n    development: localhost:9000\n    staging: localhost:9000\n    production: localhost:9000\n    test: localhost:9000\n\n\n\n\nThe 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
+            "text": "Database\n#\n\n\nInstallation\n#\n\n\nYou'll need a copy of mysql server configured and running.  See the \ninstructions\n for your specific OS to accomplish this.  For local development on OSX the \nHomebrew\n package works fine.\n\n\nAuthentication\n#\n\n\nIf you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.\n\n\nIf you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:\n\n\nmysql -u root -p\n\n\n\nmysql> create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql> grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)\n\n\n\n\nOnce that's done you'll want to make sure the new username/password are in \nconfig/database.yml\n:\n\n\nlocal: \nlocal\n  \n: *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000\n\n\n\n\nSetup\n#\n\n\nOnce the mysql service is running and you've configured the password, you can initialize the database:\n\n\nbundle exec rake db:setup\n\n\n\n\n\nRedis\n#\n\n\nInstallation\n#\n\n\nCodeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard OS-provided redis packages should work fine on Linux/BSD/etc., the \nHomebrew\n package works great on OSX.\n\n\nConfiguration\n#\n\n\nUsing the default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in \nconfig/application.rb\n:\n\n\ncase ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nelse\n  $redis_options = {\n    :host =\n 'localhost',\n    :port =\n 6379\n  }\nend\n\n\n\n\n\n\nGitHub\n#\n\n\nGenerate a Token\n#\n\n\nMost of the functionality of Codeburner depends on GitHub access.  To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml\n:\n\n\ngithub:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com\n\n\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.\n\n\n\n\nJIRA\n#\n\n\nConfiguration\n#\n\n\nIf you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in \nconfig/app.yml\n:\n\n\njira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: true\n  link_host: https://my_jira_host\n\n\n\n\nMinimally you need to set username/password, host (which is the URL of the your JIRA install), and link_host (used to generate clickable links, if it's different from your API host).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.\n\n\n\n\nE-mail\n#\n\n\nConfiguration\n#\n\n\nMail notifications assume you have a local MTA running that will accept and deliver mail properly.  You can configure some options for e-mail in \nconfig/app.yml\n:\n\n\nmail:\n  from: '\nCodeburner\n \ncodeburner@myserver.com\n'\n  link_host:\n    development: localhost:9000\n    staging: localhost:9000\n    production: localhost:9000\n    test: localhost:9000\n\n\n\n\nThe 'link_host' variable is used when rendering notification e-mails as a base url for clickable links.", 
             "title": "Configuration"
         }, 
         {
@@ -62,17 +62,17 @@
         }, 
         {
             "location": "/setup/configuration/#installation", 
-            "text": "You'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.", 
+            "text": "You'll need a copy of mysql server configured and running.  See the  instructions  for your specific OS to accomplish this.  For local development on OSX the  Homebrew  package works fine.", 
             "title": "Installation"
         }, 
         {
             "location": "/setup/configuration/#authentication", 
-            "text": "If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.  If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:  mysql -u root -p\n\nmysql  create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql  grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)  Once that's done you'll want to make sure the new username/password are in  config/database.yml :  local:  local\n   : *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000", 
+            "text": "If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.  If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:  mysql -u root -p  \nmysql> create database codeburner_development;\nQuery OK, 1 row affected (0.00 sec)\n\nmysql> grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';\nQuery OK, 0 rows affected (0.01 sec)  Once that's done you'll want to make sure the new username/password are in  config/database.yml :  local:  local\n   : *common\n  host: 127.0.0.1\n  password:\n  username: root\n  wait_timeout: 10000", 
             "title": "Authentication"
         }, 
         {
             "location": "/setup/configuration/#setup", 
-            "text": "Once the mysql service is running and you've configured the password, you can initialize the database like so:  bundle exec rake db:setup", 
+            "text": "Once the mysql service is running and you've configured the password, you can initialize the database:  bundle exec rake db:setup", 
             "title": "Setup"
         }, 
         {
@@ -82,12 +82,12 @@
         }, 
         {
             "location": "/setup/configuration/#installation_1", 
-            "text": "Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.", 
+            "text": "Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard OS-provided redis packages should work fine on Linux/BSD/etc., the  Homebrew  package works great on OSX.", 
             "title": "Installation"
         }, 
         {
             "location": "/setup/configuration/#configuration", 
-            "text": "Using default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in  config/application.rb :  case ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nelse\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nend", 
+            "text": "Using the default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in  config/application.rb :  case ENV['RAILS_ENV']\nwhen 'production'\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nwhen 'staging'\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nelse\n  $redis_options = {\n    :host =  'localhost',\n    :port =  6379\n  }\nend", 
             "title": "Configuration"
         }, 
         {
@@ -112,7 +112,7 @@
         }, 
         {
             "location": "/setup/configuration/#configuration_2", 
-            "text": "If you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in  config/app.yml :  jira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: false\n  link_host: https://my_jira_host  Minimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.", 
+            "text": "If you plan to publish issues to JIRA instead of (or in addition to) GitHub, you'll also need to configure some JIRA options in  config/app.yml :  jira:\n  username: my_jira_user\n  password: my_jira_password\n  host: https://my_jira_host\n  context_path: ''\n  use_ssl: true\n  link_host: https://my_jira_host  Minimally you need to set username/password, host (which is the URL of the your JIRA install), and link_host (used to generate clickable links, if it's different from your API host).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.", 
             "title": "Configuration"
         }, 
         {
@@ -127,7 +127,7 @@
         }, 
         {
             "location": "/setup/scanning_tools/", 
-            "text": "Ruby Gems\n#\n\n\nA few of the scanning tools used by Codeburner are installed automatically as gem dependencies of \npipeline\n.  Those tools are:\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nDawnscanner\n\n\n\n\nThe rest of the tools need to be installed manually...\n\n\nCheckmarx\n#\n\n\nCheckmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: \nhttps://www.checkmarx.com/plugins/\n.\n\n\nMake sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in \nconfig/app.yml\n:\n\n\ncheckmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile\n\n\n\n\nAlso, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/\n in \nconfig/app.yml\n:\n\n\n  tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx\n\n\n\n\nSince Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.\n\n\nFindSecurityBugs\n#\n\n\nJava\n#\n\n\nThe find-sec-bugs CLI requires a working installation of Java, and the compilation step from \npipeline\n to generate bytecode requires \nmaven\n.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.\n\n\nInstall\n#\n\n\nYou can download the latest release of findsecbugs-cli here: \nhttps://github.com/find-sec-bugs/find-sec-bugs/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\nfindsecbugs_path: /path/to/findsecbugs/install\n\n\n\n\nNodeSecurityProject\n#\n\n\nNodeSecurityProject is distrubted as a node package.  You need \nnpm\n to install it.  Once you have npm, you can install NodeSecurityProject with:\n\n\nnpm install -g nsp\n\n\n\n\nMake sure that the installed 'nsp' command is in the $PATH for Codeburner.\n\n\nPMD\n#\n\n\nJava\n#\n\n\nAs with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.\n\n\nInstall\n#\n\n\nPMD can be downloaded here: \nhttps://github.com/pmd/pmd/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\npmd_path: /path/to/pmd/install\n\n\n\n\nRetire.js\n#\n\n\nRetire.js is another node package.  It can be installed just like nsp:\n\n\nnpm install -g retire", 
+            "text": "Ruby Gems\n#\n\n\nA few of the scanning tools used by Codeburner are installed automatically as gem dependencies of \npipeline\n.  Those tools are:\n\n\n\n\nBrakeman\n\n\nBundler-Audit\n\n\nDawnscanner\n\n\n\n\nThe rest of the tools need to be installed manually...\n\n\n\n\nNodeSecurityProject\n#\n\n\nNodeSecurityProject is distrubted as a node package.  You'll need \nnpm\n available to install it.  Once you have npm, you can install NodeSecurityProject with:\n\n\nnpm install -g nsp\n\n\n\nMake sure that the installed 'nsp' command is in the $PATH for Codeburner.\n\n\n\n\nRetire.js\n#\n\n\nRetire.js is another node package.  It can be installed just like nsp:\n\n\nnpm install -g retire\n\n\n\nMake sure that the installed 'retire' command is in the $PATH for Codeburner.\n\n\n\n\nFindSecurityBugs\n#\n\n\nJava\n#\n\n\nThe find-sec-bugs CLI requires a working installation of \nJava\n, and the compilation step from \npipeline\n to generate bytecode requires \nmaven\n.  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.\n\n\nInstall\n#\n\n\nYou can download the latest release of findsecbugs-cli here: \nhttps://github.com/find-sec-bugs/find-sec-bugs/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\nfindsecbugs_path: /path/to/findsecbugs/install\n\n\n\n\n\n\nNote\n\n\nDue to the requirement of having compiled bytecode available, pipeline currently supports scanning via find-sec-bugs only on maven projects with a valid pom.xml.\n\n\n\n\n\n\nPMD\n#\n\n\nJava\n#\n\n\nAs with FindSecurityBugs, PMD requires a working installation of \njava\n and the 'java' command available in the Codeburner $PATH.  Unlike FindSecurityBugs, PMD doesn't require compiled bytecode so it should work on most any java project.\n\n\nInstall\n#\n\n\nPMD can be downloaded here: \nhttps://github.com/pmd/pmd/releases/latest\n\n\nOnce you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in \nconfig/app.yml\n:\n\n\npmd_path: /path/to/pmd/install\n\n\n\n\n\n\nCheckmarx\n#\n\n\nCheckmarx is a commercial static analysis tool.  Since it requires a commercial license, the tasks for Checkmarx are not enabled by default in Codeburner.  If you'd like to use Checkmarx with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here: \nhttps://www.checkmarx.com/plugins/\n.\n\n\nMake sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in \nconfig/app.yml\n:\n\n\ncheckmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile\n\n\n\n\nAlso, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/\n in \nconfig/app.yml\n:\n\n\n  tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx\n\n\n\n\nSince Checkmarx does support a few languages not covered by the default open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx as well.", 
             "title": "Scanning Tools"
         }, 
         {
@@ -136,9 +136,14 @@
             "title": "Ruby Gems"
         }, 
         {
-            "location": "/setup/scanning_tools/#checkmarx", 
-            "text": "Checkmarx is a commercial static analysis tool.  If you wish to use it with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here:  https://www.checkmarx.com/plugins/ .  Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in  config/app.yml :  checkmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile  Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/  in  config/app.yml :    tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx  Since Checkmarx does support a few languages not covered by the open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx.", 
-            "title": "Checkmarx"
+            "location": "/setup/scanning_tools/#nodesecurityproject", 
+            "text": "NodeSecurityProject is distrubted as a node package.  You'll need  npm  available to install it.  Once you have npm, you can install NodeSecurityProject with:  npm install -g nsp  Make sure that the installed 'nsp' command is in the $PATH for Codeburner.", 
+            "title": "NodeSecurityProject"
+        }, 
+        {
+            "location": "/setup/scanning_tools/#retirejs", 
+            "text": "Retire.js is another node package.  It can be installed just like nsp:  npm install -g retire  Make sure that the installed 'retire' command is in the $PATH for Codeburner.", 
+            "title": "Retire.js"
         }, 
         {
             "location": "/setup/scanning_tools/#findsecuritybugs", 
@@ -147,18 +152,13 @@
         }, 
         {
             "location": "/setup/scanning_tools/#java", 
-            "text": "The find-sec-bugs CLI requires a working installation of Java, and the compilation step from  pipeline  to generate bytecode requires  maven .  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.", 
+            "text": "The find-sec-bugs CLI requires a working installation of  Java , and the compilation step from  pipeline  to generate bytecode requires  maven .  Please make sure that both the 'mvn' and 'java' commands are available in the $PATH for Codeburner.", 
             "title": "Java"
         }, 
         {
             "location": "/setup/scanning_tools/#install", 
-            "text": "You can download the latest release of findsecbugs-cli here:  https://github.com/find-sec-bugs/find-sec-bugs/releases/latest  Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in  config/app.yml :  findsecbugs_path: /path/to/findsecbugs/install", 
+            "text": "You can download the latest release of findsecbugs-cli here:  https://github.com/find-sec-bugs/find-sec-bugs/releases/latest  Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in  config/app.yml :  findsecbugs_path: /path/to/findsecbugs/install   Note  Due to the requirement of having compiled bytecode available, pipeline currently supports scanning via find-sec-bugs only on maven projects with a valid pom.xml.", 
             "title": "Install"
-        }, 
-        {
-            "location": "/setup/scanning_tools/#nodesecurityproject", 
-            "text": "NodeSecurityProject is distrubted as a node package.  You need  npm  to install it.  Once you have npm, you can install NodeSecurityProject with:  npm install -g nsp  Make sure that the installed 'nsp' command is in the $PATH for Codeburner.", 
-            "title": "NodeSecurityProject"
         }, 
         {
             "location": "/setup/scanning_tools/#pmd", 
@@ -167,23 +167,28 @@
         }, 
         {
             "location": "/setup/scanning_tools/#java_1", 
-            "text": "As with FindSecurityBugs, PMD requires a working installation of java and the 'java' command available in the Codeburner $PATH.", 
+            "text": "As with FindSecurityBugs, PMD requires a working installation of  java  and the 'java' command available in the Codeburner $PATH.  Unlike FindSecurityBugs, PMD doesn't require compiled bytecode so it should work on most any java project.", 
             "title": "Java"
         }, 
         {
             "location": "/setup/scanning_tools/#install_1", 
-            "text": "PMD can be downloaded here:  https://github.com/pmd/pmd/releases/latest  Once you've unpacked the release tarball, set the variable 'findsecbugs_path' to the location you unpacked it in  config/app.yml :  pmd_path: /path/to/pmd/install", 
+            "text": "PMD can be downloaded here:  https://github.com/pmd/pmd/releases/latest  Once you've unpacked the release tarball, set the variable 'pmd_path' to the location you unpacked it in  config/app.yml :  pmd_path: /path/to/pmd/install", 
             "title": "Install"
         }, 
         {
-            "location": "/setup/scanning_tools/#retirejs", 
-            "text": "Retire.js is another node package.  It can be installed just like nsp:  npm install -g retire", 
-            "title": "Retire.js"
+            "location": "/setup/scanning_tools/#checkmarx", 
+            "text": "Checkmarx is a commercial static analysis tool.  Since it requires a commercial license, the tasks for Checkmarx are not enabled by default in Codeburner.  If you'd like to use Checkmarx with Codeburner, in addition to a commercial license, you'll need to download the CLI plugin here:  https://www.checkmarx.com/plugins/ .  Make sure the command 'runCxConsole.sh' from that download is in the $PATH available to Codeburner, and then set the checkmarx_* variables in  config/app.yml :  checkmarx_server: my_checkmarx_server\ncheckmarx_user: my_checkmarx_user\ncheckmarx_password: my_checkmarx_password\ncheckmarx_log: my_checkmarx_logfile  Also, add '- Checkmarx' to the list of tasks under pipeline_options/tasks_for/  in  config/app.yml :    tasks_for:\n    Ruby:\n      - BundleAudit\n      - Brakeman\n      - Dawnscanner\n      - Checkmarx\n    JavaScript:\n      - RetireJS\n      - NodeSecurityProject\n      - Checkmarx\n    CoffeeScript:\n      - RetireJS\n      - NodeSecurityProject\n    Java:\n      - PMD\n      - FindSecurityBugs\n      - Checkmarx  Since Checkmarx does support a few languages not covered by the default open source tools, you can add those languages (as reported by GitHub API) to this list with a '- Checkmarx' item and they should be scanned with Checkmarx as well.", 
+            "title": "Checkmarx"
         }, 
         {
             "location": "/setup/startup/", 
-            "text": "Start Sidekiq\n#\n\n\nCodeburner uses \nSidekiq\n for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually \"do\" anything useful.  The default configuration options should work fine in most environments.\n\n\nConfiguration\n#\n\n\nIf you do need to customize sidekiq, it is configured in \nconfig/sidekiq.yml\n.\n\n\nStartup\n#\n\n\nFor local development/testing you can start sidekiq via:\n\n\nbundle exec sidekiq\n\n\n\n\nIf you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:\n\n\nbundle exec cap \nrails_env\n sidekiq:start\n\n\n\n\nStart Codeburner!\n#\n\n\nCodeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both \nunicorn\n and \npuma.\n\n\nFor local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:\n\n\nbundle exec rails s -p 8080\n\n\n\n\nThat will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at \nhttp://localhost:8080/\n.\n\n\nIn a production environment, we recommend serving the root static content (\npublic/\n) with something like \nhttpd\n or \nnginx\n.\n\n\n\n\nDevelopers\n\n\nIf you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.", 
+            "text": "Start Codeburner\n#\n\n\nCodeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both \nunicorn\n and \npuma.\n\n\nFor local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:\n\n\nbundle exec rails s -p 8080\n\n\n\nThat will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at \nhttp://localhost:8080/\n.\n\n\n\n\nDevelopers\n\n\nIf you change the port here, just note that you'll also need to change it in the client proxy config for the javascript client to pass API calls correctly.\n\n\n\n\nIn a production environment, we recommend serving the root static content (\npublic/\n) with something like \nhttpd\n or \nnginx\n.\n\n\n\n\nStart Sidekiq\n#\n\n\nCodeburner uses \nSidekiq\n for asynchronous work (scanning code, sending notifications, etc.).  You'll need to explicitly start sidekiq as a separate process for Codeburner to actually \"do\" anything useful.  The default configuration options should work fine in most environments.\n\n\nConfiguration\n#\n\n\nIf you do need to customize sidekiq, it is configured in \nconfig/sidekiq.yml\n.\n\n\nStartup\n#\n\n\nFor local development/testing you can start sidekiq with bundle exec:\n\n\nbundle exec sidekiq\n\n\n\nIf you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq using cap:\n\n\nbundle exec cap \n sidekiq:start", 
             "title": "Start Burning!"
+        }, 
+        {
+            "location": "/setup/startup/#start-codeburner", 
+            "text": "Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both  unicorn  and  puma.  For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:  bundle exec rails s -p 8080  That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at  http://localhost:8080/ .   Developers  If you change the port here, just note that you'll also need to change it in the client proxy config for the javascript client to pass API calls correctly.   In a production environment, we recommend serving the root static content ( public/ ) with something like  httpd  or  nginx .", 
+            "title": "Start Codeburner"
         }, 
         {
             "location": "/setup/startup/#start-sidekiq", 
@@ -197,37 +202,32 @@
         }, 
         {
             "location": "/setup/startup/#startup", 
-            "text": "For local development/testing you can start sidekiq via:  bundle exec sidekiq  If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq with:  bundle exec cap  rails_env  sidekiq:start", 
+            "text": "For local development/testing you can start sidekiq with bundle exec:  bundle exec sidekiq  If you've deployed to a remote host (and configured Capistrano correctly) you should be able to start sidekiq using cap:  bundle exec cap   sidekiq:start", 
             "title": "Startup"
         }, 
         {
-            "location": "/setup/startup/#start-codeburner", 
-            "text": "Codeburner should work fine with most standard rack servers.  Internally it's been tested to work quite well with both  unicorn  and  puma.  For local development, we recommend the standard WEBrick rails server and the spring gem for fast iteration.  You can start the main app server like so:  bundle exec rails s -p 8080  That will start Codeburner on port 8080, and at this point you should be able to open Codeburner by pointing a web browser at  http://localhost:8080/ .  In a production environment, we recommend serving the root static content ( public/ ) with something like  httpd  or  nginx .   Developers  If you change the port here, just note that you'll also need to change it in the client proxy config for the client development environment to pass API calls correctly.", 
-            "title": "Start Codeburner!"
-        }, 
-        {
             "location": "/user/burns/", 
-            "text": "The home page for Codeburner is the 'burns' page.  It can be access via the URL: \nhttp://localhost:8080/\n, or by clicking the 'Codeburner' title/logo in the navigation bar.\n\n\nTo submit a new burn, click on the \"Submit Burn\" button:\n\n\n\n\nFill out the form that pops up:\n\n\n\n\nThe only required fields are 'Service Name' and 'Repository URL'.  You can optionally specify a specific commit/tag to scan and an e-mail address to notify when the burn is complete.\n\n\nThe list of 'Recent Burns' will refresh automatically, and the status should change to 'done' when it's complete.\n\n\nIf you highlight/click on a specific burn from the list, you'll be taken to the findings page and shown the findings for \njust that one burn\n:\n\n\n\n\nYou can also submit a burn through the REST API (useful for scripting or as part of a CI process):\n\n\ncurl -X POST -d '{\nservice_name\n:\ncodeburner\n,\nrepo_url\n:\nhttps://github.com/groupon/codeburner\n}' http://localhost:8080/api/burn", 
+            "text": "The home page for Codeburner is the 'burns' page.  It can be accessed via the URL \nhttp://localhost:8080/\n, or by clicking the 'Codeburner' title/logo in the navigation bar.\n\n\nTo submit a new burn, click on the \"Submit Burn\" button:\n\n\n\n\nFill out the form that pops up:\n\n\n\n\nThe only required fields are 'Service Name' and 'Repository URL'.  You can optionally specify a specific commit/tag to scan and an e-mail address to notify when the burn is complete.\n\n\nThe list of 'Recent Burns' will refresh automatically, and the status should change to 'done' when it's complete.\n\n\nIf you highlight/click on a specific burn from the list, you'll be taken to the findings page and shown the findings for \njust that one burn\n:\n\n\n\n\nYou can also submit a burn through the REST API (useful for scripting or as part of a CI process):\n\n\ncurl -X POST -d '{\nservice_name\n:\ncodeburner\n,\nrepo_url\n:\nhttps://github.com/groupon/codeburner\n}' http://localhost:8080/api/burn", 
             "title": "Submit a Burn"
         }, 
         {
             "location": "/user/findings/", 
-            "text": "The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking \"Findings\" in the menu bar or visiting the URL \nhttp://localhost:8080/#finding\n.\n\n\n\n\n\n\nService List\n#\n\n\nOn the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and should honor it anywhere in the query string.\n\n\nClick a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.\n\n\n\n\n\n\nFindings List\n#\n\n\nThe middle column of the findings page is the findings list.  By default it shows \nopen\n findings for all services, or for the service selected in the service list on the left.\n\n\nYou can use the toggles at the top to show \nhidden/published/filtered\n findings (more on that later), and click any of the column headings to sort on that field.  A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high--\nunknown.\n\n\nClick on any finding to show more details on the right.\n\n\n\n\nDetails Pane\n#\n\n\nThe details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information generally depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with full syntax highlighting.\n\n\n\n\nClicking the revision link will take you to the root of that commit in GitHub:\n\n\n\n\nIf the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:\n\n\n\n\nPublish Issues\n#\n\n\nThe first action provided in the details pane is \"publish\".  The publish action will publish the finding as either a GitHub or JIRA issue.\n\n\n\n\nBy default, clicking publish will create a new GitHub issue for you with all the finding details available:\n\n\n\n\nIf you select JIRA in the publish dialog, you'll also need to enter the JIRA project to use for creating your issue:\n\n\n\n\nHide Issues\n#\n\n\nIf you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.  Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details combined as a big string), hiding here will ensure \nthat exact finding\n isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.  \n\n\n\n\nIn the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".\n\n\nFor cases where you want more control over filtering future results like this one, you'll want to use the Filter interface described below.\n\n\nFiltering\n#\n\n\nSince fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.  As an example, let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported.  That's where filtering comes in:\n\n\n\n\nThe \nFiltering\n section covers the use of filters in more detail.", 
+            "text": "The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking \"Findings\" in the nav bar or visiting the URL \nhttp://localhost:8080/#finding\n.\n\n\n\n\n\n\nService List\n#\n\n\nOn the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and it should honor it anywhere in the query string.\n\n\nClick a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.\n\n\n\n\n\n\nFindings List\n#\n\n\nThe middle column of the findings page is the findings list.  By default it shows \nopen\n findings for all services, or for the service selected in the service list on the left.\n\n\nYou can use the toggles at the top to show \nhidden/published/filtered\n findings (more on that later), and click any of the column headings to sort on that field.  \n\n\nA repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high--\nunknown.\n\n\nClick on any finding to show more details on the right...\n\n\n\n\nDetails Pane\n#\n\n\nThe details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information largely depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with syntax highlighting and a link to view the full context on GitHub.\n\n\n\n\nClicking the revision link will take you to the root of that commit in GitHub:\n\n\n\n\n\n\nIf the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:\n\n\n\n\n\n\nPublish Issues\n#\n\n\nThe first action provided in the details pane is \"publish\".  The publish action will publish the finding as either a GitHub or JIRA issue.\n\n\n\n\nBy default, clicking publish will create a new GitHub issue for you with all the finding details available:\n\n\n\n\nIf you select JIRA in the publish dialog, you'll also need to enter the JIRA project to use for creating your issue:\n\n\n\n\nHide Issues\n#\n\n\nIf you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.  \n\n\nSince individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details concatenated into a single string), hiding here will ensure \nthat exact finding\n isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.  \n\n\n\n\nIn the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".\n\n\nFor cases where you want more control over filtering future results like this one, you'll want to use the \nFiltering\n interface described below.\n\n\nFiltering\n#\n\n\nSince fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.  \n\n\nAs an example: let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported!  That's where filtering comes in:\n\n\n\n\nThe \nFiltering\n section covers the use of filters in more detail.", 
             "title": "Interact with Findings"
         }, 
         {
             "location": "/user/findings/#service-list", 
-            "text": "On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and should honor it anywhere in the query string.  Click a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.", 
+            "text": "On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the \"Filter Services\" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and it should honor it anywhere in the query string.  Click a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.", 
             "title": "Service List"
         }, 
         {
             "location": "/user/findings/#findings-list", 
-            "text": "The middle column of the findings page is the findings list.  By default it shows  open  findings for all services, or for the service selected in the service list on the left.  You can use the toggles at the top to show  hidden/published/filtered  findings (more on that later), and click any of the column headings to sort on that field.  A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high-- unknown.  Click on any finding to show more details on the right.", 
+            "text": "The middle column of the findings page is the findings list.  By default it shows  open  findings for all services, or for the service selected in the service list on the left.  You can use the toggles at the top to show  hidden/published/filtered  findings (more on that later), and click any of the column headings to sort on that field.    A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high-- unknown.  Click on any finding to show more details on the right...", 
             "title": "Findings List"
         }, 
         {
             "location": "/user/findings/#details-pane", 
-            "text": "The details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information generally depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with full syntax highlighting.   Clicking the revision link will take you to the root of that commit in GitHub:   If the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:", 
+            "text": "The details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information largely depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with syntax highlighting and a link to view the full context on GitHub.   Clicking the revision link will take you to the root of that commit in GitHub:    If the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:", 
             "title": "Details Pane"
         }, 
         {
@@ -237,27 +237,27 @@
         }, 
         {
             "location": "/user/findings/#hide-issues", 
-            "text": "If you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.  Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details combined as a big string), hiding here will ensure  that exact finding  isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.     In the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".  For cases where you want more control over filtering future results like this one, you'll want to use the Filter interface described below.", 
+            "text": "If you decide an issue isn't worth publishing and want to simply ignore it, you can use the \"hide\" action in the details pane.    Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details concatenated into a single string), hiding here will ensure  that exact finding  isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.     In the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the \"hide\" button becomes \"unhide\".  For cases where you want more control over filtering future results like this one, you'll want to use the  Filtering  interface described below.", 
             "title": "Hide Issues"
         }, 
         {
             "location": "/user/findings/#filtering", 
-            "text": "Since fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.  As an example, let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported.  That's where filtering comes in:   The  Filtering  section covers the use of filters in more detail.", 
+            "text": "Since fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes \"hide\" isn't sufficient.    As an example: let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported!  That's where filtering comes in:   The  Filtering  section covers the use of filters in more detail.", 
             "title": "Filtering"
         }, 
         {
             "location": "/user/filters/", 
-            "text": "Filtering vs. Hiding\n#\n\n\nAs mentioned in the \nFindings\n documentation, hiding a finding is limited to that \nexact\n finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.\n\n\nFiltering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.\n\n\n\n\nCreate a filter\n#\n\n\nYou can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.\n\n\n\n\nThe default behavior selects every field \nexcept\n line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).\n\n\n\n\nAs a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:\n\n\n\n\n\n\nNote\n\n\nThe filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.\n\n\n\n\n\n\nView existing filters\n#\n\n\nYou can view the currently active filters by clicking on the \"Filters\" option in the nav bar, or by visiting the URL \nhttp://localhost:8080/#filter\n\n\nClick the \"expand\" button to show more details about a specific filter:\n\n\n\n\nClicking it on an expanded filter collapses it again:\n\n\n\n\nIf you click either the numbered badge or the \"N findings\" link next to the \"Filtering:\" heading you'll be taken to the findings page and shown \njust the findings filtered by that filter\n:\n\n\n\n\n\n\nDelete a filter\n#\n\n\nYou can click the \"X\" icon to delete a filter.  Deleting a filter will also set the status of any issues caught by that filter back to \"open\".", 
+            "text": "Filtering vs. Hiding\n#\n\n\nAs mentioned in the \nFindings\n documentation, hiding a finding is limited to that \nexact\n finding, right down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.\n\n\nFiltering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.\n\n\n\n\nCreate a filter\n#\n\n\nYou can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.\n\n\n\n\nThe default behavior selects every field \nexcept\n line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).\n\n\n\n\nAs a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:\n\n\n\n\n\n\nNote\n\n\nThe filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.\n\n\n\n\n\n\nView existing filters\n#\n\n\nYou can view the currently active filters by clicking on the \"Filters\" option in the nav bar, or by visiting the URL \nhttp://localhost:8080/#filter\n\n\nClick the \"expand\" button to show more details about a specific filter:\n\n\n\n\nClicking it on an expanded filter collapses it again:\n\n\n\n\nIf you click either the numbered badge or the \"N findings\" link next to the \"Filtering:\" heading you'll be taken to the findings page and shown \njust the findings filtered by that filter\n:\n\n\n\n\n\n\nDelete a filter\n#\n\n\nYou can click the \"X\" icon to delete a filter.  Deleting a filter will also set the status of any issues caught by that filter back to \"open\".", 
             "title": "Filtering"
         }, 
         {
             "location": "/user/filters/#filtering-vs-hiding", 
-            "text": "As mentioned in the  Findings  documentation, hiding a finding is limited to that  exact  finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.  Filtering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.", 
+            "text": "As mentioned in the  Findings  documentation, hiding a finding is limited to that  exact  finding, right down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.  Filtering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.", 
             "title": "Filtering vs. Hiding"
         }, 
         {
             "location": "/user/filters/#create-a-filter", 
-            "text": "You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.   The default behavior selects every field  except  line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).   As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:    Note  The filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.", 
+            "text": "You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.   The default behavior selects every field  except  line number, meaning it will match that result anywhere in the file (and therefore catch it if you refactor and change line numbers).   As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields \"Service Name\" and \"Scanner\" you'll do just that:    Note  The filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.", 
             "title": "Create a filter"
         }, 
         {
@@ -272,13 +272,13 @@
         }, 
         {
             "location": "/user/stats/", 
-            "text": "Google API\n#\n\n\nThe statistics page uses the \nGoogle Charts API\n to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.\n\n\n\n\nSelect a service\n#\n\n\nOn the left you can select a specific service (the default is \nAll Services\n) with substring matching:\n\n\n\n\nIf you select a new service, the charts will redraw automatically using default values.\n\n\n\n\nChoose a date range\n#\n\n\nIf you click on either the \"Start Date\" or \"End Date\" fields a date picker will appear letting you narrow down the date range of the stats generated:\n\n\n\n\n\n\n\n\nTweak history resolution\n#\n\n\nCodeburner does a fairly good job of choosing a resolution for your statistics based on the length of time between start date and end date to generate nice trend lines.  If you want more control over the graphs produced and want to change the level of detail, you can slide the resolution slider left or right to adjust the resolution:\n\n\n\n\n\n\nWarning\n\n\nBe careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a \nvery\n large number of database queries and cause considerable slowdown.\n\n\n\n\n\n\nRedraw\n#\n\n\nAfter setting a new combination of start date, end date, and resolution you need to click the newly-revealed \"Redraw\" button to redraw the charts:", 
+            "text": "Google Charts\n#\n\n\nThe statistics page uses the \nGoogle Charts API\n to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.\n\n\n\n\nSelect a service\n#\n\n\nOn the left you can select a specific service (the default is \nAll Services\n) with substring matching:\n\n\n\n\nIf you select a new service, the charts will redraw automatically using default values.\n\n\n\n\nChoose a date range\n#\n\n\nIf you click on either the \"Start Date\" or \"End Date\" fields a date picker will appear letting you narrow down the date range of the stats generated:\n\n\n\n\n\n\n\n\nTweak history resolution\n#\n\n\nCodeburner does a fairly good job of choosing a resolution for your statistics based on the length of time between start date and end date to generate nice trend lines.  If you want more control over the graphs produced and want to change the level of detail, you can slide the resolution slider left or right to adjust the resolution:\n\n\n\n\n\n\nWarning\n\n\nBe careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a \nvery\n large number of database queries and cause considerable slowdown.\n\n\n\n\n\n\nRedraw\n#\n\n\nAfter setting a new combination of start date, end date, and resolution you need to click the newly-revealed \"Redraw\" button to redraw the charts:", 
             "title": "Statistics/Charts"
         }, 
         {
-            "location": "/user/stats/#google-api", 
+            "location": "/user/stats/#google-charts", 
             "text": "The statistics page uses the  Google Charts API  to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.", 
-            "title": "Google API"
+            "title": "Google Charts"
         }, 
         {
             "location": "/user/stats/#select-a-service", 
@@ -311,16 +311,6 @@
             "title": "Rails backend"
         }, 
         {
-            "location": "/developer/pipeline/", 
-            "text": "What is pipeline?\n#", 
-            "title": "Pipeline"
-        }, 
-        {
-            "location": "/developer/pipeline/#what-is-pipeline", 
-            "text": "", 
-            "title": "What is pipeline?"
-        }, 
-        {
             "location": "/developer/client/", 
             "text": "JavaScript Client\n#", 
             "title": "JavaScript Client"
@@ -331,14 +321,469 @@
             "title": "JavaScript Client"
         }, 
         {
+            "location": "/developer/pipeline/", 
+            "text": "What is pipeline?\n#", 
+            "title": "Pipeline"
+        }, 
+        {
+            "location": "/developer/pipeline/#what-is-pipeline", 
+            "text": "", 
+            "title": "What is pipeline?"
+        }, 
+        {
             "location": "/developer/api/", 
-            "text": "API documentation\n#", 
+            "text": "Format\n\n\nStatus Codes\n\n\n/api/burn\n\n\n/api/finding\n\n\n/api/filter\n\n\n/api/service\n\n\n/api/stats\n\n\n\n\nFormat\n#\n\n\nAll responses are in \nJSON\n with \nUTF-8\n character encoding.\n\n\nStatus Codes\n#\n\n\n\n\n200\n Successful GET, PUT, POST or DELETE.\n\n\n400\n Bad request parameters.\n\n\n404\n Record not found.\n\n\n409\n Validation failed.\n\n\n500\n Server error.\n\n\n\n\n/api/burn\n#\n\n\nThe burn API allows you to submit new code burns and get information about existing burns.\n\n\n\n\nGET /api/burn\n\n\nPOST /api/burn\n\n\nGET /api/burn/{:id}\n\n\n\n\n\n\nGET /api/burn\n#\n\n\nGets the list of burns matching specified criteria.  With no parameters specified, it will provide a paginated list of all burns at a rate of 100 per page as well as a total count of the results found.\n\n\nParameters (all optional):\n#\n\n\n\n\nservice_id\n:   An \ninteger\n representing the service's ID\n\n\nservice_name\n: A \nstring\n representing the service name associated with the burn\n\n\nrevision\n:     A \nstring\n representing the commit SHA/tag\n\n\nstatus\n:       A \nstring\n representing the current status of the burn\n\n\nsort_by\n:      A \nstring\n for sortable field (\nid\n,\nservice_id\n,\nservice_name\n,\nrevision\n,\ncode_lang\n,\nrepo_url\n,\nstatus\n)\n\n\norder\n:        A \nstring\n for ascending/descending orader (\nasc\n,\ndesc\n)\n\n\npage\n:         An \ninteger\n for specifying the page of the paginated results\n\n\nper_page\n:     An \ninteger\n to override the default of 100 results per page\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/burn?service_name=codeburner\n\n\nSample response:\n#\n\n\n{\n  \ncount\n:1,\n  \nresults\n:\n    [{\n      \nid\n:26,\n      \nrevision\n:\n1b92653ae6275421753726c4feff865a4db2503e\n,\n      \nstatus\n:\ndone\n,\ncreated_at\n:\n2016-03-02T19:43:54.000Z\n,\n      \nupdated_at\n:\n2016-03-02T19:44:19.000Z\n,\n      \nrepo_url\n:\nhttps://github.com/groupon/codeburner\n,\n      \ncode_lang\n:\nRuby, CoffeeScript, HTML, JavaScript, CSS\n,\n      \nnum_files\n:78,\n      \nnum_lines\n:5542,\n      \nservice_id\n:5,\n      \nservice_portal\n:null,\n      \nstatus_reason\n:\ncompleted on 2016-03-02 13:44:19 -0600\n}\n    ]}\n}\n\n\n\n\n\n\nPOST /api/burn\n#\n\n\nSubmit a new burn.  \n\n\nSince a burn is considered a scan of a single revision of a given service, this will return a 409 validation error if you submit a duplicate service/revision combo.  \n\n\nIf you don't specify a revision it defaults to master-HEAD, and resolves that to a specific commit for you automatically.\n\n\nParameters (\n*\n \nrequired\n):\n#\n\n\n\n\n*\nservice_name\n: A \nstring\n representing the service's identifying name\n\n\n*\nrepo_url\n:     A \nstring\n representing the full GitHub repository URL\n\n\nrevision\n:                       A \nstring\n representing either a commit SHA or release tag\n\n\nnotify\n:                         A \nstring\n representing the e-mail address to send a notification to on completion\n\n\n\n\nSample request:\n#\n\n\ncurl -X POST -F service_name='codeburner' -F repo_url='https://github.com/groupon/codeburner'  http://localhost:8080/api/burn\n\n\n\nSample response:\n#\n\n\n{\n  \nburn_id\n:27,\n  \nservice_id\n:5,\n  \nservice_name\n:\ncodeburner\n,\n  \nrevision\n:\n6f94fb9a4bc6bc6493428cfca243c7c844c8cc5e\n,\n  \nstatus\n:\ncreated\n\n}\n\n\n\n\nGET /api/burn/{:id}\n#\n\n\nShow information about an individual burn #\n:id\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/burn/26\n\n\nSample response:\n#\n\n\n{\n  \nid\n:26,\n  \nrevision\n:\n1b92653ae6275421753726c4feff865a4db2503e\n,\n  \nstatus\n:\ndone\n,\n  \ncreated_at\n:\n2016-03-02T19:43:54.000Z\n,\n  \nupdated_at\n:\n2016-03-02T19:44:19.000Z\n,\n  \nrepo_url\n:\nhttps://github.com/groupon/codeburner\n,\n  \ncode_lang\n:\nRuby, CoffeeScript, HTML, JavaScript, CSS\n,\n  \nnum_files\n:78,\n  \nnum_lines\n:5542,\n  \nservice_id\n:5,\n  \nservice_portal\n:null,\n  \nstatus_reason\n:\ncompleted on 2016-03-02 13:44:19 -0600\n\n}\n\n\n\n\n\n\n/api/finding\n#\n\n\nThe finding API allows you to view findings, publish them to your issue tracker of choice, and modify status.\n\n\n\n\nGET /api/finding\n\n\nGET /api/finding/{:id}\n\n\nPUT /api/finding/{:id}\n\n\nPUT /api/finding/{:id}/publish\n\n\n\n\n\n\nGET /api/finding\n#\n\n\nGets the list of findings matching specified criteria.  With no parameters specified, it will provide a paginated list of all findings at a rate of 100 per page as well as a total count of the results found.\n\n\nParameters (all optional):\n#\n\n\n\n\nservice_id\n:   An \ninteger\n representing the service ID\n\n\nburn_id\n:      An \ninteger\n representing the burn ID\n\n\nservice_name\n: A \nstring\n representing the service name associated with the burn\n\n\nseverity\n:     An \ninteger\n representing the severity as reported by pipeline\n\n\ndescription\n:  A \nstring\n representing the finding description\n\n\nfingerprint\n:  A \nstring\n representing the SHA256 fingerprint calculated by pipeline\n\n\nstatus\n:       An \ninteger\n representing the status (\n0\n=created,\n1\n=hidden,\n2\n=published,\n3\n=filtered)\n\n\nsort_by\n:      A \nstring\n for sortable field (\nid\n,\nservice_id\n,\nservice_name\n,\nseverity\n,\nfingerprint\n,\nstatus\n,\ndescription\n)\n\n\norder\n:        A \nstring\n for ascending/descending orader (\nasc\n,\ndesc\n)\n\n\npage\n:         An \ninteger\n for specifying the page of the paginated results\n\n\nper_page\n:     An \ninteger\n to override the default of 100 results per page\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/finding?service_name=codeburner?per_page=1\n\n\nSample response:\n#\n\n\n{\n  \ncount\n:14,\n  \nresults\n:\n  [{\n    \nid\n:158,\n    \ndescription\n:\nUnscoped Find\n,\n    \nseverity\n:1,\n    \nfingerprint\n:\n3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50\n,\n    \ndetail\n:\nUnscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/\n,\n    \ncreated_at\n:\n2016-03-02T19:44:19.000Z\n,\n    \nupdated_at\n:\n2016-03-02T19:44:19.000Z\n,\n    \nstatus\n:0,\n    \nburn_id\n:26,\n    \nservice_id\n:5,\n    \nscanner\n:\nBrakeman\n,\n    \nfile\n:\napp/controllers/api/finding_controller.rb\n,\n    \nline\n:225,\n    \ncode\n:\nFinding.find(params[:id])\n,\n    \nfilter_id\n:null\n    }]\n}\n\n\n\n\n\n\nGET /api/finding/{:id}\n#\n\n\nShow information about an individual finding #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/finding/158\n\n\nSample response:\n#\n\n\n{\n  \nid\n:158,\n  \ndescription\n:\nUnscoped Find\n,\n  \nseverity\n:1,\n  \nfingerprint\n:\n3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50\n,\n  \ndetail\n:\nUnscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/\n,\n  \ncreated_at\n:\n2016-03-02T19:44:19.000Z\n,\n  \nupdated_at\n:\n2016-03-02T19:44:19.000Z\n,\n  \nstatus\n:0,\n  \nburn_id\n:26,\n  \nservice_id\n:5,\n  \nscanner\n:\nBrakeman\n,\n  \nfile\n:\napp/controllers/api/finding_controller.rb\n,\n  \nline\n:225,\n  \ncode\n:\nFinding.find(params[:id])\n,\n  \nfilter_id\n:null\n}\n\n\n\n\n\n\nPUT /api/finding/{:id}\n#\n\n\nUpdate attributes (currently only \nstatus\n) for a specific finding #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' -X PUT -d '{\"status\":1}' http://localhost:8080/api/finding/158\n\n\nSample response:\n#\n\n\n{\n  \nid\n:158,\n  \ndescription\n:\nUnscoped Find\n,\n  \nseverity\n:1,\n  \nfingerprint\n:\n3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50\n,\n  \ndetail\n:\nUnscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/\n,\n  \ncreated_at\n:\n2016-03-02T19:44:19.000Z\n,\n  \nupdated_at\n:\n2016-03-03T21:14:35.827Z\n,\n  \nstatus\n:1,\n  \nburn_id\n:26,\n  \nservice_id\n:5,\n  \nscanner\n:\nBrakeman\n,\n  \nfile\n:\napp/controllers/api/finding_controller.rb\n,\n  \nline\n:225,\n  \ncode\n:\nFinding.find(params[:id])\n,\n  \nfilter_id\n:null\n}\n\n\n\n\n\n\nPUT /api/finding/{:id}/publish\n#\n\n\nPublish a specific finding #\n:id\n to your issue tracker of choice.\n\n\nParameters (\n*\n \nrequired\n):\n#\n\n\n\n\n*\nmethod\n: A \nstring\n representing the desired publishing method (\ngithub\n,\njira\n)\n\n\nproject\n:                  A \nstring\n representing the JIRA project if you're using that publishing method\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' -X PUT -d '{\"method\":\"github\"}' http://localhost:8080/api/finding/158/publish\n\n\nSample response:\n#\n\n\n{\n  \nticket\n:\ngroupon/codeburner - Issue #5\n,\n  \nlink\n:\nhttps://github.com/groupon/codeburner/issues/5\n\n}\n\n\n\n\n\n\n/api/filter\n#\n\n\nThe filter API allows you to list, create, and delete filters.\n\n\n\n\nGET /api/filter\n\n\nPOST /api/filter\n\n\nGET /api/filter/{:id}\n\n\nDELETE /api/filter/{:id}\n\n\n\n\n\n\nGET /api/filter\n#\n\n\nLists all existing filters.  Non-paginated list by default.\n\n\nParameters (all optional)\n#\n\n\n\n\nsort_by\n:      A \nstring\n for sortable field (\nid\n,\nservice_id\n)\n\n\norder\n:        A \nstring\n for ascending/descending orader (\nasc\n,\ndesc\n)\n\n\npage\n:         An \ninteger\n for specifying the page of the paginated results\n\n\nper_page\n:     An \ninteger\n to override the default of 100 results per page if requesting pagination\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/filter\n\n\nSample response:\n#\n\n\n{\n  \ncount\n:4,\n  \nresults\n:\n  [{\n    \nid\n:2,\n    \nservice_id\n:5,\n    \nseverity\n:null,\n    \nfingerprint\n:null,\n    \nscanner\n:\nDawnScanner\n,\n    \ndescription\n:null,\n    \ndetail\n:null,\n    \nfile\n:null,\n    \nline\n:null,\n    \ncode\n:null,\n    \ncreated_at\n:\n2016-03-02T22:07:31.000Z\n,\n    \nupdated_at\n:\n2016-03-02T22:07:31.000Z\n,\n    \nfinding_count\n:2\n  }]\n}\n\n\n\n\n\n\nPOST /api/filter\n#\n\n\nCreate a new filter.  All findings (existing and future) matching the provided combination of parameters will be marked with status \n3\n (filtered) .  \n\n\nThis will return a 409 validation error on attempting to create a duplicate filter.\n\n\nParameters (all optional):\n#\n\n\n\n\nservice_id\n:   An \ninteger\n representing a specific service ID\n\n\nseverity\n:     An \ninteger\n representing severity as reported by pipeline\n\n\nfingerprint\n:  A \nstring\n representing the SHA256 fingerprint calculated by pipeline\n\n\nscanner\n:      A \nstring\n representing an individual scanning tool\n\n\ndescription\n:  A \nstring\n representing a finding description\n\n\ndetail\n:       A \nstring\n representing a finding extended detail\n\n\nfile\n:         A \nstring\n representing a specific file name\n\n\nline\n:         A \nstring\n representing the line number (this is a string vs. integer to allow for a TODO item)\n\n\ncode\n:         A \nstring\n representing a code snippet returned by a scanning tool\n\n\n\n\nSample request:\n#\n\n\ncurl -X POST -F service_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter\n\n\nSample response:\n#\n\n\n{\n  \nid\n:4,\n  \nservice_id\n:5,\n  \nseverity\n:null,\n  \nfingerprint\n:null,\n  \nscanner\n:\nBrakeman\n,\n  \ndescription\n:null,\n  \ndetail\n:null,\n  \nfile\n:null,\n  \nline\n:null,\n  \ncode\n:null,\n  \ncreated_at\n:\n2016-03-03T22:10:57.665Z\n,\n  \nupdated_at\n:\n2016-03-03T22:10:57.665Z\n\n}\n\n\n\n\n\n\nGET /api/filter/{:id}\n#\n\n\nShow a specific filter #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/filter/4\n\n\nSample response:\n#\n\n\n{\n  \nid\n:4,\n  \nservice_id\n:5,\n  \nseverity\n:null,\n  \nfingerprint\n:null,\n  \nscanner\n:\nBrakeman\n,\n  \ndescription\n:null,\n  \ndetail\n:null,\n  \nfile\n:null,\n  \nline\n:null,\n  \ncode\n:null,\n  \ncreated_at\n:\n2016-03-03T22:10:57.665Z\n,\n  \nupdated_at\n:\n2016-03-03T22:10:57.665Z\n\n}\n\n\n\n\n\n\nDELETE /api/filter/{:id}\n#\n\n\nDelete a specific filter #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' -X DELETE http://localhost:8080/api/filter/4\n\n\nSample response:\n#\n\n\n{\nresult\n:\nsuccess\n}\n\n\n\n\n\n\n/api/service\n#\n\n\nThe service API can be used to list services, find information about a specific service, and generate history/statistics.\n\n\n\n\nGET /api/service\n\n\nGET /api/service/{:id}\n\n\nGET /api/service/{:id}/stats\n\n\nGET /api/service/{:id}/stats/burns\n\n\nGET /api/service/{:id}/stats/history\n\n\nGET /api/service/{:id}/stats/history/range\n\n\nGET /api/service/{:id}/stats/history/resolution\n\n\n\n\nGET /api/service\n#\n\n\nList all services.  Results are non-paginated.  This query result is cached in redis and should generally return very quickly even with a large number of services.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service\n\n\nSample response:\n#\n\n\n{\n  \ncount\n:1,\n  \nresults\n:\n  [{\n    \nid\n:5,\n    \nshort_name\n:\ncodeburner\n,\n    \npretty_name\n:\ncodeburner\n,\n    \ncreated_at\n:\n2016-03-01T17:54:07.000Z\n,\n    \nupdated_at\n:\n2016-03-01T17:54:07.000Z\n,\n    \nservice_portal\n:null\n  }]\n}\n\n\n\n\n\n\nGET /api/service/{:id}\n#\n\n\nShow information about a specific service #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5\n\n\nSample response:\n#\n\n\n{\n  \nid\n:5,\n  \nshort_name\n:\ncodeburner\n,\n  \npretty_name\n:\ncodeburner\n,\n  \ncreated_at\n:\n2016-03-01T17:54:07.000Z\n,\n  \nupdated_at\n:\n2016-03-01T17:54:07.000Z\n,\n  \nservice_portal\n:null\n}\n\n\n\n\n\n\nGET /api/service/{:id}/stats\n#\n\n\nGet general statistics about a specific service #\nid\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats\n\n\nSample response:\n#\n\n\n{\n  \nburns\n:2,\n  \nopen_findings\n:10,\n  \ntotal_findings\n:14,\n  \nfiltered_findings\n:3,\n  \nhidden_findings\n:0,\n  \npublished_findings\n:1\n}\n\n\n\n\n\n\nGET /api/service/{:id}/stats/burns\n#\n\n\nGet a list of [date, count] pairs where count is the number of burns performed against a specific service on date.\n\n\nParameters (all optional):\n#\n\n\n\n\nstart_date\n: A \nstring\n representing the start_date for the list, parsable by ruby Time.parse().\n\n\nend_date\n:   A \nstring\n representing the end_date for the list, parsable by ruby Time.parse().\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/burns\n\n\nSample response:\n#\n\n\n[\n  [\n2016-03-02\n,1],\n  [\n2016-03-03\n,1]\n]\n\n\n\n\n\n\nGET /api/service/{:id}/stats/history\n#\n\n\nGenerate point-in-time statistics (comparable to the /api/service/{:id}/stats output) for a service from \nstart_date\n to \nend_date\n with a timestep of \nresolution\n.\n\n\nThe default \nstart_date\n is the date of the first burn on the service, and the default \nend_date\n is ruby Time.now().  \n\n\nThe default \nresolution\n is calculated automatically based on the length of time between the two dates to generate smooth trend lines when graphed.  It ranges from 1 hour to 1 week.\n\n\nParameters (all optional):\n#\n\n\n\n\nstart_date\n: A \nstring\n representing the start_date for the history, parsable by ruby Time.parse().\n\n\nend_date\n:   A \nstring\n representing the end_date for the history, parsable by ruby Time.parse().\n\n\nresolution\n: An \ninteger\n representing the timestep used to sample stats, in seconds.\n\n\n\n\n\n\nWarning\n\n\nBe careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a \nvery\n large number of database queries and cause considerable slowdown.\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution=259200\n\n\nSample response:\n#\n\n\n{\n  \nservices\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,1]],\n  \nburns\n:[\n    [\n2016-03-01T17:54:08.000Z\n,1],\n    [\n2016-03-03T16:52:21.575-06:00\n,2]],\n  \ntotal_findings\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,14]],\n  \nopen_findings\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,10]],\n  \nhidden_findings\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,0]],\n  \npublished_findings\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,1]],\n  \nfiltered_findings\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,3]],\n  \nfiles\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,78]],\n  \nlines\n:[\n    [\n2016-03-01T17:54:08.000Z\n,0],\n    [\n2016-03-03T16:52:21.575-06:00\n,5542]]\n}\n\n\n\n\n\n\nGET /api/service/{:id}/stats/history/range\n#\n\n\nShow the default \nstart_date\n, \nend_date\n and \nresolution\n for history of a specific service #\n:id\n.\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/range\n\n\nSample response:\n#\n\n\n{\n  \nstart_date\n:\n2016-03-01T17:54:08.000Z\n,\n  \nend_date\n:\n2016-03-03T16:57:54.720-06:00\n,\n  \nresolution\n:14400\n}\n\n\n\n\n\n\nGET /api/service/{:id}/stats/history/resolution\n#\n\n\nShow the default \nresolution\n for a given \nstart_date\n and \nend_date\n for a specific service #\n:id\n.\n\n\nParameters (all required):\n#\n\n\n\n\nstart_date\n: A \nstring\n representing the start_date for the resolution, parsable by ruby Time.parse().\n\n\nend_date\n:   A \nstring\n representing the end_date for the resolution, parsable by ruby Time.parse().\n\n\n\n\nSample request:\n#\n\n\ncurl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution?start_date=2016-03-01T23:06:49.107Z\nend_date=2016-03-03T17:07:05.428-06:00\n\n\nSample response:\n#\n\n\n14400\n\n\n\n\n\n\n/api/stats\n#\n\n\n\n\nGET /api/stats\n\n\nGET /api/stats/burns\n\n\nGET /api/stats/history\n\n\nGET /api/stats/history/range\n\n\nGET /api/stats/history/resolution\n\n\n\n\nGET /api/stats\n#\n\n\nParameters:\n#\n\n\nSample request:\n#\n\n\nSample response:\n#\n\n\n\n\nGET /api/stats/burns\n#\n\n\nParameters:\n#\n\n\nSample request:\n#\n\n\nSample response:\n#\n\n\n\n\nGET /api/stats/history\n#\n\n\nParameters:\n#\n\n\nSample request:\n#\n\n\nSample response:\n#\n\n\n\n\nGET /api/stats/history/range\n#\n\n\nParameters:\n#\n\n\nSample request:\n#\n\n\nSample response:\n#\n\n\n\n\nGET /api/stats/history/resolution\n#\n\n\nParameters:\n#\n\n\nSample request:\n#\n\n\nSample response:\n#", 
             "title": "API Reference"
         }, 
         {
-            "location": "/developer/api/#api-documentation", 
+            "location": "/developer/api/#format", 
+            "text": "All responses are in  JSON  with  UTF-8  character encoding.", 
+            "title": "Format"
+        }, 
+        {
+            "location": "/developer/api/#status-codes", 
+            "text": "200  Successful GET, PUT, POST or DELETE.  400  Bad request parameters.  404  Record not found.  409  Validation failed.  500  Server error.", 
+            "title": "Status Codes"
+        }, 
+        {
+            "location": "/developer/api/#apiburn", 
+            "text": "The burn API allows you to submit new code burns and get information about existing burns.   GET /api/burn  POST /api/burn  GET /api/burn/{:id}", 
+            "title": "/api/burn"
+        }, 
+        {
+            "location": "/developer/api/#get-apiburn", 
+            "text": "Gets the list of burns matching specified criteria.  With no parameters specified, it will provide a paginated list of all burns at a rate of 100 per page as well as a total count of the results found.", 
+            "title": "GET /api/burn"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional", 
+            "text": "service_id :   An  integer  representing the service's ID  service_name : A  string  representing the service name associated with the burn  revision :     A  string  representing the commit SHA/tag  status :       A  string  representing the current status of the burn  sort_by :      A  string  for sortable field ( id , service_id , service_name , revision , code_lang , repo_url , status )  order :        A  string  for ascending/descending orader ( asc , desc )  page :         An  integer  for specifying the page of the paginated results  per_page :     An  integer  to override the default of 100 results per page", 
+            "title": "Parameters (all optional):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/burn?service_name=codeburner", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response", 
+            "text": "{\n   count :1,\n   results :\n    [{\n       id :26,\n       revision : 1b92653ae6275421753726c4feff865a4db2503e ,\n       status : done , created_at : 2016-03-02T19:43:54.000Z ,\n       updated_at : 2016-03-02T19:44:19.000Z ,\n       repo_url : https://github.com/groupon/codeburner ,\n       code_lang : Ruby, CoffeeScript, HTML, JavaScript, CSS ,\n       num_files :78,\n       num_lines :5542,\n       service_id :5,\n       service_portal :null,\n       status_reason : completed on 2016-03-02 13:44:19 -0600 }\n    ]}\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#post-apiburn", 
+            "text": "Submit a new burn.    Since a burn is considered a scan of a single revision of a given service, this will return a 409 validation error if you submit a duplicate service/revision combo.    If you don't specify a revision it defaults to master-HEAD, and resolves that to a specific commit for you automatically.", 
+            "title": "POST /api/burn"
+        }, 
+        {
+            "location": "/developer/api/#parameters-required", 
+            "text": "* service_name : A  string  representing the service's identifying name  * repo_url :     A  string  representing the full GitHub repository URL  revision :                       A  string  representing either a commit SHA or release tag  notify :                         A  string  representing the e-mail address to send a notification to on completion", 
+            "title": "Parameters (* required):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_1", 
+            "text": "curl -X POST -F service_name='codeburner' -F repo_url='https://github.com/groupon/codeburner'  http://localhost:8080/api/burn", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_1", 
+            "text": "{\n   burn_id :27,\n   service_id :5,\n   service_name : codeburner ,\n   revision : 6f94fb9a4bc6bc6493428cfca243c7c844c8cc5e ,\n   status : created \n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiburnid", 
+            "text": "Show information about an individual burn # :id", 
+            "title": "GET /api/burn/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_2", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/burn/26", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_2", 
+            "text": "{\n   id :26,\n   revision : 1b92653ae6275421753726c4feff865a4db2503e ,\n   status : done ,\n   created_at : 2016-03-02T19:43:54.000Z ,\n   updated_at : 2016-03-02T19:44:19.000Z ,\n   repo_url : https://github.com/groupon/codeburner ,\n   code_lang : Ruby, CoffeeScript, HTML, JavaScript, CSS ,\n   num_files :78,\n   num_lines :5542,\n   service_id :5,\n   service_portal :null,\n   status_reason : completed on 2016-03-02 13:44:19 -0600 \n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#apifinding", 
+            "text": "The finding API allows you to view findings, publish them to your issue tracker of choice, and modify status.   GET /api/finding  GET /api/finding/{:id}  PUT /api/finding/{:id}  PUT /api/finding/{:id}/publish", 
+            "title": "/api/finding"
+        }, 
+        {
+            "location": "/developer/api/#get-apifinding", 
+            "text": "Gets the list of findings matching specified criteria.  With no parameters specified, it will provide a paginated list of all findings at a rate of 100 per page as well as a total count of the results found.", 
+            "title": "GET /api/finding"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional_1", 
+            "text": "service_id :   An  integer  representing the service ID  burn_id :      An  integer  representing the burn ID  service_name : A  string  representing the service name associated with the burn  severity :     An  integer  representing the severity as reported by pipeline  description :  A  string  representing the finding description  fingerprint :  A  string  representing the SHA256 fingerprint calculated by pipeline  status :       An  integer  representing the status ( 0 =created, 1 =hidden, 2 =published, 3 =filtered)  sort_by :      A  string  for sortable field ( id , service_id , service_name , severity , fingerprint , status , description )  order :        A  string  for ascending/descending orader ( asc , desc )  page :         An  integer  for specifying the page of the paginated results  per_page :     An  integer  to override the default of 100 results per page", 
+            "title": "Parameters (all optional):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_3", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/finding?service_name=codeburner?per_page=1", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_3", 
+            "text": "{\n   count :14,\n   results :\n  [{\n     id :158,\n     description : Unscoped Find ,\n     severity :1,\n     fingerprint : 3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50 ,\n     detail : Unscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/ ,\n     created_at : 2016-03-02T19:44:19.000Z ,\n     updated_at : 2016-03-02T19:44:19.000Z ,\n     status :0,\n     burn_id :26,\n     service_id :5,\n     scanner : Brakeman ,\n     file : app/controllers/api/finding_controller.rb ,\n     line :225,\n     code : Finding.find(params[:id]) ,\n     filter_id :null\n    }]\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apifindingid", 
+            "text": "Show information about an individual finding # :id .", 
+            "title": "GET /api/finding/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_4", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/finding/158", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_4", 
+            "text": "{\n   id :158,\n   description : Unscoped Find ,\n   severity :1,\n   fingerprint : 3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50 ,\n   detail : Unscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/ ,\n   created_at : 2016-03-02T19:44:19.000Z ,\n   updated_at : 2016-03-02T19:44:19.000Z ,\n   status :0,\n   burn_id :26,\n   service_id :5,\n   scanner : Brakeman ,\n   file : app/controllers/api/finding_controller.rb ,\n   line :225,\n   code : Finding.find(params[:id]) ,\n   filter_id :null\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#put-apifindingid", 
+            "text": "Update attributes (currently only  status ) for a specific finding # :id .", 
+            "title": "PUT /api/finding/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_5", 
+            "text": "curl -H 'Content-type: application/json' -X PUT -d '{\"status\":1}' http://localhost:8080/api/finding/158", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_5", 
+            "text": "{\n   id :158,\n   description : Unscoped Find ,\n   severity :1,\n   fingerprint : 3281689afd550427eed28c24fc3e7e8926838e78249f1b445326dda3c0ac1d50 ,\n   detail : Unscoped call to Finding#find\\nhttp://brakemanscanner.org/docs/warning_types/unscoped_find/ ,\n   created_at : 2016-03-02T19:44:19.000Z ,\n   updated_at : 2016-03-03T21:14:35.827Z ,\n   status :1,\n   burn_id :26,\n   service_id :5,\n   scanner : Brakeman ,\n   file : app/controllers/api/finding_controller.rb ,\n   line :225,\n   code : Finding.find(params[:id]) ,\n   filter_id :null\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#put-apifindingidpublish", 
+            "text": "Publish a specific finding # :id  to your issue tracker of choice.", 
+            "title": "PUT /api/finding/{:id}/publish"
+        }, 
+        {
+            "location": "/developer/api/#parameters-required_1", 
+            "text": "* method : A  string  representing the desired publishing method ( github , jira )  project :                  A  string  representing the JIRA project if you're using that publishing method", 
+            "title": "Parameters (* required):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_6", 
+            "text": "curl -H 'Content-type: application/json' -X PUT -d '{\"method\":\"github\"}' http://localhost:8080/api/finding/158/publish", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_6", 
+            "text": "{\n   ticket : groupon/codeburner - Issue #5 ,\n   link : https://github.com/groupon/codeburner/issues/5 \n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#apifilter", 
+            "text": "The filter API allows you to list, create, and delete filters.   GET /api/filter  POST /api/filter  GET /api/filter/{:id}  DELETE /api/filter/{:id}", 
+            "title": "/api/filter"
+        }, 
+        {
+            "location": "/developer/api/#get-apifilter", 
+            "text": "Lists all existing filters.  Non-paginated list by default.", 
+            "title": "GET /api/filter"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional_2", 
+            "text": "sort_by :      A  string  for sortable field ( id , service_id )  order :        A  string  for ascending/descending orader ( asc , desc )  page :         An  integer  for specifying the page of the paginated results  per_page :     An  integer  to override the default of 100 results per page if requesting pagination", 
+            "title": "Parameters (all optional)"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_7", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/filter", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_7", 
+            "text": "{\n   count :4,\n   results :\n  [{\n     id :2,\n     service_id :5,\n     severity :null,\n     fingerprint :null,\n     scanner : DawnScanner ,\n     description :null,\n     detail :null,\n     file :null,\n     line :null,\n     code :null,\n     created_at : 2016-03-02T22:07:31.000Z ,\n     updated_at : 2016-03-02T22:07:31.000Z ,\n     finding_count :2\n  }]\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#post-apifilter", 
+            "text": "Create a new filter.  All findings (existing and future) matching the provided combination of parameters will be marked with status  3  (filtered) .    This will return a 409 validation error on attempting to create a duplicate filter.", 
+            "title": "POST /api/filter"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional_3", 
+            "text": "service_id :   An  integer  representing a specific service ID  severity :     An  integer  representing severity as reported by pipeline  fingerprint :  A  string  representing the SHA256 fingerprint calculated by pipeline  scanner :      A  string  representing an individual scanning tool  description :  A  string  representing a finding description  detail :       A  string  representing a finding extended detail  file :         A  string  representing a specific file name  line :         A  string  representing the line number (this is a string vs. integer to allow for a TODO item)  code :         A  string  representing a code snippet returned by a scanning tool", 
+            "title": "Parameters (all optional):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_8", 
+            "text": "curl -X POST -F service_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_8", 
+            "text": "{\n   id :4,\n   service_id :5,\n   severity :null,\n   fingerprint :null,\n   scanner : Brakeman ,\n   description :null,\n   detail :null,\n   file :null,\n   line :null,\n   code :null,\n   created_at : 2016-03-03T22:10:57.665Z ,\n   updated_at : 2016-03-03T22:10:57.665Z \n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apifilterid", 
+            "text": "Show a specific filter # :id .", 
+            "title": "GET /api/filter/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_9", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/filter/4", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_9", 
+            "text": "{\n   id :4,\n   service_id :5,\n   severity :null,\n   fingerprint :null,\n   scanner : Brakeman ,\n   description :null,\n   detail :null,\n   file :null,\n   line :null,\n   code :null,\n   created_at : 2016-03-03T22:10:57.665Z ,\n   updated_at : 2016-03-03T22:10:57.665Z \n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#delete-apifilterid", 
+            "text": "Delete a specific filter # :id .", 
+            "title": "DELETE /api/filter/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_10", 
+            "text": "curl -H 'Content-type: application/json' -X DELETE http://localhost:8080/api/filter/4", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_10", 
+            "text": "{ result : success }", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#apiservice", 
+            "text": "The service API can be used to list services, find information about a specific service, and generate history/statistics.   GET /api/service  GET /api/service/{:id}  GET /api/service/{:id}/stats  GET /api/service/{:id}/stats/burns  GET /api/service/{:id}/stats/history  GET /api/service/{:id}/stats/history/range  GET /api/service/{:id}/stats/history/resolution", 
+            "title": "/api/service"
+        }, 
+        {
+            "location": "/developer/api/#get-apiservice", 
+            "text": "List all services.  Results are non-paginated.  This query result is cached in redis and should generally return very quickly even with a large number of services.", 
+            "title": "GET /api/service"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_11", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_11", 
+            "text": "{\n   count :1,\n   results :\n  [{\n     id :5,\n     short_name : codeburner ,\n     pretty_name : codeburner ,\n     created_at : 2016-03-01T17:54:07.000Z ,\n     updated_at : 2016-03-01T17:54:07.000Z ,\n     service_portal :null\n  }]\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceid", 
+            "text": "Show information about a specific service # :id .", 
+            "title": "GET /api/service/{:id}"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_12", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_12", 
+            "text": "{\n   id :5,\n   short_name : codeburner ,\n   pretty_name : codeburner ,\n   created_at : 2016-03-01T17:54:07.000Z ,\n   updated_at : 2016-03-01T17:54:07.000Z ,\n   service_portal :null\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceidstats", 
+            "text": "Get general statistics about a specific service # id .", 
+            "title": "GET /api/service/{:id}/stats"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_13", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_13", 
+            "text": "{\n   burns :2,\n   open_findings :10,\n   total_findings :14,\n   filtered_findings :3,\n   hidden_findings :0,\n   published_findings :1\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceidstatsburns", 
+            "text": "Get a list of [date, count] pairs where count is the number of burns performed against a specific service on date.", 
+            "title": "GET /api/service/{:id}/stats/burns"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional_4", 
+            "text": "start_date : A  string  representing the start_date for the list, parsable by ruby Time.parse().  end_date :   A  string  representing the end_date for the list, parsable by ruby Time.parse().", 
+            "title": "Parameters (all optional):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_14", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/burns", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_14", 
+            "text": "[\n  [ 2016-03-02 ,1],\n  [ 2016-03-03 ,1]\n]", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceidstatshistory", 
+            "text": "Generate point-in-time statistics (comparable to the /api/service/{:id}/stats output) for a service from  start_date  to  end_date  with a timestep of  resolution .  The default  start_date  is the date of the first burn on the service, and the default  end_date  is ruby Time.now().    The default  resolution  is calculated automatically based on the length of time between the two dates to generate smooth trend lines when graphed.  It ranges from 1 hour to 1 week.", 
+            "title": "GET /api/service/{:id}/stats/history"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-optional_5", 
+            "text": "start_date : A  string  representing the start_date for the history, parsable by ruby Time.parse().  end_date :   A  string  representing the end_date for the history, parsable by ruby Time.parse().  resolution : An  integer  representing the timestep used to sample stats, in seconds.    Warning  Be careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a  very  large number of database queries and cause considerable slowdown.", 
+            "title": "Parameters (all optional):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_15", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution=259200", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_15", 
+            "text": "{\n   services :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,1]],\n   burns :[\n    [ 2016-03-01T17:54:08.000Z ,1],\n    [ 2016-03-03T16:52:21.575-06:00 ,2]],\n   total_findings :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,14]],\n   open_findings :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,10]],\n   hidden_findings :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,0]],\n   published_findings :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,1]],\n   filtered_findings :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,3]],\n   files :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,78]],\n   lines :[\n    [ 2016-03-01T17:54:08.000Z ,0],\n    [ 2016-03-03T16:52:21.575-06:00 ,5542]]\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceidstatshistoryrange", 
+            "text": "Show the default  start_date ,  end_date  and  resolution  for history of a specific service # :id .", 
+            "title": "GET /api/service/{:id}/stats/history/range"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_16", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/range", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_16", 
+            "text": "{\n   start_date : 2016-03-01T17:54:08.000Z ,\n   end_date : 2016-03-03T16:57:54.720-06:00 ,\n   resolution :14400\n}", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apiserviceidstatshistoryresolution", 
+            "text": "Show the default  resolution  for a given  start_date  and  end_date  for a specific service # :id .", 
+            "title": "GET /api/service/{:id}/stats/history/resolution"
+        }, 
+        {
+            "location": "/developer/api/#parameters-all-required", 
+            "text": "start_date : A  string  representing the start_date for the resolution, parsable by ruby Time.parse().  end_date :   A  string  representing the end_date for the resolution, parsable by ruby Time.parse().", 
+            "title": "Parameters (all required):"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_17", 
+            "text": "curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution?start_date=2016-03-01T23:06:49.107Z end_date=2016-03-03T17:07:05.428-06:00", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_17", 
+            "text": "14400", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#apistats", 
+            "text": "GET /api/stats  GET /api/stats/burns  GET /api/stats/history  GET /api/stats/history/range  GET /api/stats/history/resolution", 
+            "title": "/api/stats"
+        }, 
+        {
+            "location": "/developer/api/#get-apistats", 
             "text": "", 
-            "title": "API documentation"
+            "title": "GET /api/stats"
+        }, 
+        {
+            "location": "/developer/api/#parameters", 
+            "text": "", 
+            "title": "Parameters:"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_18", 
+            "text": "", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_18", 
+            "text": "", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apistatsburns", 
+            "text": "", 
+            "title": "GET /api/stats/burns"
+        }, 
+        {
+            "location": "/developer/api/#parameters_1", 
+            "text": "", 
+            "title": "Parameters:"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_19", 
+            "text": "", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_19", 
+            "text": "", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apistatshistory", 
+            "text": "", 
+            "title": "GET /api/stats/history"
+        }, 
+        {
+            "location": "/developer/api/#parameters_2", 
+            "text": "", 
+            "title": "Parameters:"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_20", 
+            "text": "", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_20", 
+            "text": "", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apistatshistoryrange", 
+            "text": "", 
+            "title": "GET /api/stats/history/range"
+        }, 
+        {
+            "location": "/developer/api/#parameters_3", 
+            "text": "", 
+            "title": "Parameters:"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_21", 
+            "text": "", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_21", 
+            "text": "", 
+            "title": "Sample response:"
+        }, 
+        {
+            "location": "/developer/api/#get-apistatshistoryresolution", 
+            "text": "", 
+            "title": "GET /api/stats/history/resolution"
+        }, 
+        {
+            "location": "/developer/api/#parameters_4", 
+            "text": "", 
+            "title": "Parameters:"
+        }, 
+        {
+            "location": "/developer/api/#sample-request_22", 
+            "text": "", 
+            "title": "Sample request:"
+        }, 
+        {
+            "location": "/developer/api/#sample-response_22", 
+            "text": "", 
+            "title": "Sample response:"
         }
     ]
 }

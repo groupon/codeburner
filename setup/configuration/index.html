@@ -331,8 +331,8 @@
       
         
   <li>
-    <a class="" title="Pipeline" href="../../developer/pipeline/">
-      Pipeline
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
     </a>
     
   </li>
@@ -340,8 +340,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../../developer/client/">
-      JavaScript Client
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
     </a>
     
   </li>
@@ -395,18 +395,18 @@
           
           <h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">#</a></h2>
 <h3 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h3>
-<p>You'll need a copy of mysql server configured and running.  See instructions for your specific OS to accomplish this.</p>
+<p>You'll need a copy of mysql server configured and running.  See the <a href="dev.mysql.com/doc/en/installing.html" target="_blank">instructions</a> for your specific OS to accomplish this.  For local development on OSX the <a href="http://brew.sh" target="_blank">Homebrew</a> package works fine.</p>
 <h3 id="authentication">Authentication<a class="headerlink" href="#authentication" title="Permanent link">#</a></h3>
 <p>If you're using the 'root' user without a password for local development, you shouldn't need to configure anything here and can proceed to the Setup step below.</p>
 <p>If you're using a secure mysql install and want to use a user other than 'root' (highly recommended), you'll need to create a database named 'codeburner_$RAILSENV' and grant access to it:</p>
-<pre class="code"><code class="language-sql">mysql -u root -p
-
-mysql&gt; create database codeburner_development;
+<pre class="command-line" data-output="2-7"><code class="language-bash">mysql -u root -p</code>
+<code class="language-sql">
+mysql> create database codeburner_development;
 Query OK, 1 row affected (0.00 sec)
 
-mysql&gt; grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';
-Query OK, 0 rows affected (0.01 sec)</code></pre>
-
+mysql> grant all privileges on codeburner_development.* to 'my_new_user'@'localhost' identified by 'some_secure_password';
+Query OK, 0 rows affected (0.01 sec)
+</code></pre>
 
 <p>Once that's done you'll want to make sure the new username/password are in <a href="https://github.com/groupon/codeburner/blob/master/config/database.yml" target="_blank">config/database.yml</a>:</p>
 <pre class="code"><code class="language-yaml">local: &amp;local
@@ -418,16 +418,15 @@ Query OK, 0 rows affected (0.01 sec)</code></pre>
 
 
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">#</a></h3>
-<p>Once the mysql service is running and you've configured the password, you can initialize the database like so:</p>
-<pre class="code"><code class="language-bash">bundle exec rake db:setup</code></pre>
-
+<p>Once the mysql service is running and you've configured the password, you can initialize the database:</p>
+<pre class="command-line"><code class="language-bash">bundle exec rake db:setup</code></pre>
 
 <hr />
 <h2 id="redis">Redis<a class="headerlink" href="#redis" title="Permanent link">#</a></h2>
 <h3 id="installation_1">Installation<a class="headerlink" href="#installation_1" title="Permanent link">#</a></h3>
-<p>Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard os-provided redis packages should work fine on Linux/BSD/etc., and for OSX the homebrew redis package works great locally.</p>
+<p>Codeburner uses redis both for rails caching and asynchronous queueing with sidekiq.  Again the standard OS-provided redis packages should work fine on Linux/BSD/etc., the <a href="http://brew.sh" target="_blank">Homebrew</a> package works great on OSX.</p>
 <h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
-<p>Using default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in <a href="https://github.com/groupon/codeburner/blob/master/config/application.rb" target="_blank">config/application.rb</a>:</p>
+<p>Using the default configuration, you shouldn't need to change anything for local redis.  If you run redis on a host other than localhost, a port other than the default (6379), or you want to use a sentinel config for HA you can configure that by changing the relevant $redis_options line in <a href="https://github.com/groupon/codeburner/blob/master/config/application.rb" target="_blank">config/application.rb</a>:</p>
 <pre class="code"><code class="language-ruby">case ENV['RAILS_ENV']
 when 'production'
   $redis_options = {
@@ -470,11 +469,11 @@ end</code></pre>
   password: my_jira_password
   host: https://my_jira_host
   context_path: ''
-  use_ssl: false
+  use_ssl: true
   link_host: https://my_jira_host</code></pre>
 
 
-<p>Minimally you need to set username/password, host (which is the FQDN of the root JIRA API endpoint), and link_host (used to generate clickable links).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.</p>
+<p>Minimally you need to set username/password, host (which is the URL of the your JIRA install), and link_host (used to generate clickable links, if it's different from your API host).  You'll also probably want to set use_ssl to 'true' if possible so you aren't sending credentials in clear text.</p>
 <hr />
 <h2 id="e-mail">E-mail<a class="headerlink" href="#e-mail" title="Permanent link">#</a></h2>
 <h3 id="configuration_3">Configuration<a class="headerlink" href="#configuration_3" title="Permanent link">#</a></h3>

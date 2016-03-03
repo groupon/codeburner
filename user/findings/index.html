@@ -319,8 +319,8 @@
       
         
   <li>
-    <a class="" title="Pipeline" href="../../developer/pipeline/">
-      Pipeline
+    <a class="" title="JavaScript Client" href="../../developer/client/">
+      JavaScript Client
     </a>
     
   </li>
@@ -328,8 +328,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../../developer/client/">
-      JavaScript Client
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
+      Pipeline
     </a>
     
   </li>
@@ -381,26 +381,29 @@
           
             <h1>Interact with Findings</h1>
           
-          <p>The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking "Findings" in the menu bar or visiting the URL <a href="http://localhost:8080/#finding" target="_blank">http://localhost:8080/#finding</a>.</p>
+          <p>The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking "Findings" in the nav bar or visiting the URL <a href="http://localhost:8080/#finding" target="_blank">http://localhost:8080/#finding</a>.</p>
 <p><img alt="findings_page" src="../images/findings_page.png" /></p>
 <hr />
 <h2 id="service-list">Service List<a class="headerlink" href="#service-list" title="Permanent link">#</a></h2>
-<p>On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the "Filter Services" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and should honor it anywhere in the query string.</p>
+<p>On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the "Filter Services" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and it should honor it anywhere in the query string.</p>
 <p>Click a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.</p>
 <p><img alt="service_list" src="../images/service_list.png" /></p>
 <hr />
 <h2 id="findings-list">Findings List<a class="headerlink" href="#findings-list" title="Permanent link">#</a></h2>
 <p>The middle column of the findings page is the findings list.  By default it shows <strong>open</strong> findings for all services, or for the service selected in the service list on the left.</p>
-<p>You can use the toggles at the top to show <strong>hidden/published/filtered</strong> findings (more on that later), and click any of the column headings to sort on that field.  A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high--&gt;unknown.</p>
-<p>Click on any finding to show more details on the right.</p>
+<p>You can use the toggles at the top to show <strong>hidden/published/filtered</strong> findings (more on that later), and click any of the column headings to sort on that field.  </p>
+<p>A repeat click on a column heading changes the sort order.  The default sorting is on severity, descending from high--&gt;unknown.</p>
+<p>Click on any finding to show more details on the right...</p>
 <p><img alt="findings_list" src="../images/findings_list.png" /></p>
 <h2 id="details-pane">Details Pane<a class="headerlink" href="#details-pane" title="Permanent link">#</a></h2>
-<p>The details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information generally depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with full syntax highlighting.</p>
+<p>The details pane shows extended detail about a selected finding and allows you to act on it.  The quality of the information largely depends on what's provided by the individual scanning tools.  For example, if the tool provides a code snippet it will be shown here with syntax highlighting and a link to view the full context on GitHub.</p>
 <p><img alt="details_pane" src="../images/details_pane.png" /></p>
 <p>Clicking the revision link will take you to the root of that commit in GitHub:</p>
-<p><img alt="github_commit" src="../images/github_commit.png" /></p>
+<p><img alt="github_commit_click" src="../images/github_commit_click.png" />
+<img alt="github_commit" src="../images/github_commit.png" /></p>
 <p>If the finding comes from a scanner that reports file and line number, clicking the name of the file will take you to that revision of the file with the relevant line highlighted in GitHub:</p>
-<p><img alt="github_line" src="../images/github_line.png" /></p>
+<p><img alt="github_file_click" src="../images/github_file_click.png" />
+<img alt="github_line" src="../images/github_line.png" /></p>
 <h3 id="publish-issues">Publish Issues<a class="headerlink" href="#publish-issues" title="Permanent link">#</a></h3>
 <p>The first action provided in the details pane is "publish".  The publish action will publish the finding as either a GitHub or JIRA issue.</p>
 <p><img alt="finding_publish" src="../images/publish_finding.png" /></p>
@@ -409,12 +412,14 @@
 <p>If you select JIRA in the publish dialog, you'll also need to enter the JIRA project to use for creating your issue:</p>
 <p><img alt="publish_jira" src="../images/publish_jira.png" /></p>
 <h3 id="hide-issues">Hide Issues<a class="headerlink" href="#hide-issues" title="Permanent link">#</a></h3>
-<p>If you decide an issue isn't worth publishing and want to simply ignore it, you can use the "hide" action in the details pane.  Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details combined as a big string), hiding here will ensure <strong>that exact finding</strong> isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.  </p>
+<p>If you decide an issue isn't worth publishing and want to simply ignore it, you can use the "hide" action in the details pane.  </p>
+<p>Since individual results are uniquely fingerprinted (pipeline calculates a SHA256 by hashing certain finding details concatenated into a single string), hiding here will ensure <strong>that exact finding</strong> isn't reported again.  It also marks the finding as hidden and prevents it from showing up in the default findings list.  </p>
 <p><img alt="hide_finding" src="../images/hide_finding.png" /></p>
 <p>In the case where you want to revisit a hidden issue, you can use the toggle at the top of the findings list to show hidden findings.  If you select a hidden finding, the "hide" button becomes "unhide".</p>
-<p>For cases where you want more control over filtering future results like this one, you'll want to use the Filter interface described below.</p>
+<p>For cases where you want more control over filtering future results like this one, you'll want to use the <a href="../../user/filters/">Filtering</a> interface described below.</p>
 <h3 id="filtering">Filtering<a class="headerlink" href="#filtering" title="Permanent link">#</a></h3>
-<p>Since fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes "hide" isn't sufficient.  As an example, let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported.  That's where filtering comes in:</p>
+<p>Since fingerprints are hashed on a combination of fields, changes to those fields (like line number) result in a different fingerprint.  As such, sometimes "hide" isn't sufficient.  </p>
+<p>As an example: let's say you hide a finding on line 120 of a specific file and then refactor.  If the offending line becomes line 125 after your refactor it will be re-reported!  That's where filtering comes in:</p>
 <p><img alt="filter_finding" src="../images/filter_finding.png" /></p>
 <p>The <a href="../../user/filters/">Filtering</a> section covers the use of filters in more detail.</p>
 <hr />
