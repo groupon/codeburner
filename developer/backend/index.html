@@ -294,8 +294,38 @@
         <ul>
           
             <li class="anchor">
-              <a title="Rails backend" href="#rails-backend">
-                Rails backend
+              <a title="Application Server" href="#application-server">
+                Application Server
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Ruby Environment" href="#ruby-environment">
+                Ruby Environment
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Database" href="#database">
+                Database
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Caching" href="#caching">
+                Caching
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Sidekiq" href="#sidekiq">
+                Sidekiq
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Unit Tests" href="#unit-tests">
+                Unit Tests
               </a>
             </li>
           
@@ -307,8 +337,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../client/">
-      JavaScript Client
+    <a class="" title="Web Client" href="../client/">
+      Web Client
     </a>
     
   </li>
@@ -369,7 +399,39 @@
           
             <h1>Rails Backend</h1>
           
-          <h2 id="rails-backend">Rails backend<a class="headerlink" href="#rails-backend" title="Permanent link">#</a></h2>
+          <h2 id="application-server">Application Server<a class="headerlink" href="#application-server" title="Permanent link">#</a></h2>
+<p>The primary Codeburner application is a ruby 2/rails 4 service that provides the REST API and manages the asynchronous workers for scanning and notifications.</p>
+<p>It uses <a href="http://sidekiq.org/" target="_blank">Sidekiq</a> with a redis queue for the asynchronous work.</p>
+<hr />
+<h2 id="ruby-environment">Ruby Environment<a class="headerlink" href="#ruby-environment" title="Permanent link">#</a></h2>
+<p>Codeburner was developed primarily on OSX with ruby 2.2 using the <a href="http://brew.sh" target="_blank">Homebrew</a> packages for MySQL and Redis.</p>
+<hr />
+<h2 id="database">Database<a class="headerlink" href="#database" title="Permanent link">#</a></h2>
+<p><a href="http://www.mysql.com" target="_blank">MySQL</a> is the database of choice, and MySQL 5.6+ is recommended for use with <a href="https://github.com/airblade/paper_trail" target="_blank">paper_trail</a>, which is used to generate statistics.</p>
+<hr />
+<h2 id="caching">Caching<a class="headerlink" href="#caching" title="Permanent link">#</a></h2>
+<p>Caching is done via <a href="http://redis.io" target="_blank">Redis</a>.  In addition to being used for the standard rails transaction caching, Codeburner also pre-renders the results to the most common API queries (<a href="../../developer/api/#get-apistats">GET /api/stats</a> for example) and updates the cache whenever the models change.</p>
+<hr />
+<h2 id="sidekiq">Sidekiq<a class="headerlink" href="#sidekiq" title="Permanent link">#</a></h2>
+<p>Codeburner uses <a href="http://sidekiq.org/" target="_blank">Sidekiq</a> for asynchronous work.  It must be started as a separate process from the main application server as noted in the <a href="../../setup/startup/#start-sidekiq">Startup Guide</a>.</p>
+<p>You can pull up the GUI for sidekiq with the URL <a href="http://localhost:8080/sidekiq" target="_blank">http://localhost:8080/sidekiq</a>.  Here you can view the queue status and see what your workers are up to.  </p>
+<p>If you've installed the <a href="https://github.com/mhfs/sidekiq-failures"  target="_blank">sidekiq-failures</a> gem, you can also get detailed information on failures complete with log snippets useful for debugging purposes.</p>
+<hr />
+<h2 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">#</a></h2>
+<p>Tests are in the <a href="https://github.com/groupon/codeburner/tree/master/test" target="_blank">/test</a> directory.  They're written in <a href="http://docs.seattlerb.org/minitest/" target="_blank">minitest/unit</a> using <a href="http://gofreerange.com/mocha/" target="_blank">Mocha</a> mocks.</p>
+<p>If you submit patches to Codeburner, please ensure a '<strong>rake test</strong>' comes back clean:</p>
+<pre class="command-line language-bash" data-output="2-10"><code>bundle exec rake test
+Running via Spring preloader in process 49701
+Started with run options --seed 33780
+
+  80/80: [================================================================] 100% Time: 00:00:01, Time: 00:00:01
+
+Finished in 1.60502s
+80 tests, 213 assertions, 0 failures, 0 errors, 0 skips
+Coverage report generated for MiniTest to ~/codeburner/coverage. 574 / 574 LOC (100.0%) covered.</pre>
+
+<p></code></p>
+<p>When adding new functionality, make sure to add tests for that functionality to the appropriate <a href="https://github.com/groupon/codeburner/tree/master/test" target="_blank">/test</a> directory.</p>
 <hr />
           <aside class="copyright" role="note">
             
@@ -406,14 +468,14 @@
     </div>
     <div class="next">
       
-        <a href="../client/" title="JavaScript Client">
+        <a href="../client/" title="Web Client">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                JavaScript Client
+                Web Client
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

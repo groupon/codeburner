@@ -294,8 +294,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../client/">
-      JavaScript Client
+    <a class="" title="Web Client" href="../client/">
+      Web Client
     </a>
     
   </li>
@@ -339,14 +339,14 @@
             </li>
           
             <li class="anchor">
-              <a title="/api/finding" href="#apifinding">
-                /api/finding
+              <a title="/api/filter" href="#apifilter">
+                /api/filter
               </a>
             </li>
           
             <li class="anchor">
-              <a title="/api/filter" href="#apifilter">
-                /api/filter
+              <a title="/api/finding" href="#apifinding">
+                /api/finding
               </a>
             </li>
           
@@ -514,6 +514,115 @@
 
 
 <hr />
+<h2 id="apifilter">/api/filter<a class="headerlink" href="#apifilter" title="Permanent link">#</a></h2>
+<p>The filter API allows you to list, create, and delete filters.</p>
+<ul>
+<li><a href="#get-apifilter">GET /api/filter</a></li>
+<li><a href="#post-apifilter">POST /api/filter</a></li>
+<li><a href="#get-apifilterid">GET /api/filter/{:id}</a></li>
+<li><a href="#delete-apifilterid">DELETE /api/filter/{:id}</a></li>
+</ul>
+<hr />
+<h3 id="get-apifilter">GET /api/filter<a class="headerlink" href="#get-apifilter" title="Permanent link">#</a></h3>
+<p>Lists all existing filters.  Non-paginated list by default.</p>
+<h4 id="parameters-all-optional_1">Parameters (all optional)<a class="headerlink" href="#parameters-all-optional_1" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>sort_by</strong>:      A <strong>string</strong> for sortable field (<strong>id</strong>,<strong>service_id</strong>)</li>
+<li><strong>order</strong>:        A <strong>string</strong> for ascending/descending orader (<strong>asc</strong>,<strong>desc</strong>)</li>
+<li><strong>page</strong>:         An <strong>integer</strong> for specifying the page of the paginated results</li>
+<li><strong>per_page</strong>:     An <strong>integer</strong> to override the default of 100 results per page if requesting pagination</li>
+</ul>
+<h4 id="sample-request_3">Sample request:<a class="headerlink" href="#sample-request_3" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/filter</code></pre></p>
+<h4 id="sample-response_3">Sample response:<a class="headerlink" href="#sample-response_3" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;count&quot;:4,
+  &quot;results&quot;:
+  [{
+    &quot;id&quot;:2,
+    &quot;service_id&quot;:5,
+    &quot;severity&quot;:null,
+    &quot;fingerprint&quot;:null,
+    &quot;scanner&quot;:&quot;DawnScanner&quot;,
+    &quot;description&quot;:null,
+    &quot;detail&quot;:null,
+    &quot;file&quot;:null,
+    &quot;line&quot;:null,
+    &quot;code&quot;:null,
+    &quot;created_at&quot;:&quot;2016-03-02T22:07:31.000Z&quot;,
+    &quot;updated_at&quot;:&quot;2016-03-02T22:07:31.000Z&quot;,
+    &quot;finding_count&quot;:2
+  }]
+}</code></pre>
+
+
+<hr />
+<h3 id="post-apifilter">POST /api/filter<a class="headerlink" href="#post-apifilter" title="Permanent link">#</a></h3>
+<p>Create a new filter.  All findings (existing and future) matching the provided combination of parameters will be marked with status <strong>3</strong> (filtered) .  </p>
+<p>This will return a 409 validation error on attempting to create a duplicate filter.</p>
+<h4 id="parameters-all-optional_2">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_2" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>service_id</strong>:   An <strong>integer</strong> representing a specific service ID</li>
+<li><strong>severity</strong>:     An <strong>integer</strong> representing severity as reported by pipeline</li>
+<li><strong>fingerprint</strong>:  A <strong>string</strong> representing the SHA256 fingerprint calculated by pipeline</li>
+<li><strong>scanner</strong>:      A <strong>string</strong> representing an individual scanning tool</li>
+<li><strong>description</strong>:  A <strong>string</strong> representing a finding description</li>
+<li><strong>detail</strong>:       A <strong>string</strong> representing a finding extended detail</li>
+<li><strong>file</strong>:         A <strong>string</strong> representing a specific file name</li>
+<li><strong>line</strong>:         A <strong>string</strong> representing the line number (this is a string vs. integer to allow for a TODO item)</li>
+<li><strong>code</strong>:         A <strong>string</strong> representing a code snippet returned by a scanning tool</li>
+</ul>
+<h4 id="sample-request_4">Sample request:<a class="headerlink" href="#sample-request_4" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -X POST -F service_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter</code></pre></p>
+<h4 id="sample-response_4">Sample response:<a class="headerlink" href="#sample-response_4" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;id&quot;:4,
+  &quot;service_id&quot;:5,
+  &quot;severity&quot;:null,
+  &quot;fingerprint&quot;:null,
+  &quot;scanner&quot;:&quot;Brakeman&quot;,
+  &quot;description&quot;:null,
+  &quot;detail&quot;:null,
+  &quot;file&quot;:null,
+  &quot;line&quot;:null,
+  &quot;code&quot;:null,
+  &quot;created_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;,
+  &quot;updated_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;
+}</code></pre>
+
+
+<hr />
+<h3 id="get-apifilterid">GET /api/filter/{:id}<a class="headerlink" href="#get-apifilterid" title="Permanent link">#</a></h3>
+<p>Show a specific filter #<strong>:id</strong>.</p>
+<h4 id="sample-request_5">Sample request:<a class="headerlink" href="#sample-request_5" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/filter/4</code></pre></p>
+<h4 id="sample-response_5">Sample response:<a class="headerlink" href="#sample-response_5" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;id&quot;:4,
+  &quot;service_id&quot;:5,
+  &quot;severity&quot;:null,
+  &quot;fingerprint&quot;:null,
+  &quot;scanner&quot;:&quot;Brakeman&quot;,
+  &quot;description&quot;:null,
+  &quot;detail&quot;:null,
+  &quot;file&quot;:null,
+  &quot;line&quot;:null,
+  &quot;code&quot;:null,
+  &quot;created_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;,
+  &quot;updated_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;
+}</code></pre>
+
+
+<hr />
+<h3 id="delete-apifilterid">DELETE /api/filter/{:id}<a class="headerlink" href="#delete-apifilterid" title="Permanent link">#</a></h3>
+<p>Delete a specific filter #<strong>:id</strong>.</p>
+<h4 id="sample-request_6">Sample request:<a class="headerlink" href="#sample-request_6" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' -X DELETE http://localhost:8080/api/filter/4</code></pre></p>
+<h4 id="sample-response_6">Sample response:<a class="headerlink" href="#sample-response_6" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{&quot;result&quot;:&quot;success&quot;}</code></pre>
+
+
+<hr />
 <h2 id="apifinding">/api/finding<a class="headerlink" href="#apifinding" title="Permanent link">#</a></h2>
 <p>The finding API allows you to view findings, publish them to your issue tracker of choice, and modify status.</p>
 <ul>
@@ -525,7 +634,7 @@
 <hr />
 <h3 id="get-apifinding">GET /api/finding<a class="headerlink" href="#get-apifinding" title="Permanent link">#</a></h3>
 <p>Gets the list of findings matching specified criteria.  With no parameters specified, it will provide a paginated list of all findings at a rate of 100 per page as well as a total count of the results found.</p>
-<h4 id="parameters-all-optional_1">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_1" title="Permanent link">#</a></h4>
+<h4 id="parameters-all-optional_3">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_3" title="Permanent link">#</a></h4>
 <ul>
 <li><strong>service_id</strong>:   An <strong>integer</strong> representing the service ID</li>
 <li><strong>burn_id</strong>:      An <strong>integer</strong> representing the burn ID</li>
@@ -539,9 +648,9 @@
 <li><strong>page</strong>:         An <strong>integer</strong> for specifying the page of the paginated results</li>
 <li><strong>per_page</strong>:     An <strong>integer</strong> to override the default of 100 results per page</li>
 </ul>
-<h4 id="sample-request_3">Sample request:<a class="headerlink" href="#sample-request_3" title="Permanent link">#</a></h4>
+<h4 id="sample-request_7">Sample request:<a class="headerlink" href="#sample-request_7" title="Permanent link">#</a></h4>
 <p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/finding?service_name=codeburner?per_page=1</code></pre></p>
-<h4 id="sample-response_3">Sample response:<a class="headerlink" href="#sample-response_3" title="Permanent link">#</a></h4>
+<h4 id="sample-response_7">Sample response:<a class="headerlink" href="#sample-response_7" title="Permanent link">#</a></h4>
 <pre class="code"><code class="language-json">{
   &quot;count&quot;:14,
   &quot;results&quot;:
@@ -568,9 +677,9 @@
 <hr />
 <h3 id="get-apifindingid">GET /api/finding/{:id}<a class="headerlink" href="#get-apifindingid" title="Permanent link">#</a></h3>
 <p>Show information about an individual finding #<strong>:id</strong>.</p>
-<h4 id="sample-request_4">Sample request:<a class="headerlink" href="#sample-request_4" title="Permanent link">#</a></h4>
+<h4 id="sample-request_8">Sample request:<a class="headerlink" href="#sample-request_8" title="Permanent link">#</a></h4>
 <p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/finding/158</code></pre></p>
-<h4 id="sample-response_4">Sample response:<a class="headerlink" href="#sample-response_4" title="Permanent link">#</a></h4>
+<h4 id="sample-response_8">Sample response:<a class="headerlink" href="#sample-response_8" title="Permanent link">#</a></h4>
 <pre class="code"><code class="language-json">{
   &quot;id&quot;:158,
   &quot;description&quot;:&quot;Unscoped Find&quot;,
@@ -593,9 +702,9 @@
 <hr />
 <h3 id="put-apifindingid">PUT /api/finding/{:id}<a class="headerlink" href="#put-apifindingid" title="Permanent link">#</a></h3>
 <p>Update attributes (currently only <strong>status</strong>) for a specific finding #<strong>:id</strong>.</p>
-<h4 id="sample-request_5">Sample request:<a class="headerlink" href="#sample-request_5" title="Permanent link">#</a></h4>
+<h4 id="sample-request_9">Sample request:<a class="headerlink" href="#sample-request_9" title="Permanent link">#</a></h4>
 <p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' -X PUT -d '{"status":1}' http://localhost:8080/api/finding/158</code></pre></p>
-<h4 id="sample-response_5">Sample response:<a class="headerlink" href="#sample-response_5" title="Permanent link">#</a></h4>
+<h4 id="sample-response_9">Sample response:<a class="headerlink" href="#sample-response_9" title="Permanent link">#</a></h4>
 <pre class="code"><code class="language-json">{
   &quot;id&quot;:158,
   &quot;description&quot;:&quot;Unscoped Find&quot;,
@@ -623,122 +732,13 @@
 <li><string>*</strong><strong>method</strong>: A <strong>string</strong> representing the desired publishing method (<strong>github</strong>,<strong>jira</strong>)</li>
 <li><strong>project</strong>:                  A <strong>string</strong> representing the JIRA project if you're using that publishing method</li>
 </ul>
-<h4 id="sample-request_6">Sample request:<a class="headerlink" href="#sample-request_6" title="Permanent link">#</a></h4>
+<h4 id="sample-request_10">Sample request:<a class="headerlink" href="#sample-request_10" title="Permanent link">#</a></h4>
 <p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' -X PUT -d '{"method":"github"}' http://localhost:8080/api/finding/158/publish</code></pre></p>
-<h4 id="sample-response_6">Sample response:<a class="headerlink" href="#sample-response_6" title="Permanent link">#</a></h4>
+<h4 id="sample-response_10">Sample response:<a class="headerlink" href="#sample-response_10" title="Permanent link">#</a></h4>
 <pre class="code"><code class="language-json">{
   &quot;ticket&quot;:&quot;groupon/codeburner - Issue #5&quot;,
   &quot;link&quot;:&quot;https://github.com/groupon/codeburner/issues/5&quot;
 }</code></pre>
-
-
-<hr />
-<h2 id="apifilter">/api/filter<a class="headerlink" href="#apifilter" title="Permanent link">#</a></h2>
-<p>The filter API allows you to list, create, and delete filters.</p>
-<ul>
-<li><a href="#get-apifilter">GET /api/filter</a></li>
-<li><a href="#post-apifilter">POST /api/filter</a></li>
-<li><a href="#get-apifilterid">GET /api/filter/{:id}</a></li>
-<li><a href="#delete-apifilterid">DELETE /api/filter/{:id}</a></li>
-</ul>
-<hr />
-<h3 id="get-apifilter">GET /api/filter<a class="headerlink" href="#get-apifilter" title="Permanent link">#</a></h3>
-<p>Lists all existing filters.  Non-paginated list by default.</p>
-<h4 id="parameters-all-optional_2">Parameters (all optional)<a class="headerlink" href="#parameters-all-optional_2" title="Permanent link">#</a></h4>
-<ul>
-<li><strong>sort_by</strong>:      A <strong>string</strong> for sortable field (<strong>id</strong>,<strong>service_id</strong>)</li>
-<li><strong>order</strong>:        A <strong>string</strong> for ascending/descending orader (<strong>asc</strong>,<strong>desc</strong>)</li>
-<li><strong>page</strong>:         An <strong>integer</strong> for specifying the page of the paginated results</li>
-<li><strong>per_page</strong>:     An <strong>integer</strong> to override the default of 100 results per page if requesting pagination</li>
-</ul>
-<h4 id="sample-request_7">Sample request:<a class="headerlink" href="#sample-request_7" title="Permanent link">#</a></h4>
-<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/filter</code></pre></p>
-<h4 id="sample-response_7">Sample response:<a class="headerlink" href="#sample-response_7" title="Permanent link">#</a></h4>
-<pre class="code"><code class="language-json">{
-  &quot;count&quot;:4,
-  &quot;results&quot;:
-  [{
-    &quot;id&quot;:2,
-    &quot;service_id&quot;:5,
-    &quot;severity&quot;:null,
-    &quot;fingerprint&quot;:null,
-    &quot;scanner&quot;:&quot;DawnScanner&quot;,
-    &quot;description&quot;:null,
-    &quot;detail&quot;:null,
-    &quot;file&quot;:null,
-    &quot;line&quot;:null,
-    &quot;code&quot;:null,
-    &quot;created_at&quot;:&quot;2016-03-02T22:07:31.000Z&quot;,
-    &quot;updated_at&quot;:&quot;2016-03-02T22:07:31.000Z&quot;,
-    &quot;finding_count&quot;:2
-  }]
-}</code></pre>
-
-
-<hr />
-<h3 id="post-apifilter">POST /api/filter<a class="headerlink" href="#post-apifilter" title="Permanent link">#</a></h3>
-<p>Create a new filter.  All findings (existing and future) matching the provided combination of parameters will be marked with status <strong>3</strong> (filtered) .  </p>
-<p>This will return a 409 validation error on attempting to create a duplicate filter.</p>
-<h4 id="parameters-all-optional_3">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_3" title="Permanent link">#</a></h4>
-<ul>
-<li><strong>service_id</strong>:   An <strong>integer</strong> representing a specific service ID</li>
-<li><strong>severity</strong>:     An <strong>integer</strong> representing severity as reported by pipeline</li>
-<li><strong>fingerprint</strong>:  A <strong>string</strong> representing the SHA256 fingerprint calculated by pipeline</li>
-<li><strong>scanner</strong>:      A <strong>string</strong> representing an individual scanning tool</li>
-<li><strong>description</strong>:  A <strong>string</strong> representing a finding description</li>
-<li><strong>detail</strong>:       A <strong>string</strong> representing a finding extended detail</li>
-<li><strong>file</strong>:         A <strong>string</strong> representing a specific file name</li>
-<li><strong>line</strong>:         A <strong>string</strong> representing the line number (this is a string vs. integer to allow for a TODO item)</li>
-<li><strong>code</strong>:         A <strong>string</strong> representing a code snippet returned by a scanning tool</li>
-</ul>
-<h4 id="sample-request_8">Sample request:<a class="headerlink" href="#sample-request_8" title="Permanent link">#</a></h4>
-<p><pre class="command-line"><code class="language-bash">curl -X POST -F service_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter</code></pre></p>
-<h4 id="sample-response_8">Sample response:<a class="headerlink" href="#sample-response_8" title="Permanent link">#</a></h4>
-<pre class="code"><code class="language-json">{
-  &quot;id&quot;:4,
-  &quot;service_id&quot;:5,
-  &quot;severity&quot;:null,
-  &quot;fingerprint&quot;:null,
-  &quot;scanner&quot;:&quot;Brakeman&quot;,
-  &quot;description&quot;:null,
-  &quot;detail&quot;:null,
-  &quot;file&quot;:null,
-  &quot;line&quot;:null,
-  &quot;code&quot;:null,
-  &quot;created_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;,
-  &quot;updated_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;
-}</code></pre>
-
-
-<hr />
-<h3 id="get-apifilterid">GET /api/filter/{:id}<a class="headerlink" href="#get-apifilterid" title="Permanent link">#</a></h3>
-<p>Show a specific filter #<strong>:id</strong>.</p>
-<h4 id="sample-request_9">Sample request:<a class="headerlink" href="#sample-request_9" title="Permanent link">#</a></h4>
-<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/filter/4</code></pre></p>
-<h4 id="sample-response_9">Sample response:<a class="headerlink" href="#sample-response_9" title="Permanent link">#</a></h4>
-<pre class="code"><code class="language-json">{
-  &quot;id&quot;:4,
-  &quot;service_id&quot;:5,
-  &quot;severity&quot;:null,
-  &quot;fingerprint&quot;:null,
-  &quot;scanner&quot;:&quot;Brakeman&quot;,
-  &quot;description&quot;:null,
-  &quot;detail&quot;:null,
-  &quot;file&quot;:null,
-  &quot;line&quot;:null,
-  &quot;code&quot;:null,
-  &quot;created_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;,
-  &quot;updated_at&quot;:&quot;2016-03-03T22:10:57.665Z&quot;
-}</code></pre>
-
-
-<hr />
-<h3 id="delete-apifilterid">DELETE /api/filter/{:id}<a class="headerlink" href="#delete-apifilterid" title="Permanent link">#</a></h3>
-<p>Delete a specific filter #<strong>:id</strong>.</p>
-<h4 id="sample-request_10">Sample request:<a class="headerlink" href="#sample-request_10" title="Permanent link">#</a></h4>
-<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' -X DELETE http://localhost:8080/api/filter/4</code></pre></p>
-<h4 id="sample-response_10">Sample response:<a class="headerlink" href="#sample-response_10" title="Permanent link">#</a></h4>
-<pre class="code"><code class="language-json">{&quot;result&quot;:&quot;success&quot;}</code></pre>
 
 
 <hr />
@@ -790,7 +790,7 @@
 
 <hr />
 <h3 id="get-apiserviceidstats">GET /api/service/{:id}/stats<a class="headerlink" href="#get-apiserviceidstats" title="Permanent link">#</a></h3>
-<p>Get general statistics about a specific service #<strong>id</strong>.</p>
+<p>Get statistics about a specific service #<strong>id</strong>.  If you want statistics about all services, see <a href="#apistats">/api/stats</a>.</p>
 <h4 id="sample-request_13">Sample request:<a class="headerlink" href="#sample-request_13" title="Permanent link">#</a></h4>
 <p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats</code></pre></p>
 <h4 id="sample-response_13">Sample response:<a class="headerlink" href="#sample-response_13" title="Permanent link">#</a></h4>
@@ -899,6 +899,9 @@
 
 <hr />
 <h2 id="apistats">/api/stats<a class="headerlink" href="#apistats" title="Permanent link">#</a></h2>
+<p>The stats API provides overall statistics and history for everything done by Codeburner.  If you want to pull statistics for an individual service, see <a href="#get-apiserviceidstats">/api/service/{:id}/stats</a>.</p>
+<p>All times are passed as <strong>JSON-encoded UTC</strong>, and the data is generally structured to be easily mapped to a <a href="https://developers.google.com/chart/interactive/docs/reference#DataTable" target="_blank">Google Visualization DataTable</a> object.  </p>
+<p>If you want to incorporate Codeburner data in your existing dashboards or otherwise roll your own graphs, it should map fairly cleanly to most popular graphing implementations.  A handful of libraries that have worked well with the data internally:  <a href="https://github.com/ankane/chartkick.js" target="_blank">chartkick</a>, <a href="https://gionkunz.github.io/chartist-js/" target="_blank">chartist</a>, <a href="https://github.com/topfunky/gruff" target="_blank">gruff</a>.</p>
 <ul>
 <li><a href="#get-apistats">GET /api/stats</a></li>
 <li><a href="#get-apistatsburns">GET /api/stats/burns</a></li>
@@ -907,29 +910,126 @@
 <li><a href="#get-apistatshistoryresolution">GET /api/stats/history/resolution</a></li>
 </ul>
 <h3 id="get-apistats">GET /api/stats<a class="headerlink" href="#get-apistats" title="Permanent link">#</a></h3>
-<h4 id="parameters">Parameters:<a class="headerlink" href="#parameters" title="Permanent link">#</a></h4>
+<p>Get statistics for number of findings in each category (<strong>open</strong>, <strong>hidden</strong>, <strong>published</strong>, <strong>filtered</strong>), total lines/files burned, number of services and number of burns.  This response is cached in redis and should respond very quickly.</p>
 <h4 id="sample-request_18">Sample request:<a class="headerlink" href="#sample-request_18" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats</code></pre></p>
 <h4 id="sample-response_18">Sample response:<a class="headerlink" href="#sample-response_18" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;services&quot;:1,
+  &quot;burns&quot;:2,
+  &quot;total_findings&quot;:14,
+  &quot;open_findings&quot;:10,
+  &quot;hidden_findings&quot;:0,
+  &quot;published_findings&quot;:1,
+  &quot;filtered_findings&quot;:3,
+  &quot;files&quot;:78,
+  &quot;lines&quot;:5542
+}</code></pre>
+
+
 <hr />
 <h3 id="get-apistatsburns">GET /api/stats/burns<a class="headerlink" href="#get-apistatsburns" title="Permanent link">#</a></h3>
-<h4 id="parameters_1">Parameters:<a class="headerlink" href="#parameters_1" title="Permanent link">#</a></h4>
+<p>Get a list of [date, count] pairs where count is the number of burns performed on date.</p>
+<h4 id="parameters-all-optional_6">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_6" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>start_date</strong>: A <strong>string</strong> representing the start_date for the list, parsable by ruby Time.parse().</li>
+<li><strong>end_date</strong>:   A <strong>string</strong> representing the end_date for the list, parsable by ruby Time.parse().</li>
+</ul>
 <h4 id="sample-request_19">Sample request:<a class="headerlink" href="#sample-request_19" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats/burns</code></pre></p>
 <h4 id="sample-response_19">Sample response:<a class="headerlink" href="#sample-response_19" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">[
+  [&quot;2016-03-02&quot;,1],
+  [&quot;2016-03-03&quot;,1],
+  [&quot;2016-03-04&quot;,0]
+]</code></pre>
+
+
 <hr />
 <h3 id="get-apistatshistory">GET /api/stats/history<a class="headerlink" href="#get-apistatshistory" title="Permanent link">#</a></h3>
-<h4 id="parameters_2">Parameters:<a class="headerlink" href="#parameters_2" title="Permanent link">#</a></h4>
+<p>Generate point-in-time statistics (comparable to the /api/stats output) for a service from <strong>start_date</strong> to <strong>end_date</strong> with a timestep of <strong>resolution</strong>.</p>
+<p>The default <strong>start_date</strong> is the date of the first burn, and the default <strong>end_date</strong> is ruby Time.now().  </p>
+<p>The default <strong>resolution</strong> is calculated automatically based on the length of time between the two dates to generate smooth trend lines when graphed.  It ranges from 1 hour to 1 week.</p>
+<h4 id="parameters-all-optional_7">Parameters (all optional):<a class="headerlink" href="#parameters-all-optional_7" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>start_date</strong>: A <strong>string</strong> representing the start_date for the history, parsable by ruby Time.parse().</li>
+<li><strong>end_date</strong>:   A <strong>string</strong> representing the end_date for the history, parsable by ruby Time.parse().</li>
+<li><strong>resolution</strong>: An <strong>integer</strong> representing the timestep used to sample stats, in seconds.</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a <strong>very</strong> large number of database queries and cause considerable slowdown.</p>
+</div>
 <h4 id="sample-request_20">Sample request:<a class="headerlink" href="#sample-request_20" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats/history?resolution=400000</code></pre></p>
 <h4 id="sample-response_20">Sample response:<a class="headerlink" href="#sample-response_20" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;services&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,1],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,1],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,1]],
+  &quot;burns&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,1],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,1],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,2]],
+  &quot;total_findings&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,4],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,14]],
+  &quot;open_findings&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,4],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,10]],
+  &quot;hidden_findings&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,0],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,0]],
+  &quot;published_findings&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,0],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,1]],
+  &quot;filtered_findings&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,0],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,3]],
+  &quot;files&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,18],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,78]],
+  &quot;lines&quot;:[
+    [&quot;2016-02-25T21:18:22.000Z&quot;,0],
+    [&quot;2016-03-01T12:25:02.000Z&quot;,1817],
+    [&quot;2016-03-04T09:36:45.985-06:00&quot;,5542]]
+}</code></pre>
+
+
 <hr />
 <h3 id="get-apistatshistoryrange">GET /api/stats/history/range<a class="headerlink" href="#get-apistatshistoryrange" title="Permanent link">#</a></h3>
-<h4 id="parameters_3">Parameters:<a class="headerlink" href="#parameters_3" title="Permanent link">#</a></h4>
+<p>Show the default <strong>start_date</strong>, <strong>end_date</strong> and <strong>resolution</strong> for full Codeburner history.</p>
 <h4 id="sample-request_21">Sample request:<a class="headerlink" href="#sample-request_21" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats/history/range</code></pre></p>
 <h4 id="sample-response_21">Sample response:<a class="headerlink" href="#sample-response_21" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">{
+  &quot;start_date&quot;:&quot;2016-02-25T21:18:22.000Z&quot;,
+  &quot;end_date&quot;:&quot;2016-03-04T09:41:10.342-06:00&quot;,
+  &quot;resolution&quot;:43200
+}</code></pre>
+
+
 <hr />
 <h3 id="get-apistatshistoryresolution">GET /api/stats/history/resolution<a class="headerlink" href="#get-apistatshistoryresolution" title="Permanent link">#</a></h3>
-<h4 id="parameters_4">Parameters:<a class="headerlink" href="#parameters_4" title="Permanent link">#</a></h4>
+<p>Show the default <strong>resolution</strong> for a given <strong>start_date</strong> and <strong>end_date</strong>.</p>
+<h4 id="parameters-all-required_1">Parameters (all required):<a class="headerlink" href="#parameters-all-required_1" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>start_date</strong>: A <strong>string</strong> representing the start_date for the resolution, parsable by ruby Time.parse().</li>
+<li><strong>end_date</strong>:   A <strong>string</strong> representing the end_date for the resolution, parsable by ruby Time.parse().</li>
+</ul>
 <h4 id="sample-request_22">Sample request:<a class="headerlink" href="#sample-request_22" title="Permanent link">#</a></h4>
+<p><pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats/history/resolution?start_date=2016-03-01T23:06:49.107Z&amp;end_date=2016-03-03T17:07:05.428-06:00</code></pre></p>
 <h4 id="sample-response_22">Sample response:<a class="headerlink" href="#sample-response_22" title="Permanent link">#</a></h4>
+<pre class="code"><code class="language-json">14400</code></pre>
+
+
 <hr />
           <aside class="copyright" role="note">
             

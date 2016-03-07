@@ -294,8 +294,8 @@
       
         
   <li>
-    <a class="" title="JavaScript Client" href="../client/">
-      JavaScript Client
+    <a class="" title="Web Client" href="../client/">
+      Web Client
     </a>
     
   </li>
@@ -312,8 +312,14 @@
         <ul>
           
             <li class="anchor">
-              <a title="What is pipeline?" href="#what-is-pipeline">
-                What is pipeline?
+              <a title="What is Pipeline?" href="#what-is-pipeline">
+                What is Pipeline?
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Adding Scanners" href="#adding-scanners">
+                Adding Scanners
               </a>
             </li>
           
@@ -369,7 +375,72 @@
           
             <h1>Pipeline</h1>
           
-          <h2 id="what-is-pipeline">What is pipeline?<a class="headerlink" href="#what-is-pipeline" title="Permanent link">#</a></h2>
+          <h2 id="what-is-pipeline">What is Pipeline?<a class="headerlink" href="#what-is-pipeline" title="Permanent link">#</a></h2>
+<p>To quote the README for the <a href="https://githbu.com/OWASP/pipeline" target="_blank">OWASP pipeline</a> project... "Pipeline is a framework for running a series of tools. Generally, it is intended as a backbone for automating a security analysis pipeline of tools."</p>
+<p>Codeburner uses pipeline to run the various scanning tools on your code and normalize the results to a common object format: the <a href="https://github.com/OWASP/pipeline/blob/master/lib/pipeline/finding.rb" target="_blank">pipeline finding</a>.</p>
+<h2 id="adding-scanners">Adding Scanners<a class="headerlink" href="#adding-scanners" title="Permanent link">#</a></h2>
+<p>If you want to add a new scanning tool to Codeburner, you can contribute to the pipeline project by adding a new <a href="https://github.com/OWASP/pipeline/tree/master/lib/pipeline/tasks" target="_blank">Task</a>.  You can see the existing tasks for examples, and it's generally straightforward as long as your scanning tool outputs structured data (JSON/XML/etc.).</p>
+<p>Here's a stripped down, commented task for a generic scanner to help get you started:</p>
+<pre class="code"><code class="language-ruby"># Minimally require pipeline/tasks/base_task
+require 'pipeline/tasks/base_task'
+require 'pipeline/util'
+require 'json'
+
+# Give your task a useful name
+class Pipeline::TaskName &lt; Pipeline::BaseTask
+
+  Pipeline::Tasks.add self
+  include Pipeline::Util
+
+  # Do any setup
+  def initialize(trigger, tracker)
+    super(trigger, tracker)
+    @name = &quot;TaskName&quot;
+    @description = &quot;This is a description of the TaskName scanner for ruby/rails&quot;
+    @stage = :code
+    @labels &lt;&lt; &quot;code&quot; &lt;&lt; &quot;ruby&quot; &lt;&lt; &quot;rails&quot;
+  end
+
+  # Run the scanning command and create @result
+  def run
+    @result = JSON.parse `/some/scanner -that returns -t json`
+  end
+
+  # analyze() gets called after run().  the report() call actually creates the finding object
+  def analyze
+    begin
+      @result[&quot;warnings&quot;].each do |warning|
+        name = warning[&quot;type&quot;]
+        detail = warning[&quot;description&quot;]
+        source = {
+          :scanner =&gt; @name,
+          :file =&gt; warning[&quot;file&quot;],
+          :line =&gt; warning[&quot;line&quot;],
+          :code =&gt; warning[&quot;snippet&quot;]
+        }
+        sev = severity(warning[&quot;confidence&quot;])
+        fprint = fingerprint(&quot;#{name}#{detail}#{source}#{sev}&quot;)
+
+        report name, detail, source, sev, fprint
+      end
+    rescue Exception =&gt; e
+      Pipeline.warn e.message
+      Pipeline.warn e.backtrace
+    end
+  end
+
+  # Whatever test is appropriate to determine if your tool is installed
+  def supported?
+    unless File.exist?('/path/to/command')
+      Pipeline.notify &quot;Run: /some/command/to/install/me&quot;
+      return false
+    else
+      return true
+    end
+  end
+end</code></pre>
+
+
 <hr />
           <aside class="copyright" role="note">
             
@@ -387,7 +458,7 @@
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../client/" title="JavaScript Client">
+        <a href="../client/" title="Web Client">
           <span class="direction">
             Previous
           </span>
@@ -397,7 +468,7 @@
             </div>
             <div class="stretch">
               <div class="title">
-                JavaScript Client
+                Web Client
               </div>
             </div>
           </div>
