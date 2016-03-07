@@ -97,6 +97,16 @@ class Api::BurnControllerTest < ActionController::TestCase
     end
   end
 
+  test "pulls head commit on missing revision param" do
+    assert_difference('Burn.count') do
+      BurnWorker.expects(:perform_async).returns(true).once
+      CodeburnerUtil.expects(:get_head_commit).returns('abcdefg').once
+      post(:create, {:service_name => 'my_non_fixture_service', :repo_url => 'http://blah.com/'})
+      assert_response :success
+      assert_equal 'my_non_fixture_service', JSON.parse(@response.body)['service_name'], "service names don't match on create"
+    end
+  end
+
   test "returns error on duplicate burn" do
     assert_no_difference('Burn.count') do
       post(:create, {:service_name => burns(:one).service.short_name, :revision => burns(:one).revision, :repo_url => burns(:one).repo_url})

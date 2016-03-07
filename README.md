@@ -36,3 +36,6 @@ See our <a href="https://groupon.github.io/codeburner/setup/installation/" targe
 
 ### User Guide
 The <a href="https://groupon.github.io/codeburner/user/burns/" target="_blank">User Guide</a> will give you an overview of how to use Codeburner once you have things up and running.
+
+### Get Involved!
+If you'd like to contribute, [Fork](https://github.com/groupon/codeburner#fork-destination-box) us and check out the <a href="https://groupon.github.io/codeburner/developer/backend/" target="_blank">Developer Guide</a>.

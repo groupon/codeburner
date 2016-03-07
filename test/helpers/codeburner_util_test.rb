@@ -72,6 +72,16 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     assert_equal expected, CodeburnerUtil.get_code_lang('test/test'), "this test isn't ideal"
   end
 
+  test "gets head commit" do
+    response = mock('github_response')
+    commit = mock('commit')
+    commit.expects(:sha).returns('abcdefg')
+    response.expects(:first).returns(commit)
+    $github.expects(:commits).returns(response)
+
+    assert_equal 'abcdefg', CodeburnerUtil.get_head_commit('test/test'), "this test isnt' ideal"
+  end
+
   test "tallies code" do
     filelist = {
       'Ruby' => ['Gemfile','Gemfile.lock','*.rb','*.haml','*.erb'],
@@ -112,10 +122,11 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
   end
 
   test "returns correct history resolution" do
+    assert_equal 1.hour, CodeburnerUtil.history_resolution(8.hours.ago, Time.now)
     assert_equal 4.hour, CodeburnerUtil.history_resolution(1.day.ago, Time.now)
     assert_equal 12.hours, CodeburnerUtil.history_resolution(7.days.ago, Time.now)
-    assert_equal 1.day, CodeburnerUtil.history_resolution(21.days.ago, Time.now)
-    assert_equal 3.days, CodeburnerUtil.history_resolution(1.month.ago, Time.now)
+    assert_equal 1.day, CodeburnerUtil.history_resolution(3.weeks.ago, Time.now)
+    assert_equal 3.days, CodeburnerUtil.history_resolution(6.weeks.ago, Time.now)
     assert_equal 5.days, CodeburnerUtil.history_resolution(3.months.ago, Time.now)
     assert_equal 1.week, CodeburnerUtil.history_resolution(9.months.ago, Time.now)
   end

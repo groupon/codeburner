@@ -1,12 +1,12 @@
 ## Filtering vs. Hiding
-As mentioned in the [Findings](/user/findings/) documentation, hiding a finding is limited to that **exact** finding down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.
+As mentioned in the [Findings](/user/findings/) documentation, hiding a finding is limited to that **exact** finding, right down to line number.  There will often be times when you want to exclude a finding from anywhere in the file, or exclude findings from a specific scanner or pertaining to a specific vulnerability, etc.
 
 Filtering allows you to both hide existing issues and filter out future results matching certain criteria in a flexible way.
 
 ***
 
 ## Create a filter
-You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.  Whatever combination of fields you choose will be used to filter results matching that combination.
+You can use the filtering interface to generate an exclusion filter for existing and future results based on any combination of fields you want.
 
 ![filter_finding](images/filter_finding.png)
 

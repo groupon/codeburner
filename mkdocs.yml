@@ -1,6 +1,6 @@
 site_name: Codeburner
 site_url: http://groupon.github.io/codeburner
-site_description: Project documentation for Codeburner
+site_description: One static analysis tool to rule them all...
 site_author: Groupon, Inc.
 site_favicon: favicon.ico
 repo_url: https://github.com/groupon/codeburner
@@ -8,7 +8,6 @@ extra_css:
   - css/prism.css
 extra_javascript:
   - js/prism.js
-
 pages:
   - Home: index.md
   - Setup Guide:
@@ -23,8 +22,8 @@ pages:
     - Statistics/Charts: user/stats.md
   - Developer Guide:
     - Rails Backend: developer/backend.md
+    - Web Client: developer/client.md
     - Pipeline: developer/pipeline.md
-    - JavaScript Client: developer/client.md
     - API Reference: developer/api.md
 markdown_extensions:
   - toc:

@@ -1,7 +1,7 @@
 ![stats_page](images/stats_page.png)
 
-## Google API
-The statistics page uses the <a href="https://developers.google.com/chart/" target="_blank">Google Charts API</a> to generate graphs.  If you prefer a different look for your reports, see the API documentation for more details on using the REST API to feed the graphing solution of your choice.
+## Google Charts
+The statistics page uses the <a href="https://developers.google.com/chart/" target="_blank">Google Charts API</a> to generate graphs.  If you prefer a different look for your reports, see the [API documentation](/developer/api/#apistats) for more details on using the REST API to feed the graphing solution of your choice.
 
 ***
 
