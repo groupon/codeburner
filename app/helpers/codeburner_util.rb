@@ -67,6 +67,10 @@ module CodeburnerUtil
     $github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
   end
 
+  def self.get_head_commit repo_url
+    $github.commits(strip_github_path(repo_url)).first.sha
+  end
+
   def self.tally_code dir, languages
     num_files, num_lines = 0, 0
 

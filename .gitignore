@@ -19,6 +19,7 @@ pickle-email-*.html
 REVISION
 .DS_Store
 gem_graph.png
+/site/
 
 # redis
 dump.rdb

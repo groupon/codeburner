@@ -56,7 +56,9 @@ Codeburner.Views.BurnList = Backbone.View.extend
       do $('#submitDialog').modal
 
     'click #submit-burn': ->
-      postData = {'service_name': $('#service-name').val().trim(), 'revision': $('#revision').val().trim(), 'repo_url': $('#repo_url').val().trim(), 'service_portal': false}
+      postData = {'service_name': $('#service-name').val().trim(), 'repo_url': $('#repo_url').val().trim()}
+      if $('#revision').val()
+        postData['revision'] = $('#revision').val().trim()
       if $('#notify').val()
         postData['notify'] = $('#notify').val().trim()
       Codeburner.Utilities.postRequest '/api/burn', postData, ((data) =>
