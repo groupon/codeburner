@@ -3,7 +3,7 @@
 
 One static analysis tool to rule them all.
 
-[![Build Status](https://travis-ci.org/groupon/codeburner.svg?branch=master)](https://travis-ci.org/groupon/codeburner)
+[![Build Status](https://travis-ci.org/groupon/codeburner.svg?branch=master)](https://travis-ci.org/groupon/codeburner) [![Test Coverage](https://codeclimate.com/github/groupon/codeburner/badges/coverage.svg)](https://codeclimate.com/github/groupon/codeburner/coverage) [![Code Climate](https://codeclimate.com/github/groupon/codeburner/badges/gpa.svg)](https://codeclimate.com/github/groupon/codeburner)
 
 ## What is Codeburner?
 Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?
