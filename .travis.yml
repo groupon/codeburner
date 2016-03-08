@@ -7,3 +7,7 @@ services:
   - redis
 before_script:
   - bundle exec rake db:setup
+addons:
+    code_climate:
+        repo_token: 6ec24938bf86c1e3700fae2b9c6664a3e4dbe7912bcd6ff6c00153f2fbf5fc4b
+        

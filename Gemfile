@@ -35,6 +35,7 @@ group :test do
   gem 'minitest-reporters'
   gem 'mocha'
   gem 'simplecov'
+  gem 'codeclimate-test-reporter', :require => false
 end
 
 # for our global $app_config struct
