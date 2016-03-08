@@ -34,6 +34,8 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
 
   test "goes inside_github_archive" do
     tempfile = Tempfile.new('testfile')
+    `tar -czf #{tempfile.path} *`
+
     $github.expects(:archive_link).returns(tempfile)
 
     begin
