@@ -2,3 +2,8 @@ language: ruby
 cache: bundler
 rvm:
   - 2.2.3
+services:
+  - mysql
+  - redis
+before_script:
+  - bundle exec rake db:setup
