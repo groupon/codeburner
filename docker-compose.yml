@@ -1,0 +1,26 @@
+db:
+  image: library/mysql:5.7
+  ports:
+    - "13306:3306"
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+cache:
+  image: redis
+  ports:
+    - "6379:6379"
+web: &app_base
+  build: .
+  environment:
+    - RAILS_ENV=production
+    - RAILS_SERVE_STATIC_FILES=true
+  volumes:
+    - .:/codeburner
+  ports:
+    - "3000:3000"
+  links:
+    - db
+    - cache
+worker:
+  <<: *app_base
+  ports: []
+  command: bundle exec sidekiq

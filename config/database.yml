@@ -55,6 +55,6 @@ staging:
 production:
   <<: *common
   database: codeburner_production
-  host: my_production_db_host
-  password: my_production_db_password
-  username: my_production_db_username
+  host: db
+  password:
+  username: root
