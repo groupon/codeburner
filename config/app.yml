@@ -49,9 +49,11 @@ pipeline:
     JavaScript:
       - RetireJS
       - NodeSecurityProject
+      - Snyk
     CoffeeScript:
       - RetireJS
       - NodeSecurityProject
+      - Snyk
     Java:
       - PMD
       - FindSecurityBugs

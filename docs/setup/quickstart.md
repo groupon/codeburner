@@ -9,6 +9,9 @@ You'll need <a href="https://www.docker.com/" target="_blank">Docker</a> install
 
 See instructions to accomplish this for your specific OS here: <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a>
 
+!!! WARNING
+    A bug in older docker versions (1.9.1) on OSX can cause the build to hang installing **ca-certificates-java**.  Upgrade to 1.10+ if you run into problems.
+
 ***
 
 ## Configure

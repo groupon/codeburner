@@ -19,7 +19,7 @@ gem 'kaminari'
 
 group :development, :test do
   gem 'capistrano-bundler'
-  
+
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
@@ -54,7 +54,7 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'owasp-pipeline', '>= 0.8.5'
+gem 'owasp-pipeline', '>= 0.8.6', :path => '../pipeline'
 gem 'whenever'
 gem 'chronic'
 
