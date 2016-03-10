@@ -9,19 +9,19 @@
     <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1">
     
       
-        <title>Pipeline - Codeburner</title>
+        <title>Quick Start - Codeburner</title>
       
       
       
-        <link rel="canonical" href="http://groupon.github.io/codeburner/developer/pipeline/">
+        <link rel="canonical" href="http://groupon.github.io/codeburner/setup/quickstart/">
       
       
         <meta name="author" content="Groupon, Inc.">
       
     
-    <meta property="og:url" content="http://groupon.github.io/codeburner/developer/pipeline/">
+    <meta property="og:url" content="http://groupon.github.io/codeburner/setup/quickstart/">
     <meta property="og:title" content="Codeburner">
-    <meta property="og:image" content="http://groupon.github.io/codeburner/developer/pipeline//../../images/fire.png">
+    <meta property="og:image" content="http://groupon.github.io/codeburner/setup/quickstart//../../images/fire.png">
     <meta name="apple-mobile-web-app-title" content="Codeburner">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,12 +97,12 @@
           <span class="path">
             
               
-                Developer Guide <i class="icon icon-link"></i>
+                Setup Guide <i class="icon icon-link"></i>
               
             
           </span>
         
-        Pipeline
+        Quick Start
       </div>
     </div>
     
@@ -195,16 +195,47 @@
       
         
   <li>
-    <a class="" title="Quick Start" href="../../setup/quickstart/">
+    <a class="current" title="Quick Start" href="./">
       Quick Start
     </a>
+    
+      
+      
+        <ul>
+          
+            <li class="anchor">
+              <a title="Docker" href="#docker">
+                Docker
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Configure" href="#configure">
+                Configure
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Build" href="#build">
+                Build
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Start Burning!" href="#start-burning">
+                Start Burning!
+              </a>
+            </li>
+          
+        </ul>
+      
     
   </li>
 
       
         
   <li>
-    <a class="" title="Installation" href="../../setup/installation/">
+    <a class="" title="Installation" href="../installation/">
       Installation
     </a>
     
@@ -213,7 +244,7 @@
       
         
   <li>
-    <a class="" title="Configuration" href="../../setup/configuration/">
+    <a class="" title="Configuration" href="../configuration/">
       Configuration
     </a>
     
@@ -222,7 +253,7 @@
       
         
   <li>
-    <a class="" title="Scanning Tools" href="../../setup/scanning_tools/">
+    <a class="" title="Scanning Tools" href="../scanning_tools/">
       Scanning Tools
     </a>
     
@@ -231,7 +262,7 @@
       
         
   <li>
-    <a class="" title="Start Burning!" href="../../setup/startup/">
+    <a class="" title="Start Burning!" href="../startup/">
       Start Burning!
     </a>
     
@@ -294,7 +325,7 @@
       
         
   <li>
-    <a class="" title="Rails Backend" href="../backend/">
+    <a class="" title="Rails Backend" href="../../developer/backend/">
       Rails Backend
     </a>
     
@@ -303,7 +334,7 @@
       
         
   <li>
-    <a class="" title="Web Client" href="../client/">
+    <a class="" title="Web Client" href="../../developer/client/">
       Web Client
     </a>
     
@@ -312,35 +343,16 @@
       
         
   <li>
-    <a class="current" title="Pipeline" href="./">
+    <a class="" title="Pipeline" href="../../developer/pipeline/">
       Pipeline
     </a>
-    
-      
-      
-        <ul>
-          
-            <li class="anchor">
-              <a title="What is Pipeline?" href="#what-is-pipeline">
-                What is Pipeline?
-              </a>
-            </li>
-          
-            <li class="anchor">
-              <a title="Adding Scanners" href="#adding-scanners">
-                Adding Scanners
-              </a>
-            </li>
-          
-        </ul>
-      
     
   </li>
 
       
         
   <li>
-    <a class="" title="API Reference" href="../api/">
+    <a class="" title="API Reference" href="../../developer/api/">
       API Reference
     </a>
     
@@ -382,75 +394,42 @@
       <article class="article">
         <div class="wrapper">
           
-            <h1>Pipeline</h1>
+            <h1>Quick Start</h1>
           
-          <h2 id="what-is-pipeline">What is Pipeline?<a class="headerlink" href="#what-is-pipeline" title="Permanent link">#</a></h2>
-<p>To quote the README for the <a href="https://githbu.com/OWASP/pipeline" target="_blank">OWASP pipeline</a> project... "Pipeline is a framework for running a series of tools. Generally, it is intended as a backbone for automating a security analysis pipeline of tools."</p>
-<p>Codeburner uses pipeline to run the various scanning tools on your code and normalize the results to a common object format: the <a href="https://github.com/OWASP/pipeline/blob/master/lib/pipeline/finding.rb" target="_blank">pipeline finding</a>.</p>
-<h2 id="adding-scanners">Adding Scanners<a class="headerlink" href="#adding-scanners" title="Permanent link">#</a></h2>
-<p>If you want to add a new scanning tool to Codeburner, you can contribute to the pipeline project by adding a new <a href="https://github.com/OWASP/pipeline/tree/master/lib/pipeline/tasks" target="_blank">Task</a>.  You can see the existing tasks for examples, and it's generally straightforward as long as your scanning tool outputs structured data (JSON/XML/etc.).</p>
-<p>Here's a stripped down, commented task for a generic scanner to help get you started:</p>
-<pre class="code"><code class="language-ruby"># Minimally require pipeline/tasks/base_task
-require 'pipeline/tasks/base_task'
-require 'pipeline/util'
-require 'json'
-
-# Give your task a useful name
-class Pipeline::TaskName &lt; Pipeline::BaseTask
-
-  Pipeline::Tasks.add self
-  include Pipeline::Util
-
-  # Do any setup
-  def initialize(trigger, tracker)
-    super(trigger, tracker)
-    @name = &quot;TaskName&quot;
-    @description = &quot;This is a description of the TaskName scanner for ruby/rails&quot;
-    @stage = :code
-    @labels &lt;&lt; &quot;code&quot; &lt;&lt; &quot;ruby&quot; &lt;&lt; &quot;rails&quot;
-  end
-
-  # Run the scanning command and create @result
-  def run
-    @result = JSON.parse `/some/scanner -that returns -t json`
-  end
-
-  # analyze() gets called after run().  the report() call actually creates the finding object
-  def analyze
-    begin
-      @result[&quot;warnings&quot;].each do |warning|
-        name = warning[&quot;type&quot;]
-        detail = warning[&quot;description&quot;]
-        source = {
-          :scanner =&gt; @name,
-          :file =&gt; warning[&quot;file&quot;],
-          :line =&gt; warning[&quot;line&quot;],
-          :code =&gt; warning[&quot;snippet&quot;]
-        }
-        sev = severity(warning[&quot;confidence&quot;])
-        fprint = fingerprint(&quot;#{name}#{detail}#{source}#{sev}&quot;)
-
-        report name, detail, source, sev, fprint
-      end
-    rescue Exception =&gt; e
-      Pipeline.warn e.message
-      Pipeline.warn e.backtrace
-    end
-  end
-
-  # Whatever test is appropriate to determine if your tool is installed
-  def supported?
-    unless File.exist?('/path/to/command')
-      Pipeline.notify &quot;Run: /some/command/to/install/me&quot;
-      return false
-    else
-      return true
-    end
-  end
-end</code></pre>
-
-
+          <p>This guide is intended to get you up and running with Codeburner as quickly as possible.  It assumes a basic level of experience working with <a href="https://www.docker.com/" target="_blank">Docker</a> containers.</p>
+<p>The resulting image should be fully functional to test Codeburner in your environment.  However, it uses public docker images with known rails keys and has not been secured in any way or tuned for optimal performance (for example by having the static content served by something like nginx).  It <strong>should not</strong> be considered production ready in an enterprise environment.</p>
+<p>That said if you'd like to make it ready yourself, the included <a href="https://github.com/groupon/codeburner/blob/master/Dockerfile" target="_blank">Dockerfile</a> and <a href="https://github.com/groupon/codeburner/blob/master/docker-compose.yml" target="_blank">docker-compose.yml</a> should get you most of the way there.</p>
+<h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">#</a></h2>
+<p>You'll need <a href="https://www.docker.com/" target="_blank">Docker</a> installed with the <strong>docker-compose</strong> command available.</p>
+<p>See instructions to accomplish this for your specific OS here: <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a></p>
 <hr />
+<h2 id="configure">Configure<a class="headerlink" href="#configure" title="Permanent link">#</a></h2>
+<p>Minimally you'll want to configure GitHub access.  See the <a href="../../setup/configuration/">Configuration Guide</a> if you need to configure additional items (like JIRA access, etc).</p>
+<h3 id="generate-a-token">Generate a Token<a class="headerlink" href="#generate-a-token" title="Permanent link">#</a></h3>
+<p>To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:</p>
+<p><a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a></p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
+<p>Once you have an access token, you can add it to <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
+<pre class="code"><code class="language-yaml">github:
+  api_endpoint: https://api.github.com/
+  api_access_token: my_github_api_token
+  link_host: https://www.github.com</code></pre>
+
+
+<p>If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.</p>
+<hr />
+<h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">#</a></h2>
+<p>To build the container to run Codeburner and the scanning tools, you'll need to run the provided script:</p>
+<pre class="command-line language-bash"><code>sh ./docker-build.sh</code></pre>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Codeburner application and all the supported scanning tools have <strong>many</strong> dependencies.  This build process can take quite a while.</p>
+</div>
+<hr />
+<h2 id="start-burning">Start Burning!<a class="headerlink" href="#start-burning" title="Permanent link">#</a></h2>
+<p>Once the container image is built, you can start the Codeburner application and all the dependent containers with docker-compose:</p>
+<pre class="command-line language-bash"><code>docker-compose up</code></pre>
           <aside class="copyright" role="note">
             
             Documentation built with
@@ -467,7 +446,7 @@ end</code></pre>
   <nav class="pagination" aria-label="Footer">
     <div class="previous">
       
-        <a href="../client/" title="Web Client">
+        <a href="../.." title="Home">
           <span class="direction">
             Previous
           </span>
@@ -477,7 +456,7 @@ end</code></pre>
             </div>
             <div class="stretch">
               <div class="title">
-                Web Client
+                Home
               </div>
             </div>
           </div>
@@ -486,14 +465,14 @@ end</code></pre>
     </div>
     <div class="next">
       
-        <a href="../api/" title="API Reference">
+        <a href="../installation/" title="Installation">
           <span class="direction">
             Next
           </span>
           <div class="page">
             <div class="stretch">
               <div class="title">
-                API Reference
+                Installation
               </div>
             </div>
             <div class="button button-next" role="button" aria-label="Next">

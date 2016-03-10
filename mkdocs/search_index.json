@@ -21,6 +21,41 @@
             "title": "Supported Tools"
         }, 
         {
+            "location": "/setup/quickstart/", 
+            "text": "This guide is intended to get you up and running with Codeburner as quickly as possible.  It assumes a basic level of experience working with \nDocker\n containers.\n\n\nThe resulting image should be fully functional to test Codeburner in your environment.  However, it uses public docker images with known rails keys and has not been secured in any way or tuned for optimal performance (for example by having the static content served by something like nginx).  It \nshould not\n be considered production ready in an enterprise environment.\n\n\nThat said if you'd like to make it ready yourself, the included \nDockerfile\n and \ndocker-compose.yml\n should get you most of the way there.\n\n\nDocker\n#\n\n\nYou'll need \nDocker\n installed with the \ndocker-compose\n command available.\n\n\nSee instructions to accomplish this for your specific OS here: \nhttps://docs.docker.com/compose/install/\n\n\n\n\nConfigure\n#\n\n\nMinimally you'll want to configure GitHub access.  See the \nConfiguration Guide\n if you need to configure additional items (like JIRA access, etc).\n\n\nGenerate a Token\n#\n\n\nTo configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:\n\n\nhttps://help.github.com/articles/creating-an-access-token-for-command-line-use/\n\n\nConfiguration\n#\n\n\nOnce you have an access token, you can add it to \nconfig/app.yml\n:\n\n\ngithub:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com\n\n\n\n\nIf you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.\n\n\n\n\nBuild\n#\n\n\nTo build the container to run Codeburner and the scanning tools, you'll need to run the provided script:\n\n\nsh ./docker-build.sh\n\n\n\n\n\nNote\n\n\nThe Codeburner application and all the supported scanning tools have \nmany\n dependencies.  This build process can take quite a while.\n\n\n\n\n\n\nStart Burning!\n#\n\n\nOnce the container image is built, you can start the Codeburner application and all the dependent containers with docker-compose:\n\n\ndocker-compose up", 
+            "title": "Quick Start"
+        }, 
+        {
+            "location": "/setup/quickstart/#docker", 
+            "text": "You'll need  Docker  installed with the  docker-compose  command available.  See instructions to accomplish this for your specific OS here:  https://docs.docker.com/compose/install/", 
+            "title": "Docker"
+        }, 
+        {
+            "location": "/setup/quickstart/#configure", 
+            "text": "Minimally you'll want to configure GitHub access.  See the  Configuration Guide  if you need to configure additional items (like JIRA access, etc).", 
+            "title": "Configure"
+        }, 
+        {
+            "location": "/setup/quickstart/#generate-a-token", 
+            "text": "To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:  https://help.github.com/articles/creating-an-access-token-for-command-line-use/", 
+            "title": "Generate a Token"
+        }, 
+        {
+            "location": "/setup/quickstart/#configuration", 
+            "text": "Once you have an access token, you can add it to  config/app.yml :  github:\n  api_endpoint: https://api.github.com/\n  api_access_token: my_github_api_token\n  link_host: https://www.github.com  If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/setup/quickstart/#build", 
+            "text": "To build the container to run Codeburner and the scanning tools, you'll need to run the provided script:  sh ./docker-build.sh   Note  The Codeburner application and all the supported scanning tools have  many  dependencies.  This build process can take quite a while.", 
+            "title": "Build"
+        }, 
+        {
+            "location": "/setup/quickstart/#start-burning", 
+            "text": "Once the container image is built, you can start the Codeburner application and all the dependent containers with docker-compose:  docker-compose up", 
+            "title": "Start Burning!"
+        }, 
+        {
             "location": "/setup/installation/", 
             "text": "Download\n#\n\n\nYou can download the latest release of Codeburner here: \nhttps://github.com/groupon/codeburner/releases\n\n\nThe rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:\n\n\ngit clone https://github.com/groupon/codeburner\n\n\n\nRuby\n#\n\n\nCodeburner was developed on Ruby 2.2, and is tested with/works fine on 2.3.  If you're using \nRVM\n or \nrbenv\n we've provided a .ruby-version so you should be all set.  If you aren't using one of those, just make sure your local ruby version is at least 2.0+ before proceeding.\n\n\n\n\nBundler\n#\n\n\nGem\n#\n\n\nFirst you'll need to install the bundler gem if you don't already have it:\n\n\ngem install bundler\n\n\n\nBundle Install\n#\n\n\nOnce you have bundler, you can use it to install the local gems for Codeburner:\n\n\nbundle install", 
             "title": "Installation"
