@@ -402,6 +402,10 @@
 <h2 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">#</a></h2>
 <p>You'll need <a href="https://www.docker.com/" target="_blank">Docker</a> installed with the <strong>docker-compose</strong> command available.</p>
 <p>See instructions to accomplish this for your specific OS here: <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>A bug in older docker versions (1.9.1) on OSX can cause the build to hang installing <strong>ca-certificates-java</strong>.  Upgrade to 1.10+ if you run into problems.</p>
+</div>
 <hr />
 <h2 id="configure">Configure<a class="headerlink" href="#configure" title="Permanent link">#</a></h2>
 <p>Minimally you'll want to configure GitHub access.  See the <a href="../../setup/configuration/">Configuration Guide</a> if you need to configure additional items (like JIRA access, etc).</p>
