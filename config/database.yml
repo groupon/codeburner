@@ -24,8 +24,8 @@
 common: &common
   adapter: mysql2
   pool: 5
-  wait_timeout: 50
-  connect_timeout: 200
+  wait_timeout: 1000
+  connect_timeout: 500
   read_timeout: 2000
   write_timeout: 2000
   reconnect: true
@@ -35,7 +35,7 @@ local: &local
   host: 127.0.0.1
   password:
   username: root
-  wait_timeout: 10000
+  wait_timeout: 5000
 
 development:
   <<: *local
@@ -55,6 +55,7 @@ staging:
 production:
   <<: *common
   database: codeburner_production
-  host: my_production_db_host
-  password: my_production_db_password
-  username: my_production_db_username
+  host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
+  port: <%= ENV['DB_PORT_3306_TCP_PORT'] %>
+  password:
+  username: root

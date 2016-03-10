@@ -33,8 +33,11 @@ Codeburner uses the [OWASP pipeline](https://github.com/OWASP/pipeline) project 
 ## Documentation
 You can find full documentation for Codeburner at <a href="http://groupon.github.io/codeburner" target="_blank">http://groupon.github.io/codeburner</a>
 
+### Quick Start
+See our <a href="https://groupon.github.io/codeburner/setup/quickstart/" target="_blank">Quick Start Guide</a> if you want to try out Codeburner as quickly as possible using <a href="https://www.docker.com/products/docker-compose" target="_blank">Docker Compose</a>.
+
 ### Installation
-See our <a href="https://groupon.github.io/codeburner/setup/installation/" target="_blank">Installation Guide</a> for complete install instructions.
+See our <a href="https://groupon.github.io/codeburner/setup/installation/" target="_blank">Installation Guide</a> for complete manual install instructions.
 
 ### User Guide
 The <a href="https://groupon.github.io/codeburner/user/burns/" target="_blank">User Guide</a> will give you an overview of how to use Codeburner once you have things up and running.

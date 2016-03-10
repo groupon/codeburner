@@ -1,0 +1,28 @@
+db:
+  image: mysql:5.7
+  ports:
+    - "13306:3306"
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+redis:
+  image: redis
+  ports:
+    - "6379:6379"
+web: &app_base
+  build: .
+  environment:
+    - RAILS_ENV=production
+    - RAILS_SERVE_STATIC_FILES=true
+    - SECRET_KEY_BASE=d21e2a84a06dc6b1fe95e30a18df6ec559dd623e0a1cd6439796533693167c3b2086a2e143564b1a11d41089c7d22651a4c993a3b30efd93af1e0143ffb57d4c
+  volumes:
+    - .:/codeburner
+  ports:
+    - "3000:3000"
+  links:
+    - db
+    - redis
+  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+worker:
+  <<: *app_base
+  ports: []
+  command: bundle exec sidekiq

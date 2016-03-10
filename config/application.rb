@@ -55,7 +55,7 @@ module Codeburner
     case ENV['RAILS_ENV']
     when 'production'
       $redis_options = {
-        :host => 'localhost',
+        :host => 'redis',
         :port => 6379
       }
     when 'staging'

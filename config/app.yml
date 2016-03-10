@@ -55,8 +55,8 @@ pipeline:
     Java:
       - PMD
       - FindSecurityBugs
-  pmd_path: /path/to/pmd/install
-  findsecbugs_path: /path/to/findsecbugs/install
+  pmd_path: /pmd/pmd-bin-5.4.1
+  findsecbugs_path: /findsecbugs
   checkmarx_server: my_checkmarx_server
   checkmarx_user: my_checkmarx_user
   checkmarx_password: my_checkmarx_password
