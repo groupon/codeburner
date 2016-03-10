@@ -3,5 +3,5 @@ docker-compose run web bash -c "while ! mysqladmin ping -h db --silent; do echo 
 docker-compose run web rake db:setup
 
 if [ $? == 0 ]; then
-  echo "Docker containers initialized, run 'docker-compose up' to start Codeburner."
+  echo -e "\nDocker containers initialized, run 'docker-compose up' to start Codeburner."
 fi

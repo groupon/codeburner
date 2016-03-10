@@ -13,6 +13,7 @@ web: &app_base
   environment:
     - RAILS_ENV=production
     - RAILS_SERVE_STATIC_FILES=true
+    - SECRET_KEY_BASE=d21e2a84a06dc6b1fe95e30a18df6ec559dd623e0a1cd6439796533693167c3b2086a2e143564b1a11d41089c7d22651a4c993a3b30efd93af1e0143ffb57d4c
   volumes:
     - .:/codeburner
   ports:

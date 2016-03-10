@@ -11,6 +11,7 @@ extra_javascript:
 pages:
   - Home: index.md
   - Setup Guide:
+    - Quick Start: setup/quickstart.md
     - Installation: setup/installation.md
     - Configuration: setup/configuration.md
     - Scanning Tools: setup/scanning_tools.md

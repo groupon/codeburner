@@ -19,9 +19,10 @@ namespace :burn do
     input = STDIN.getch
     raise RuntimeError unless input.downcase == 'y'
 
+    count = Finding.burn_id(id).count
     Finding.burn_id(id).destroy_all
     burn.destroy
-    puts "Successfully deleted burn ##{id} and #{Finding.burn_id(id).count} findings"
+    puts "Successfully deleted burn ##{id} and #{count} findings"
 
     $redis.del ["burn_list", "burn_stats", "stats", "history", "history_range"]
   end
