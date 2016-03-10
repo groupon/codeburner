@@ -55,6 +55,7 @@ staging:
 production:
   <<: *common
   database: codeburner_production
-  host: db
+  host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
+  port: <%= ENV['DB_PORT_3306_TCP_PORT'] %>
   password:
   username: root
