@@ -4,7 +4,7 @@ db:
     - "13306:3306"
   environment:
     MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-cache:
+redis:
   image: redis
   ports:
     - "6379:6379"
@@ -19,7 +19,8 @@ web: &app_base
     - "3000:3000"
   links:
     - db
-    - cache
+    - redis
+  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
 worker:
   <<: *app_base
   ports: []
