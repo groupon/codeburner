@@ -14,6 +14,15 @@ See instructions to accomplish this for your specific OS here: <a href="https://
 
 ***
 
+## Download
+You can download the latest release of Codeburner here: <a href="https://github.com/groupon/codeburner/releases" target="_blank">https://github.com/groupon/codeburner/releases</a>
+
+The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:
+
+<pre class="command-line"><code class="language-bash">git clone https://github.com/groupon/codeburner</code></pre>
+
+***
+
 ## Configure
 Minimally you'll want to configure GitHub access.  See the [Configuration Guide](/setup/configuration/) if you need to configure additional items (like JIRA access, etc).
 
