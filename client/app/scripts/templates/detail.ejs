@@ -49,7 +49,7 @@ THE SOFTWARE.
         <% } %>
         <% if (model.get('file')) { %>
             <dt>File</dt>
-            <% if (model.get('scanner') == 'RetireJS') { %>
+            <% if (model.get('scanner') == 'RetireJS' || model.get('scanner') == 'Snyk') { %>
                 <dd><%= model.get('file') %>
             <% } else { %>
                 <dd><a href="<%= burnList[model.get('burn_id')].repoUrl %>/blob/<%= burnList[model.get('burn_id')].revision %>/<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>

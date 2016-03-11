@@ -1,26 +1,3 @@
-#
-#The MIT License (MIT)
-#
-#Copyright (c) 2016, Groupon, Inc.
-#
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions:
-#
-#The above copyright notice and this permission notice shall be included in
-#all copies or substantial portions of the Software.
-#
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-#THE SOFTWARE.
-#
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -34,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151210032652) do
+ActiveRecord::Schema.define(version: 20160311195126) do
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -79,7 +56,7 @@ ActiveRecord::Schema.define(version: 20151210032652) do
     t.integer  "burn_id",     limit: 4
     t.integer  "service_id",  limit: 4
     t.string   "scanner",     limit: 255
-    t.string   "file",        limit: 255
+    t.text     "file",        limit: 65535
     t.integer  "line",        limit: 4
     t.text     "code",        limit: 65535
     t.integer  "filter_id",   limit: 4
