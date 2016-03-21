@@ -47,11 +47,15 @@ pipeline:
       - Brakeman
       - Dawnscanner
     JavaScript:
+      - NPM
       - RetireJS
       - NodeSecurityProject
+      - Snyk
     CoffeeScript:
+      - NPM
       - RetireJS
       - NodeSecurityProject
+      - Snyk
     Java:
       - PMD
       - FindSecurityBugs

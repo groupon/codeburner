@@ -126,6 +126,7 @@ class Burn < ActiveRecord::Base
         :quiet => true,
         :npm_registry => $app_config.pipeline.npm_registry,
         :run_tasks => [],
+        :exclude_dirs => $app_config.pipeline.exclude_dirs,
         :pmd_path => $app_config.pipeline.pmd_path,
         :findsecbugs_path => $app_config.pipeline.findsecbugs_path,
         :checkmarx_server => $app_config.pipeline.checkmarx_server,

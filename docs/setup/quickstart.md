@@ -9,6 +9,18 @@ You'll need <a href="https://www.docker.com/" target="_blank">Docker</a> install
 
 See instructions to accomplish this for your specific OS here: <a href="https://docs.docker.com/compose/install/" target="_blank">https://docs.docker.com/compose/install/</a>
 
+!!! WARNING
+    A bug in older docker versions (1.9.1) on OSX can cause the build to hang installing **ca-certificates-java**.  Upgrade to 1.10+ if you run into problems.
+
+***
+
+## Download
+You can download the latest release of Codeburner here: <a href="https://github.com/groupon/codeburner/releases" target="_blank">https://github.com/groupon/codeburner/releases</a>
+
+The rest of this guide assumes you're inside the directory created by unpacking a release tarball or cloning the repository:
+
+<pre class="command-line"><code class="language-bash">git clone https://github.com/groupon/codeburner</code></pre>
+
 ***
 
 ## Configure
