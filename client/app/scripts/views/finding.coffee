@@ -91,6 +91,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
     'click #publish-submit': ->
       method = $('input[name=ticket-option]:radio:checked').val()
+
       project = $('#project-name').val()
       id = $('.highlight-row:selected').data 'id'
 
@@ -108,7 +109,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
         do @renderFindings
       ), (data) ->
         $('#publishDialog').modal('hide')
-        Codeburner.Utilities.alert "#{data.responseJSON.error}"
+        Codeburner.Utilities.notify "#{data.responseJSON.error}<br><hr><br><a href='/api/oauth/authorize'>Sign-in Now</a>"
 
     'change input[name=ticket-option]': ->
       @setTicketOption $('input[name=ticket-option]:radio:checked').val()

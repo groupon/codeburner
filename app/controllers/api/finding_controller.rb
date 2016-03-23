@@ -21,9 +21,11 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class Api::FindingController < ApplicationController
   respond_to :json
 
+  before_filter :authz_no_fail, only: [ :publish ]
   # START ServiceDiscovery
   # resource: findings.index
   # description: Search findings
@@ -288,8 +290,11 @@ class Api::FindingController < ApplicationController
       ticket = result['key'] if result.has_key?('key')
       link = "#{$app_config.jira.link_host}/browse/#{ticket}"
     when "github"
+      return render(:json => {:error => "GitHub Authentication Required"}, :status => 403) if @current_user == nil
+
       repo = CodeburnerUtil.strip_github_path(finding.burn.repo_url)
-      result = publish_to_github(finding.id, repo)
+      result = publish_to_github(@current_user, finding.id, repo)
+
       ticket = "#{repo} - Issue ##{result.number}"
       link = result.html_url
     else
@@ -305,15 +310,20 @@ class Api::FindingController < ApplicationController
     render(:json => {error: "no finding with that id found}"}, :status => 404)
   end
 
-  def publish_to_github (finding_id, repo)
-    @finding = Finding.find(finding_id)
-    @severity = CodeburnerUtil.severity_to_text(@finding.severity)
-    @details = @finding.detail.split(',').join("\n")
-    result = $github.create_issue(repo, @finding.description, render_to_string("github"))
+  def publish_to_github (user, finding_id, repo)
+    if user
+      user_github = Octokit::Client.new(:access_token => @current_user.access_token)
+      @finding = Finding.find(finding_id)
+      @severity = CodeburnerUtil.severity_to_text(@finding.severity)
+      @details = @finding.detail.split(',').join("\n")
+      result = user_github.create_issue(repo, @finding.description, render_to_string("github"))
 
-    if result
-      @finding.update(:status => 2)
-      return result
+      if result
+        @finding.update(:status => 2)
+        return result
+      else
+        return nil
+      end
     else
       return nil
     end

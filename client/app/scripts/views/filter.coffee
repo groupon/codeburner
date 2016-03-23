@@ -69,4 +69,3 @@ Codeburner.Views.FilterList = Backbone.View.extend
     do @delegateEvents
     @$el.html JST['app/scripts/templates/filter_page.ejs']
     do @renderFilters
-

@@ -34,6 +34,8 @@ Codeburner.Utilities =
       url: url
       type: 'POST'
       data: data
+      beforeSend: (req) ->
+        req.setRequestHeader("Authorization", localStorage.getItem("authz"))
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -44,6 +46,8 @@ Codeburner.Utilities =
       url: url
       type: 'GET'
       dataType: 'json'
+      beforeSend: (req) ->
+        req.setRequestHeader("Authorization", localStorage.getItem("authz"))
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -54,6 +58,8 @@ Codeburner.Utilities =
       url: url
       type: 'PUT'
       dataType: 'json'
+      beforeSend: (req) ->
+        req.setRequestHeader("Authorization", localStorage.getItem("authz"))
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -64,6 +70,8 @@ Codeburner.Utilities =
       url: url
       type: 'DELETE'
       dataType: 'json'
+      beforeSend: (req) ->
+        req.setRequestHeader("Authorization", localStorage.getItem("authz"))
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -140,6 +148,13 @@ Codeburner.Utilities =
   alert: (msg) ->
     $('#alert-body').html msg
     dialog = $('#alert-dialog')
+
+    do dialog.show
+    do dialog.modal
+
+  notify: (msg) ->
+    $('#notify-body').html msg
+    dialog = $('#notify-dialog')
 
     do dialog.show
     do dialog.modal

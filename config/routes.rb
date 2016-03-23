@@ -27,6 +27,10 @@ Rails.application.routes.draw do
   mount Sidekiq::Web, at: "/sidekiq"
 
   namespace :api do
+    match 'oauth/callback' => 'oauth#callback', :via => :get
+    match 'oauth/authorize' => 'oauth#authorize', :via => :get
+    match 'oauth/user' => 'oauth#user', :via => :get
+
     resources :service, :only => [:index, :show] do
       member do
         get 'stats'

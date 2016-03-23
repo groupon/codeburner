@@ -238,3 +238,12 @@ i.btn {
   background-image: none !important;
   background-color: #fff !important;
 }
+
+li.dropdown-item:hover {
+  color: $white;
+  background-color: $groupon_green;
+}
+
+ul.dropdown-menu {
+  padding: 10px;
+}

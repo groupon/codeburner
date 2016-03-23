@@ -41,7 +41,7 @@ class Codeburner.Routers.Main extends Backbone.Router
     'finding': 'findingAction'
     'filter': 'filterAction'
     'stats': 'statsAction'
-    '*actions': 'defaultAction'
+    '*query': 'defaultAction'
 
   findingAction: (query) ->
     do @burnListView.clearRefreshInterval
@@ -49,6 +49,7 @@ class Codeburner.Routers.Main extends Backbone.Router
     do @filterListView.undelegateEvents
     do @statsView.undelegateEvents
     if query?
+      console.log query
       do @findingCollection.resetFilter
       @findingCollection.filters = _.extend @findingCollection.filters, Codeburner.Utilities.parseQueryString(query)
       do @findingCollection.changeFilter
@@ -68,13 +69,37 @@ class Codeburner.Routers.Main extends Backbone.Router
     do @filterListView.undelegateEvents
     do @statsView.render
 
-  defaultAction: ->
+  defaultAction: (action, query) ->
     do @findingListView.undelegateEvents
     do @filterListView.undelegateEvents
     do @statsView.undelegateEvents
+    if query?
+      parsedQuery = Codeburner.Utilities.parseQueryString(query)
+      unless parsedQuery.authz == undefined
+        localStorage.setItem "authz", parsedQuery.authz
+        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+          Codeburner.User = data
+          window.location = "/"
+        ), (data) ->
+          Codeburner.User = null
+          console.log "invalid authz token"
     do @burnListView.render
 
 $ ->
+  if localStorage.getItem "authz"
+    Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+      Codeburner.User = data
+      $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
+        name: Codeburner.User.name
+        profileUrl: Codeburner.User.profile_url
+        avatarUrl: Codeburner.User.avatar_url
+      $('#user-signout').on 'click', ->
+        localStorage.removeItem "authz"
+        window.location = "/"
+    ), (data) ->
+      Codeburner.User = null
+      console.log "invalid authz token"
+
   serviceCollection = new Codeburner.Collections.Service
   serviceCollection.fetch().done =>
     window.router = new Codeburner.Routers.Main serviceCollection

@@ -22,7 +22,25 @@
 #THE SOFTWARE.
 #
 class ApplicationController < ActionController::Base
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
+
+  private
+    def authz
+      begin
+        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        @current_user = User.find_by(github_uid: uid)
+      rescue JWT::DecodeError
+        render(:json => {:error => 'GitHub OAuth Required'}, :status => 403)
+      end
+    end
+
+    def authz_no_fail
+      begin
+        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        @current_user = User.find_by(github_uid: uid)
+      rescue JWT::DecodeError
+        @current_user = nil
+      end
+    end
+
 end

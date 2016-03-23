@@ -23,8 +23,11 @@
 #
 github:
   api_endpoint: https://api.github.com/
-  api_access_token: my_github_api_token
-  link_host: https://www.github.com
+  api_access_token: personal_access_token
+  link_host: https://github.com
+  oauth_client_id: oath_client_id
+  oauth_client_secret: oauth_client_secret
+  oauth_scope: user,repo,read:org,admin:repo_hook
 jira:
   username: my_jira_user
   password: my_jira_password
