@@ -165,6 +165,7 @@ GEM
     jsonpath (0.5.8)
       multi_json
     justify (1.0.2)
+    jwt (1.5.3)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -348,6 +349,7 @@ DEPENDENCIES
   codeclimate-test-reporter
   deep_struct
   jira-ruby
+  jwt
   kaminari
   minitest-reporters
   mocha

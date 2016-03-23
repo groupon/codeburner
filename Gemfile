@@ -63,3 +63,6 @@ gem 'redis-rails'
 
 # paper_trail for stats generation/tracking
 gem 'paper_trail', '>= 4.0.0'
+
+# for OAuth
+gem 'jwt'
