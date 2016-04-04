@@ -92,7 +92,7 @@
           <li><a href="#stats">Statistics</a></li>
         </ul>
         <ul id="login-menu" class="nav navbar-nav navbar-right">
-          <li><a href="/api/oauth/authorize">Login</a></li>
+          <li><a onclick="localStorage.setItem('authRedirect',Backbone.history.location.hash)" href="/api/oauth/authorize">Login</a></li>
         </ul>
       </div>
     </div>

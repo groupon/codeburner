@@ -109,7 +109,11 @@ Codeburner.Views.FindingList = Backbone.View.extend
         do @renderFindings
       ), (data) ->
         $('#publishDialog').modal('hide')
-        Codeburner.Utilities.notify "#{data.responseJSON.error}<br><hr><br><a href='/api/oauth/authorize'>Sign-in Now</a>"
+        if data.status == 403
+          localStorage.setItem "authRedirect", Backbone.history.location.hash
+          Codeburner.Utilities.notify "API Response: #{data.responseJSON.error}<br><br>Publishing issues to GitHub requires OAuth Sign-in<br><hr><br><a href='api/oauth/authorize'>Sign-in Now</a>"
+        else
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
     'change input[name=ticket-option]': ->
       @setTicketOption $('input[name=ticket-option]:radio:checked').val()

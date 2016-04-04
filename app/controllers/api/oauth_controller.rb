@@ -27,7 +27,8 @@ class Api::OauthController < ApplicationController
   before_filter :authz, only: [ :user ]
 
   def authorize
-    authorize_url = "#{$app_config.github.link_host}/login/oauth/authorize?client_id=#{$app_config.github.oauth_client_id}&scope=#{$app_config.github.oauth_scope}"
+    csrf_token = JWT.encode({:client_id => $app_config.github.oauth_client_id, :exp => 1.minute.from_now.to_i }, Rails.application.secrets.secret_key_base)
+    authorize_url = "#{$app_config.github.link_host}/login/oauth/authorize?client_id=#{$app_config.github.oauth_client_id}&scope=#{$app_config.github.oauth_scope}&state=#{csrf_token}"
 
     redirect_to authorize_url
   end
@@ -37,7 +38,14 @@ class Api::OauthController < ApplicationController
   end
 
   def callback
-    return render(:json => {error: 'Unauthorized'}, :status => :forbidden) unless params.has_key?(:code)
+    begin
+      unless params.has_key?(:code) and params.has_key?(:state) and JWT.decode(params[:state], Rails.application.secrets.secret_key_base)[0]['client_id'] == $app_config.github.oauth_client_id
+        return render(:json => {error: 'Unauthorized'}, :status => :forbidden)
+      end
+
+    rescue JWT::DecodeError
+      return render(:json => {error: 'Invalid CSRF token in OAuth callback'}, :status => :forbidden)
+    end
 
     token_url = "#{$app_config.github.link_host}/login/oauth/access_token"
     payload = {
@@ -46,7 +54,7 @@ class Api::OauthController < ApplicationController
       :code => params[:code]
     }
 
-    response = JSON.parse RestClient.post(token_url, payload, {:Accept => 'application/json'})
+    response = JSON.parse(RestClient.post(token_url, payload, {:Accept => 'application/json'}))
 
     if response.has_key? 'access_token'
       user_github = Octokit::Client.new(:access_token => response['access_token'])
@@ -60,7 +68,7 @@ class Api::OauthController < ApplicationController
 
       user.update(:access_token => response['access_token'])
 
-      jwt = JWT.encode({uid: user.github_uid, exp: 6.hours.from_now.to_i}, Rails.application.secrets.secret_key_base)
+      jwt = JWT.encode({:uid => user.github_uid, :exp => 6.hours.from_now.to_i}, Rails.application.secrets.secret_key_base)
 
       authenticated_url = "//#{$app_config.mail.link_host[Rails.env.to_sym]}#?authz=#{jwt}"
 

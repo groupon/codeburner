@@ -311,19 +311,15 @@ class Api::FindingController < ApplicationController
   end
 
   def publish_to_github (user, finding_id, repo)
-    if user
-      user_github = Octokit::Client.new(:access_token => @current_user.access_token)
-      @finding = Finding.find(finding_id)
-      @severity = CodeburnerUtil.severity_to_text(@finding.severity)
-      @details = @finding.detail.split(',').join("\n")
-      result = user_github.create_issue(repo, @finding.description, render_to_string("github"))
+    user_github = Octokit::Client.new(:access_token => @current_user.access_token)
+    @finding = Finding.find(finding_id)
+    @severity = CodeburnerUtil.severity_to_text(@finding.severity)
+    @details = @finding.detail.split(',').join("\n")
+    result = user_github.create_issue(repo, @finding.description, render_to_string("github"))
 
-      if result
-        @finding.update(:status => 2)
-        return result
-      else
-        return nil
-      end
+    if result
+      @finding.update(:status => 2)
+      return result
     else
       return nil
     end

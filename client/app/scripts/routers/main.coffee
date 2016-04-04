@@ -43,26 +43,52 @@ class Codeburner.Routers.Main extends Backbone.Router
     'stats': 'statsAction'
     '*query': 'defaultAction'
 
+  execute: (callback, args, name) ->
+    if args[1]?
+      @checkAuthz args[1]
+
+    callback.apply(this, args) if callback
+
+  checkAuthz: (query) ->
+    if query?
+      parsedQuery = Codeburner.Utilities.parseQueryString(query)
+
+      unless parsedQuery.authz == undefined
+        localStorage.setItem "authz", parsedQuery.authz
+
+        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+          Codeburner.User = data
+          Codeburner.Utilities.authz()
+
+          if localStorage.getItem "authRedirect"
+            window.location.hash = localStorage.getItem("authRedirect")
+            localStorage.removeItem "authRedirect"
+
+        ), (data) ->
+          Codeburner.User = null
+          console.log "invalid authz token"
+
   findingAction: (query) ->
     do @burnListView.clearRefreshInterval
     do @burnListView.undelegateEvents
     do @filterListView.undelegateEvents
     do @statsView.undelegateEvents
+
     if query?
-      console.log query
       do @findingCollection.resetFilter
       @findingCollection.filters = _.extend @findingCollection.filters, Codeburner.Utilities.parseQueryString(query)
       do @findingCollection.changeFilter
+
     do @findingListView.render
 
-  filterAction: ->
+  filterAction: (query) ->
     do @burnListView.clearRefreshInterval
     do @burnListView.undelegateEvents
     do @findingListView.undelegateEvents
     do @statsView.undelegateEvents
     do @filterListView.render
 
-  statsAction: ->
+  statsAction: (query) ->
     do @burnListView.clearRefreshInterval
     do @burnListView.undelegateEvents
     do @findingListView.undelegateEvents
@@ -73,34 +99,14 @@ class Codeburner.Routers.Main extends Backbone.Router
     do @findingListView.undelegateEvents
     do @filterListView.undelegateEvents
     do @statsView.undelegateEvents
-    if query?
-      parsedQuery = Codeburner.Utilities.parseQueryString(query)
-      unless parsedQuery.authz == undefined
-        localStorage.setItem "authz", parsedQuery.authz
-        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
-          Codeburner.User = data
-          window.location = "/"
-        ), (data) ->
-          Codeburner.User = null
-          console.log "invalid authz token"
     do @burnListView.render
 
 $ ->
-  if localStorage.getItem "authz"
-    Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
-      Codeburner.User = data
-      $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
-        name: Codeburner.User.name
-        profileUrl: Codeburner.User.profile_url
-        avatarUrl: Codeburner.User.avatar_url
-      $('#user-signout').on 'click', ->
-        localStorage.removeItem "authz"
-        window.location = "/"
-    ), (data) ->
-      Codeburner.User = null
-      console.log "invalid authz token"
-
+  Codeburner.Utilities.checkAuthz window.location.hash
+  Codeburner.Utilities.authz()
+  
   serviceCollection = new Codeburner.Collections.Service
+
   serviceCollection.fetch().done =>
     window.router = new Codeburner.Routers.Main serviceCollection
     do $.material.init
