@@ -3,13 +3,13 @@
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 Dir['vendor/plugins/*/recipes/*.rb'].each { |plugin| load(plugin) }
 
-load 'config/deploy'
-load 'deploy/assets'
+#load 'config/deploy'
+#load 'deploy/assets'
 
-require 'capistrano/sidekiq'
-# set sidekiq timeout to 1hr and do NOT restart workers by default
-# NOTE: this means you need to do 'cap <env> sidekiq:restart' if anything significant changes in the backend
-set :sidekiq_default_hooks, -> { false }
+# require 'capistrano/sidekiq'
+# # set sidekiq timeout to 1hr and do NOT restart workers by default
+# # NOTE: this means you need to do 'cap <env> sidekiq:restart' if anything significant changes in the backend
+# set :sidekiq_default_hooks, -> { false }
 
 namespace :frontend do
   task :build do
@@ -30,8 +30,8 @@ namespace :nsp do
     run "sudo npm update -g nsp"
   end
 end
-
-before 'deploy', 'frontend:build'
-after 'deploy', 'whenever:update_crontab'
-after 'deploy', 'retire:install'
-after 'deploy', 'nsp:install'
+# 
+# before 'deploy', 'frontend:build'
+# after 'deploy', 'whenever:update_crontab'
+# after 'deploy', 'retire:install'
+# after 'deploy', 'nsp:install'

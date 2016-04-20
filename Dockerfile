@@ -1,5 +1,5 @@
 FROM ruby:2.2.3
-RUN apt-get update -qq && apt-get install -y build-essential nodejs nodejs-legacy npm default-jdk maven unzip mysql-client
+RUN apt-get update -qq && apt-get install -y --fix-missing build-essential nodejs nodejs-legacy npm default-jdk maven unzip mysql-client
 
 RUN npm install -g retire
 RUN npm install -g nsp

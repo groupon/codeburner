@@ -27,6 +27,7 @@ group :development, :test do
   gem 'spring'
 
   # capistrano for deployment
+  gem 'capistrano'
   gem 'capistrano-sidekiq'
   gem 'capistrano-rails'
   gem 'pry-rails'
@@ -54,7 +55,7 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'owasp-pipeline', '>= 0.8.5'
+gem 'owasp-pipeline', '>= 0.8.6'
 gem 'whenever'
 gem 'chronic'
 

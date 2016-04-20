@@ -249,7 +249,7 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails-settings-cached (0.5.6)
+    rails-settings-cached (0.6.2)
       rails (>= 4.2.0)
     railties (4.2.5.1)
       actionpack (= 4.2.5.1)
@@ -346,6 +346,7 @@ PLATFORMS
 DEPENDENCIES
   attribute-defaults
   byebug
+  capistrano
   capistrano-bundler
   capistrano-rails
   capistrano-sidekiq
@@ -359,7 +360,7 @@ DEPENDENCIES
   mocha
   mysql2 (~> 0.3.20, >= 0.3.20)
   octokit
-  owasp-pipeline (>= 0.8.5)
+  owasp-pipeline (>= 0.8.6)
   paper_trail (>= 4.0.0)
   pry-byebug
   pry-rails
