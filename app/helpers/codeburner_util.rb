@@ -29,12 +29,12 @@ module CodeburnerUtil
 
   def self.github
     Octokit.configure do |c|
-      if Setting.github[:api_endpoint]
-        c.api_endpoint = Setting.github[:api_endpoint]
+      if Setting.github['api_endpoint']
+        c.api_endpoint = Setting.github['api_endpoint']
       end
     end
 
-    Octokit::Client.new(:access_token => Setting.github[:api_access_token])
+    Octokit::Client.new(:access_token => Setting.github['api_access_token'])
   end
 
   def self.severity_to_text severity

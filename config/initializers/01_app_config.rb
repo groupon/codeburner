@@ -21,49 +21,50 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'rails-settings-cached'
 
-# Setting.defaults[:github] = {
-#   :api_endpoint => 'https://api.github.com/',
-#   :api_access_token => '',
-#   :link_host => 'https://github.com',
-#   :oauth => {
-#     :client_id => '',
-#     :client_secret => '',
-#     :scope => 'user,repo,read:org,admin:repo_hook'
-#   }
-# }
-#
-# Setting.defaults[:email] = {
-#   :from => '"Codeburner" <codeburner@mydomain.com>',
-#   :link_host => {
-#     :development => 'localhost:9000',
-#     :staging => '',
-#     :production => '',
-#     :test => 'localhost:9000'
-#   }
-# }
-#
-# Setting.defaults[:pipeline] = {
-#   :npm_registry => 'https://registry.npmjs.org/',
-#   :tasks_for => {
-#     :Ruby => [ 'BundleAudit', 'Brakeman', 'Dawnscanner' ],
-#     :JavaScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
-#     :CoffeeScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
-#     :Java => [ 'PMD', 'FindSecurityBugs' ]
-#   },
-#   :pmd_path => '/pmd/pmd-bin-5.4.1',
-#   :findsecbugs_path => '/findsecbugs',
-#   :checkmarx_server => 'checkmarx_server',
-#   :checkmarx_user => 'checkmarx_user',
-#   :checkmarx_password => 'checkmarx_password',
-#   :checkmarx_log => 'checkmarx_logfile',
-# }
-#
-# Setting.defaults[:jira] = {
-#   :username => '',
-#   :password => '',
-#   :host => '',
-#   :context_path => '',
-#   :use_ssl => false,
-#   :link_host => 'https://my_jira_host'
-# }
+Setting.defaults[:github] = {
+  :api_endpoint => 'https://api.github.com/',
+  :api_access_token => '',
+  :link_host => 'https://github.com',
+  :oauth => {
+    :client_id => '',
+    :client_secret => '',
+    :scope => 'user,repo,read:org,admin:repo_hook'
+  }
+}
+
+Setting.defaults[:email] = {
+  :from => '"Codeburner" <codeburner@mydomain.com>',
+  :link_host => {
+    :development => 'localhost:9000',
+    :staging => '',
+    :production => '',
+    :test => 'localhost:9000'
+  }
+}
+
+Setting.defaults[:pipeline] = {
+  :npm_registry => 'https://registry.npmjs.org/',
+  :tasks_for => {
+    :Ruby => [ 'BundleAudit', 'Brakeman', 'Dawnscanner' ],
+    :JavaScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
+    :CoffeeScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
+    :Java => [ 'PMD', 'FindSecurityBugs' ]
+  },
+  :pmd_path => '/pmd/pmd-bin-5.4.1',
+  :findsecbugs_path => '/findsecbugs',
+  :checkmarx_server => 'checkmarx_server',
+  :checkmarx_user => 'checkmarx_user',
+  :checkmarx_password => 'checkmarx_password',
+  :checkmarx_log => 'checkmarx_logfile',
+}
+
+Setting.defaults[:jira] = {
+  :username => '',
+  :password => '',
+  :host => '',
+  :context_path => '',
+  :use_ssl => false,
+  :link_host => 'https://my_jira_host'
+}

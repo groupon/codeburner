@@ -67,9 +67,11 @@ Codeburner.Views.Settings = Backbone.View.extend
         valueString = $(setting).val()
 
         if valueString.indexOf(",")
-          value = valueString.replace(/\s+/g, '').split(",")
+          value = valueString.replace(/\s+/g, '')
         else
           value = valueString
+
+        console.log value
 
         if $(setting).parent().parent().is("span")
           heading = $(setting).parent().parent().data("id")

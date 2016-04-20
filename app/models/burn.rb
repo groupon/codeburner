@@ -97,7 +97,7 @@ class Burn < ActiveRecord::Base
   end
 
   def ignite
-    supported_langs = Setting.pipeline[:tasks_for].keys.map{|l| l.to_s}
+    supported_langs = Setting.pipeline['tasks_for'].keys.map{|l| l.to_s}
 
     # this line actually triggers a service-portal lookup for the display name: .pretty_name(true)
     Rails.logger.info "IGNITION: #{self.service.pretty_name(true)} #{self.revision}"
@@ -124,19 +124,19 @@ class Burn < ActiveRecord::Base
         :revision => self.revision,
         :target => "#{dir}/",
         :quiet => true,
-        :npm_registry => Setting.pipeline[:npm_registry],
+        :npm_registry => Setting.pipeline['npm_registry'],
         :run_tasks => [],
-        :pmd_path => Setting.pipeline[:pmd_path],
-        :findsecbugs_path => Setting.pipeline[:findsecbugs_path],
-        :checkmarx_server => Setting.pipeline[:checkmarx_server],
-        :checkmarx_user => Setting.pipeline[:checkmarx_user],
-        :checkmarx_password => Setting.pipeline[:checkmarx_password],
-        :checkmarx_log => Setting.pipeline[:checkmarx_log]
+        :pmd_path => Setting.pipeline['pmd_path'],
+        :findsecbugs_path => Setting.pipeline['findsecbugs_path'],
+        :checkmarx_server => Setting.pipeline['checkmarx_server'],
+        :checkmarx_user => Setting.pipeline['checkmarx_user'],
+        :checkmarx_password => Setting.pipeline['checkmarx_password'],
+        :checkmarx_log => Setting.pipeline['checkmarx_log']
       }
       findings = []
 
       languages.each do |lang|
-        pipeline_options[:run_tasks] << Setting.pipeline[:tasks_for][lang.to_sym].to_a
+        pipeline_options[:run_tasks] << Setting.pipeline['tasks_for'][lang].to_a
       end
 
       pipeline_options[:run_tasks] = pipeline_options[:run_tasks].flatten.uniq.compact

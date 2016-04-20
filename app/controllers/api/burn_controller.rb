@@ -223,7 +223,7 @@ class Api::BurnController < ApplicationController
   def create
     return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
 
-    repo_url = "#{Setting.github[:link_host]}/#{params[:service_name]}"
+    repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
 
     if params.has_key?(:revision)
       revision = params[:revision]
