@@ -24,13 +24,13 @@ THE SOFTWARE.
 <% if (filtered_by) { %>
   <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Currently showing only findings filtered by filter #<%= filtered_by %>.  <a href="#finding?status=0" class="alert-link">Show all findings.</a>
+    Currently showing only findings filtered by filter #<%= filtered_by %>.  <a href="#findings?status=0" class="alert-link">Show all findings.</a>
   </div>
 <% } %>
 <% if (burn_id && service_id && models.length > 0) { %>
   <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Currently showing only findings for burn #<%= burn_id %>.  <a href="#finding?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %>.</a>
+    Currently showing only findings for burn #<%= burn_id %>.  <a href="#findings?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %>.</a>
   </div>
 <% } %>
 <% if (models.length > 0) { %>
@@ -84,6 +84,6 @@ THE SOFTWARE.
 <% } else { %>
   <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    No findings match the current criteria. <% if (burn_id != null) { %>Currently showing findings only for burn #<%= burn_id %>.  <a href="#finding?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %></a><% } %>
+    No findings match the current criteria. <% if (burn_id != null) { %>Currently showing findings only for burn #<%= burn_id %>.  <a href="#findings?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %></a><% } %>
   </div>
 <% } %>

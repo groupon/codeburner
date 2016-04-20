@@ -36,16 +36,27 @@ class Codeburner.Routers.Main extends Backbone.Router
 
     @statsView = new Codeburner.Views.Stats serviceCollection
 
+    @settingsView = new Codeburner.Views.Settings
+
+    @defaultView = new Codeburner.Views.Default
+
   routes:
-    'finding?*queryString': 'findingAction'
-    'finding': 'findingAction'
-    'filter': 'filterAction'
+    'findings?*queryString': 'findingsAction'
+    'findings': 'findingsAction'
+    'filters': 'filtersAction'
     'stats': 'statsAction'
+    'settings': 'settingsAction'
+    'burns': 'burnsAction'
     '*query': 'defaultAction'
 
   execute: (callback, args, name) ->
     if args[1]?
       @checkAuthz args[1]
+
+    do @resetViews
+
+    $('.nav-item').removeClass('active')
+    $("#nav-#{name.split("Action")[0]}").addClass('active')
 
     callback.apply(this, args) if callback
 
@@ -68,12 +79,16 @@ class Codeburner.Routers.Main extends Backbone.Router
           Codeburner.User = null
           console.log "invalid authz token"
 
-  findingAction: (query) ->
-    do @burnListView.clearRefreshInterval
-    do @burnListView.undelegateEvents
-    do @filterListView.undelegateEvents
-    do @statsView.undelegateEvents
+  resetViews: ->
+    views = Object.keys(window.router).filter((key) =>
+        window.router[key] instanceof Backbone.View
+      )
 
+    for view in views
+      do window.router[view].undelegateEvents
+      do window.router[view].clearRefreshInterval if typeof(window.router[view].clearRefreshInterval) == 'function'
+
+  findingsAction: (query) ->
     if query?
       do @findingCollection.resetFilter
       @findingCollection.filters = _.extend @findingCollection.filters, Codeburner.Utilities.parseQueryString(query)
@@ -81,30 +96,25 @@ class Codeburner.Routers.Main extends Backbone.Router
 
     do @findingListView.render
 
-  filterAction: (query) ->
-    do @burnListView.clearRefreshInterval
-    do @burnListView.undelegateEvents
-    do @findingListView.undelegateEvents
-    do @statsView.undelegateEvents
+  filtersAction: (query) ->
     do @filterListView.render
 
   statsAction: (query) ->
-    do @burnListView.clearRefreshInterval
-    do @burnListView.undelegateEvents
-    do @findingListView.undelegateEvents
-    do @filterListView.undelegateEvents
     do @statsView.render
 
-  defaultAction: (action, query) ->
-    do @findingListView.undelegateEvents
-    do @filterListView.undelegateEvents
-    do @statsView.undelegateEvents
+  settingsAction: (query) ->
+    do @settingsView.render
+
+  burnsAction: (query) ->
     do @burnListView.render
+
+  defaultAction: (action, query) ->
+    do @defaultView.render
 
 $ ->
   Codeburner.Utilities.checkAuthz window.location.hash
   Codeburner.Utilities.authz()
-  
+
   serviceCollection = new Codeburner.Collections.Service
 
   serviceCollection.fetch().done =>

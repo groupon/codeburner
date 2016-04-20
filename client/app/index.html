@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css">
     <link rel="stylesheet" href="bower_components/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css">
     <link rel="stylesheet" href="bower_components/selectize/dist/css/selectize.default.css">
+    <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
     <!-- endbuild -->
 
     <link rel="shortcut icon" href="favicon.ico" />
@@ -31,8 +32,8 @@
           <form>
             <div class="modal-body" id="confirm-body">
               <center>
-                <button class="btn btn-default btn-flat confirm-btn" data-dismiss="modal" id="confirm-no-btn"><i class="material-icons">close</i> No</button>
-                <button class="btn btn-primary btn-flat confirm-btn" data-dismiss="modal" id="confirm-yes-btn"><i class="material-icons">check</i> Yes</button>
+                <button class="btn btn-default btn-flat confirm-btn" data-dismiss="modal" id="confirm-no-btn"><i class="octicon octicon-x"></i> No</button>
+                <button class="btn btn-primary btn-flat confirm-btn" data-dismiss="modal" id="confirm-yes-btn"><i class="octicon octicon-check"></i> Yes</button>
               </center>
             </div>
           </form>
@@ -52,7 +53,7 @@
           <form>
             <div class="modal-footer" id="alert-footer">
               <center>
-                <button class="btn btn-primary btn-flat alert-btn" data-dismiss="modal" id="alert-yes-btn"><i class="material-icons">check</i> OK</button>
+                <button class="btn btn-primary btn-flat alert-btn" data-dismiss="modal" id="alert-yes-btn"><i class="octicon octicon-check"></i> OK</button>
               </center>
             </div>
           </form>
@@ -72,7 +73,7 @@
           <form>
             <div class="modal-footer" id="notify-footer">
               <center>
-                <button class="btn btn-primary btn-flat" data-dismiss="modal"><i class="material-icons">check</i> OK</button>
+                <button class="btn btn-primary btn-flat" data-dismiss="modal"><i class="octicon octicon-check"></i> OK</button>
               </center>
             </div>
           </form>
@@ -81,21 +82,21 @@
     </div>
 
     <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#"><span><img src="images/fire.png"></span>&nbsp;Codeburner</a>
-      </div>
-      <div id="navbar" class="navbar-collapse collapse">
+      <div class="container-fluid">
+        <a onclick="$('.nav-item').removeClass('active')" class="navbar-brand" href="#"><img src="images/fire.png"></a>
         <ul class="nav navbar-nav navbar-left">
-          <li><a href="#finding">Findings</a></li>
-          <li><a href="#filter">Filters</a></li>
-          <li><a href="#stats">Statistics</a></li>
+          <li id="nav-burns" class="nav-item"><a href="#burns"><span class="octicon octicon-flame"></span> Burns</a></li>
+          <li id="nav-findings" class="nav-item"><a href="#findings"><span class="octicon octicon-bug"></span> Findings</a></li>
+          <li id="nav-filters" class="nav-item"><a href="#filters"><span class="octicon octicon-diff"></span> Filters</a></li>
+          <li id="nav-stats" class="nav-item"><a href="#stats"><span class="octicon octicon-graph"></span> Statistics</a></li>
         </ul>
-        <ul id="login-menu" class="nav navbar-nav navbar-right">
-          <li><a onclick="localStorage.setItem('authRedirect',Backbone.history.location.hash)" href="/api/oauth/authorize">Login</a></li>
+        <ul id="login-menu" class="nav navbar-nav navbar-right nav-dropdown">
+          <li class="nav-item" onclick="$('.nav-item').removeClass('active');$(this).addClass('active')"><a onclick="localStorage.setItem('authRedirect',Backbone.history.location.hash)" href="/api/oauth/authorize">Sign In</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="nav-item" id="nav-settings"><a href="#settings"><span class="octicon octicon-settings"></span> System Settings</a></li>
         </ul>
       </div>
-    </div>
     </nav>
 
     <div id="content">
@@ -148,6 +149,8 @@
     <script src="scripts/views/filter.js"></script>
     <script src="scripts/views/finding.js"></script>
     <script src="scripts/views/stats.js"></script>
+    <script src="scripts/views/settings.js"></script>
+    <script src="scripts/views/default.js"></script>
     <script src="scripts/routers/main.js"></script>
     <script src="scripts/highlight.pack.js"></script>
     <!-- endbuild -->

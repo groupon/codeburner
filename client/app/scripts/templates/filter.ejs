@@ -25,20 +25,21 @@ THE SOFTWARE.
   <tr id="filter-item">
     <td>
       <b id="filter-header"><button class="btn btn-sm btn-no-padding btn-filter-list btn-flat" id="link-findings" data-id="<%= model.get('id') %>"><span class="badge" data-id="<%= model.get('id') %>"><%= model.get('finding_count') %></span></button> &nbsp;
+      <% var service = services[_.findIndex(services, {id: model.get('service_id')})].attributes %>
       <% if (model.get('service_id')) { %>
-        <%= services[_.findIndex(services, {id: model.get('service_id')})].get('pretty_name') %>
+        <%= service.pretty_name %>
       <% } else { %>
         All Services
       <% }; %>
-      - <%= model.get('description') %> <i id="expand-filter" class="material-icons btn btn-flat btn-no-padding btn-filter-list">unfold_more</i></button>
-      <i id="filter-delete-btn" class="material-icons btn btn-flat btn-sm btn-no-padding btn-filter-list pull-right" data-id="<%= model.get('id') %>">clear</i></button>
+      - <%= model.get('description') %> <button class="btn btn-flat btn-sm btn-no-padding btn-filter-list"><i class="material-icons expand-filter">unfold_more</i></button>
+        <button data-id="<%= model.get('id') %>" class="btn btn-flat btn-sm btn-no-padding btn-filter-list pull-right"><i class="material-icons filter-delete-btn">clear</i></button>
       </b>
       <div class="collapse">
         <p>
           <dl class="dl-horizontal" id="filter-detail">
             <dt>Service:</dt><dd>
               <% if (model.get('service_id')) { %>
-                <%= services[_.findIndex(services, {id: model.get('service_id')})].get('pretty_name') %>
+                <%= service.pretty_name %>
               <% } else { %>
                 ANY
               <% }; %>
@@ -92,7 +93,7 @@ THE SOFTWARE.
                 ANY
               <% }; %>
             </dd>
-            <dt>Filtering:</dt><dd><a href="#finding?status=3&filtered_by=<%= model.get('id') %>" ><%= model.get('finding_count') %> findings</a></dd>
+            <dt>Filtering:</dt><dd><a href="#findings?status=3&filtered_by=<%= model.get('id') %>" ><%= model.get('finding_count') %> findings</a></dd>
           </dl>
         </p>
       </div>

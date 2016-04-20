@@ -22,6 +22,6 @@
 #THE SOFTWARE.
 #
 class ApplicationMailer < ActionMailer::Base
-  default from: $app_config.mail.from
+  default from: Setting.email[:from]
   layout 'mailer'
 end

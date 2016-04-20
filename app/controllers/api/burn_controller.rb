@@ -21,6 +21,7 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class Api::BurnController < ApplicationController
   protect_from_forgery
   respond_to :json, :html
@@ -220,12 +221,14 @@ class Api::BurnController < ApplicationController
   #       description: created
   # END ServiceDiscovery
   def create
-    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name) and params.has_key?(:repo_url)
+    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
+
+    repo_url = "#{Setting.github[:link_host]}/#{params[:service_name]}"
 
     if params.has_key?(:revision)
       revision = params[:revision]
     else
-      revision = CodeburnerUtil.get_head_commit(params[:repo_url])
+      revision = CodeburnerUtil.get_head_commit(repo_url)
     end
 
     duplicate_burn = Burn.service_short_name(params[:service_name]).revision(revision)
@@ -240,7 +243,7 @@ class Api::BurnController < ApplicationController
       service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]})
     end
 
-    burn = Burn.create({:service => service, :revision => revision, :repo_url => params[:repo_url].gsub('.git',''), :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:service => service, :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})

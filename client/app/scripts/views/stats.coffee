@@ -30,6 +30,7 @@ Codeburner.Views.Stats = Backbone.View.extend
   resolutionSlider: document.getElementById('resolution')
   initialize: (@serviceCollection) ->
     do @undelegateEvents
+
   events:
     'click #redraw': (e) ->
       $('#redraw').hide()

@@ -24,7 +24,7 @@ As a more advanced example, let's say you wanted to filter every finding from a 
 ***
 
 ## View existing filters
-You can view the currently active filters by clicking on the "Filters" option in the nav bar, or by visiting the URL <a href="http://localhost:8080/#filter">http://localhost:8080/#filter</a>
+You can view the currently active filters by clicking on the "Filters" option in the nav bar, or by visiting the URL <a href="http://localhost:8080/#filters">http://localhost:8080/#filter</a>
 
 Click the "expand" button to show more details about a specific filter:
 

@@ -1,4 +1,4 @@
-The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking "Findings" in the nav bar or visiting the URL <a href="http://localhost:8080/#finding" target="_blank">http://localhost:8080/#finding</a>.
+The findings page is the primary interface of Codeburner.  This is where you can see the issues found by the scanning tools, sort/triage them, act on the actionable issues and hide or filter false positives.  You can access the findings page by clicking "Findings" in the nav bar or visiting the URL <a href="http://localhost:8080/#findings" target="_blank">http://localhost:8080/#finding</a>.
 
 ![findings_page](images/findings_page.png)
 

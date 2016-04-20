@@ -63,13 +63,13 @@ THE SOFTWARE.
             <dd><pre><code id="detail_code"><%= hljs.highlightAuto(model.get('code').trim()).value %></code></pre></dd>
         <% } %>
         <dd class="pull-right">
-          <button class="btn btn-sm btn-flat" id="publish-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Publish this finding" data-finding-id="<%= id %>"><i class="material-icons">note_add</i></button>
+          <button class="btn btn-sm btn-flat" id="publish-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Publish issue from this finding" data-finding-id="<%= id %>"><i class="octicon octicon-issue-opened"></i></button>
           <% if (model.get('status') === 1) { %>
-            <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Un-hide this finding" data-finding-id="<%= id %>"><i class="material-icons">add_circle_outline</i></button>
+            <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Un-hide this finding" data-finding-id="<%= id %>"><i class="octicon octicon-plus"></i></button>
           <% } else { %>
-            <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hide this finding" data-finding-id="<%= id %>"><i class="material-icons">block</i></button>
+            <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hide this finding" data-finding-id="<%= id %>"><i class="octicon octicon-x"></i></button>
           <% }; %>
-          <button class="btn btn-sm btn-flat" id="filter-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Filter findings like this" data-finding-id="<%= id %>" <% if(model.get('filter_id')) { %>disabled<% }; %>><i class="material-icons">filter_list</i></button>
+          <button class="btn btn-sm btn-flat" id="filter-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Filter findings like this" data-finding-id="<%= id %>" <% if(model.get('filter_id')) { %>disabled<% }; %>><i class="octicon octicon-diff"></i></button>
         </dd><br>
       </dl>
 <!--     </div> -->

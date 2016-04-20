@@ -28,6 +28,7 @@ Codeburner.Views.BurnList = Backbone.View.extend
   currentPage: 1
   initialize: (@burnCollection, @serviceCollection) ->
     do @undelegateEvents
+
   events:
     'click .header': (e) ->
       if @burnCollection.state.sortKey is e.target.dataset.id
@@ -52,11 +53,44 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
     'click #submit-burn-btn': ->
       $('#burn-submit-body').html JST['app/scripts/templates/burn_submit.ejs']
+      $('#select-repo').selectize(
+        valueField: 'full_name'
+        labelField: 'full_name'
+        searchField: [ 'name', 'html_url', 'full_name' ]
+        create: false
+        render:
+          option: (item, escape) ->
+            html = '<div>' +
+              '<span class="title">' +
+                '<span class="name"><span class="octicon ' + if item.fork then 'oction-repo-forked' else 'octicon-repo' + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
+              '</span>' +
+              '<span class="description">' + escape(item.description) + '</span>' +
+              '<ul class="meta">' +
+                '<li class="language"><span class="octicon octicon-code"></span> ' + escape(item.language) + '</li>' +
+                '<li class="stargazers"><span class="octicon octicon-star"></span><span> ' + escape(item.stargazers_count) + '</span> </li>' +
+                '<li class="forks"><span class="octicon octicon-repo-forked"></span><span> ' + escape(item.forks) + '</span> </li>' +
+              '</ul>' +
+            '</div>'
+
+            return html
+
+        score: (search) ->
+          score = this.getScoreFunction search
+          return (item) ->
+            return score(item) * (1 + Math.min(item.stargazers_count / 100, 1))
+
+        load: (query, callback) ->
+          return callback() unless query.length
+          Codeburner.Utilities.getRequest "/api/github/search/repos?q=#{encodeURIComponent(query)}", ((data) ->
+            callback(data.items)
+          ), (data) ->
+            do callback
+      )
       do $('#submitDialog').show
       do $('#submitDialog').modal
 
     'click #submit-burn': ->
-      postData = {'service_name': $('#service-name').val().trim(), 'repo_url': $('#repo_url').val().trim()}
+      postData = {'service_name': $('#select-repo').val()}
       if $('#revision').val()
         postData['revision'] = $('#revision').val().trim()
       if $('#notify').val()
@@ -67,10 +101,10 @@ Codeburner.Views.BurnList = Backbone.View.extend
       ), (data) ->
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
-    'click .burn-list': (e) ->
-      burn_id = $(e.target).parent().data 'id'
-      service_id = $(e.target).parent().data 'service'
-      window.router.navigate "finding?burn_id=#{burn_id}&service_id=#{service_id}", {trigger: true, replace: true}
+    'click .burn-show-findings': (e) ->
+      burn_id = $(e.target).closest('.burn-show-findings').data 'id'
+      service_id = $(e.target).closest('.burn-show-findings').data 'service'
+      window.router.navigate "#findings?burn_id=#{burn_id}&service_id=#{service_id}", {trigger: true, replace: true}
 
     'keyup .validated': (e) ->
       $('.floating-label').removeClass 'invalid'

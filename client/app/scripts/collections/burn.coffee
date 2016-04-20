@@ -28,7 +28,7 @@ class Codeburner.Collections.Burn extends Backbone.PageableCollection
   url: '/api/burn'
   mode: 'server'
   state:
-    pageSize: 10
+    pageSize: 25
     sortKey: 'count'
     order: 1
 

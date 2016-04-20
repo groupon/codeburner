@@ -21,8 +21,17 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
+
+  def admin_only
+    if User.admin.count > 0
+      unless @current_user and @current_user.admin?
+        render(:json => {:error => 'Administrator role required'}, :status => 403)
+      end
+    end
+  end
 
   private
     def authz

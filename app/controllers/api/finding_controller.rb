@@ -288,7 +288,7 @@ class Api::FindingController < ApplicationController
     when "jira"
       result = publish_to_jira(finding.id, params[:project])
       ticket = result['key'] if result.has_key?('key')
-      link = "#{$app_config.jira.link_host}/browse/#{ticket}"
+      link = "#{Setting.jira.link_host}/browse/#{ticket}"
     when "github"
       return render(:json => {:error => "GitHub Authentication Required"}, :status => 403) if @current_user == nil
 
@@ -331,7 +331,18 @@ class Api::FindingController < ApplicationController
     @details = @finding.detail.split(',').join("\n")
     description = render_to_string "jira"
 
-    issue = $jira.Issue.build
+    jira_options = {
+      :site => Setting.jira.host,
+      :username => Setting.jira.username,
+      :password => Setting.jira.password,
+      :context_path => Setting.jira.context_path,
+      :auth_type => :basic,
+      :use_ssl => Setting.jira.use_ssl
+    }
+
+    jira = JIRA::Client.new(jira_options)
+
+    issue = jira.Issue.build
     result = issue.save({
       "fields" => {
         "project" => {

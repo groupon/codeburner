@@ -1,4 +1,4 @@
-The home page for Codeburner is the 'burns' page.  It can be accessed via the URL <a href="http://localhost:8080/#burn" target="_blank">http://localhost:8080/</a>, or by clicking the 'Codeburner' title/logo in the navigation bar.
+The home page for Codeburner is the 'burns' page.  It can be accessed via the URL <a href="http://localhost:8080/#burns" target="_blank">http://localhost:8080/</a>, or by clicking the 'Codeburner' title/logo in the navigation bar.
 
 To submit a new burn, click on the "Submit Burn" button:
 

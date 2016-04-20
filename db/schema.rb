@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160322161458) do
+ActiveRecord::Schema.define(version: 20160415142013) do
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -106,6 +106,17 @@ ActiveRecord::Schema.define(version: 20160322161458) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
+  create_table "settings", force: :cascade do |t|
+    t.string   "var",        limit: 255,   null: false
+    t.text     "value",      limit: 65535
+    t.integer  "thing_id",   limit: 4
+    t.string   "thing_type", limit: 30
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
+
   create_table "system_stats", force: :cascade do |t|
     t.integer  "services",           limit: 4
     t.integer  "burns",              limit: 4
@@ -128,6 +139,8 @@ ActiveRecord::Schema.define(version: 20160322161458) do
     t.string   "access_token", limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.integer  "role",         limit: 4
+    t.string   "fullname",     limit: 255
   end
 
   create_table "versions", force: :cascade do |t|

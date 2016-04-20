@@ -24,10 +24,11 @@
     "moment-timezone": "~0.5.0",
     "lodash": "~3.10.1",
     "arrive": "~2.3.0",
-    "bootstrap-material-design": "~0.5.8",
+    "bootstrap-material-design": "~0.5.9",
     "bootstrap-material-datetimepicker": "~2.5.3",
     "nouislider": "~8.2.1",
-    "selectize": "~0.12.1"
+    "selectize": "~0.12.1",
+    "octicons": "*"
   },
   "resolutions": {
     "jquery": "~2.1.4",

@@ -3,7 +3,7 @@
     <h3>Codeburner Report</h3>
 <p>Codeburner has finished burning Test Service - <a href="http://github.com/a/path/tree/abcdefg123456789">abcdefg123456789</a>.
 <p>You can view the full results and sort/create jira issues here:
-<p><a href="https://localhost:8000/#finding?burn_id=980190962">http://localhost:8000/#finding?burn_id=980190962</a>
+<p><a href="https://localhost:8000/#findings?burn_id=980190962">http://localhost:8000/#findings?burn_id=980190962</a>
 <hr>
   <p>
   <b>Description: </b> Finding One<br>

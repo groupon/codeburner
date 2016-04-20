@@ -29,6 +29,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
   lastFindingHighlighted: null
   initialize: (@collection, @serviceCollection) ->
     do @undelegateEvents
+
   events:
     'click .toggle-checkbox': (e) ->
       parent = $(e.target).parent()
@@ -167,7 +168,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
       do @collection.resetFilter
       unless selected
         @collection.filters.service_id = id
-        Backbone.history.navigate "finding?service_id=#{id}"
+        Backbone.history.navigate "findings?service_id=#{id}"
       else
         @collection.filters.service_id = null
         Backbone.history.navigate "finding"
