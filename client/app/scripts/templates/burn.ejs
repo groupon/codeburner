@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<div class="container col-md-9">
+<div class="container col-md-10">
   <ul class="list-unstyled">
     <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button></li>
     <% burns.forEach(function(item) { %>
@@ -29,11 +29,11 @@ THE SOFTWARE.
       <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes; %>
       <li>
         <div class="row burn-list-item" style="padding:1em;margin:1em;">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <span class="octicon octicon-repo"></span> &nbsp;<a href="<%= burn.repo_url %>" target="_blank"><%= service.pretty_name %></a><br>
             <span class="octicon octicon-git-commit" style="margin-left:1em;"></span> &nbsp;<%= burn.revision.slice(0,8) %>
           </div>
-          <div class="col-md-6"><span class="octicon octicon-code"></span> &nbsp;<%= burn.code_lang %></div>
+          <div class="col-md-5"><span class="octicon octicon-code"></span> &nbsp;<%= burn.code_lang %></div>
           <div class="col-md-2">
             <span class="octicon octicon-clock"></span> &nbsp;<%= moment(burn.created_at).fromNow() %><br>
             <span class="octicon octicon-question"></span> &nbsp;<%= burn.status %>

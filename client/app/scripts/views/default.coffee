@@ -1,4 +1,4 @@
-#
+
 #The MIT License (MIT)
 #
 #Copyright (c) 2016, Groupon, Inc.
@@ -21,15 +21,19 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'jira'
+'use strict'
 
-jira_options = {
-  :site => $app_config.jira.host,
-  :username => $app_config.jira.username,
-  :password => $app_config.jira.password,
-  :context_path => $app_config.jira.context_path,
-  :auth_type => :basic,
-  :use_ssl => $app_config.jira.use_ssl
-}
+Codeburner.Views.Default = Backbone.View.extend
+  el: $('#content')
 
-$jira = JIRA::Client.new(jira_options)
+  renderStats: ->
+    url = '/api/stats'
+    Codeburner.Utilities.getRequest url, (data) ->
+      $('#burn_stats').html JST['app/scripts/templates/burn_stats.ejs']
+        stats: data
+
+  render: ->
+    console.log "rendering"
+    do @delegateEvents
+    @$el.html JST['app/scripts/templates/default.ejs']
+    do @renderStats

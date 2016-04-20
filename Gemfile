@@ -66,3 +66,6 @@ gem 'paper_trail', '>= 4.0.0'
 
 # for OAuth
 gem 'jwt'
+
+# for settings
+gem 'rails-settings-cached'

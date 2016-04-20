@@ -1,0 +1,55 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2016, Groupon, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<div class="panel panel-default">
+  <div class="panel-heading">E-mail</div>
+  <div class="panel-body">
+    <div id="category" data-id="email">
+      <fieldset>
+        <legend>General</legend>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="From Address" name="from" data-id="from" value="<%= _.escape(settings.from) %>">
+        </div>
+      </fieldset>
+      <br><br>
+      <fieldset>
+        <legend>Link Host (Rails.env)</legend>
+        <span data-id="link_host">
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Production" name="production" data-id="production" value="<%= settings.link_host.production %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Staging" name="staging" data-id="staging" value="<%= settings.link_host.staging %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Development" name="development" data-id="development" value="<%= settings.link_host.development %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Test" name="test" data-id="test" value="<%= settings.link_host.test %>">
+          </div>
+        </span>
+      </fieldset>
+      <button class="btn btn-primary pull-right" id="settings-submit">Update E-mail Settings</button>
+    </div>
+  </div>
+</div>

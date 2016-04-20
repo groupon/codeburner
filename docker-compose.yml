@@ -21,8 +21,8 @@ web: &app_base
   links:
     - db
     - redis
-  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0"
+  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && bundle install && bundle exec rake db:migrate && bundle exec rails s -b 0.0.0.0"
 worker:
   <<: *app_base
   ports: []
-  command: bundle exec sidekiq
+  command: bash -c "bundle update && bundle exec rake db:migrate && bundle exec sidekiq"

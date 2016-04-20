@@ -1,0 +1,77 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2016, Groupon, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<div class="panel panel-default">
+  <div class="panel-heading">OWASP Pipeline</div>
+  <div class="panel-body">
+    <div id="category" data-id="pipeline">
+      <fieldset>
+        <legend>General</legend>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="NPM Registry" name="npm_registry" data-id="npm_registry" value="<%= settings.npm_registry %>">
+        </div>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="FindSecurityBugs Path" name="findsecbugs_path" data-id="findsecbugs_path" value="<%= settings.findsecbugs_path %>">
+        </div>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="PMD Path" name="pmd_path" data-id="pmd_path" value="<%= settings.pmd_path %>">
+        </div>
+      </fieldset>
+      <br><br>
+      <fieldset>
+        <legend>Tasks</legend>
+        <span data-id="tasks_for">
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="CoffeeScript" name="CoffeeScript" data-id="CoffeeScript" value="<%= settings.tasks_for.CoffeeScript.join(",") %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Java" name="Java" data-id="Java" value="<%= settings.tasks_for.Java.join(",") %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="JavaScript" name="JavaScript" data-id="JavaScript" value="<%= settings.tasks_for.JavaScript.join(",") %>">
+          </div>
+          <div class="form-group">
+            <input type="TEXT" class="input-setting form-control floating-label" placeholder="Ruby" name="Ruby" data-id="Ruby" value="<%= settings.tasks_for.Ruby.join(",") %>">
+          </div>
+        </span>
+      </fieldset>
+      <br><br>
+      <fieldset>
+        <legend>Checkmarx</legend>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="Server" name="checkmarx_server" data-id="checkmarx_server" value="<%= settings.checkmarx_server %>">
+        </div>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="User" name="checkmarx_user" data-id="checkmarx_user" value="<%= settings.checkmarx_user %>">
+        </div>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="Password" name="checkmarx_password" data-id="checkmarx_password" value="<%= settings.checkmarx_password %>">
+        </div>
+        <div class="form-group">
+          <input type="TEXT" class="input-setting form-control floating-label" placeholder="Log File" name="checkmarx_log" data-id="checkmarx_log" value="<%= settings.checkmarx_log %>">
+        </div>
+      </fieldset>
+      <button class="btn btn-primary pull-right" id="settings-submit">Update Pipeline Settings</button>
+    </div>
+  </div>
+</div>
