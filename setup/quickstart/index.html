@@ -216,12 +216,6 @@
             </li>
           
             <li class="anchor">
-              <a title="Configure" href="#configure">
-                Configure
-              </a>
-            </li>
-          
-            <li class="anchor">
               <a title="Build" href="#build">
                 Build
               </a>
@@ -230,6 +224,12 @@
             <li class="anchor">
               <a title="Start Burning!" href="#start-burning">
                 Start Burning!
+              </a>
+            </li>
+          
+            <li class="anchor">
+              <a title="Configure" href="#configure">
+                Configure
               </a>
             </li>
           
@@ -419,21 +419,6 @@
 <pre class="command-line"><code class="language-bash">git clone https://github.com/groupon/codeburner</code></pre>
 
 <hr />
-<h2 id="configure">Configure<a class="headerlink" href="#configure" title="Permanent link">#</a></h2>
-<p>Minimally you'll want to configure GitHub access.  See the <a href="../../setup/configuration/">Configuration Guide</a> if you need to configure additional items (like JIRA access, etc).</p>
-<h3 id="generate-a-token">Generate a Token<a class="headerlink" href="#generate-a-token" title="Permanent link">#</a></h3>
-<p>To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:</p>
-<p><a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a></p>
-<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">#</a></h3>
-<p>Once you have an access token, you can add it to <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:</p>
-<pre class="code"><code class="language-yaml">github:
-  api_endpoint: https://api.github.com/
-  api_access_token: my_github_api_token
-  link_host: https://www.github.com</code></pre>
-
-
-<p>If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.</p>
-<hr />
 <h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">#</a></h2>
 <p>To build the container to run Codeburner and the scanning tools, you'll need to run the provided script:</p>
 <pre class="command-line language-bash"><code>sh ./docker-build.sh</code></pre>
@@ -446,6 +431,30 @@
 <h2 id="start-burning">Start Burning!<a class="headerlink" href="#start-burning" title="Permanent link">#</a></h2>
 <p>Once the container image is built, you can start the Codeburner application and all the dependent containers with docker-compose:</p>
 <pre class="command-line language-bash"><code>docker-compose up</code></pre>
+
+<p>You can then bring up Codeburner in a web browser by pointing it at your docker IP on port 3000.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you're running docker under docker-machine, you can get the docker IP with the command <strong>docker-machine ip</strong></p>
+</div>
+<h2 id="configure">Configure<a class="headerlink" href="#configure" title="Permanent link">#</a></h2>
+<h3 id="generate-tokens">Generate Tokens<a class="headerlink" href="#generate-tokens" title="Permanent link">#</a></h3>
+<p>To configure GitHub API access you'll need to generate both a personal access token for Codeburner to use for scanning and an OAuth key pair for authentication/authorization use.  GitHub publishes a handy guide on creating tokens if you need help:</p>
+<p><a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a></p>
+<p>You'll also need to register Codeburner as an OAuth Application here:</p>
+<p><a href="https://github.com/settings/applications/new" target="_blank">https://github.com/settings/applications/new</a></p>
+<p>Make sure to copy both your personal access token and Client ID/Client Secret from the above steps to a secure location for entering in the Codeburner interface later.</p>
+<h3 id="required-configuration">Required Configuration<a class="headerlink" href="#required-configuration" title="Permanent link">#</a></h3>
+<p>Once you have an access token and client id/secret, you can configure Codeburner by clicking the "System Settings" link in the top menu bar.</p>
+<p>First you'll want to configure GitHub access using the tokens generated above.  After you do that, you should sign-in to GitHub using the link on the far right of the top menu.  </p>
+<p>When you return to the system settings interface, you can visit "Administrator Access" to configure Codeburner administrators.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Settings are initially visible to any user.  Once you've specified administrator users however, only those users can view the settings page going forward.</p>
+</div>
+<h3 id="optional-configuration">Optional Configuration<a class="headerlink" href="#optional-configuration" title="Permanent link">#</a></h3>
+<p>After configuring authentication and admin access, you can proceed to make any other config changes you need to.  We just switched over to the GUI-based configuration, but you can roughly follow the existing <a href="/setup/configuration/" target="_blank">Configuration Guide</a> if you need pointers... just put the appropriate values in to the UI instead of app.yml.</p>
+<hr />
           <aside class="copyright" role="note">
             
             Documentation built with
