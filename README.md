@@ -5,6 +5,15 @@ One static analysis tool to rule them all.
 
 <a href="https://travis-ci.org/groupon/codeburner" target="_blank"><img src="https://travis-ci.org/groupon/codeburner.svg?branch=master" /></a> <a href="https://codeclimate.com/github/groupon/codeburner/coverage" target="_blank"><img src="https://codeclimate.com/github/groupon/codeburner/badges/coverage.svg" /></a> <a href="https://codeclimate.com/github/groupon/codeburner" target="_blank"><img src="https://codeclimate.com/github/groupon/codeburner/badges/gpa.svg" /></a>
 
+## What's new?
+
+### Version 1.2
+* Added support for <a href="https://snyk.io" target="_blank">Snyk</a>
+* GitHub OAuth
+* Settings GUI w/ admin-only access control
+* Re-designed burn submission process searches repositories via GitHub API
+* lots of UI tweaks/improvements
+
 ## What is Codeburner?
 Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?
 
@@ -27,6 +36,7 @@ Codeburner uses the [OWASP pipeline](https://github.com/OWASP/pipeline) project 
 * <a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a>
 * <a href="https://pmd.github.io/" target="_blank">PMD</a>
 * <a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a>
+* <a href="https://snyk.io" target="_blank">Snyk</a>
 
 <small>** commercial license required</small>
 
