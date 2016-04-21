@@ -27,6 +27,10 @@ Rails.application.routes.draw do
   mount Sidekiq::Web, at: "/sidekiq"
 
   namespace :api do
+    match 'oauth/callback' => 'oauth#callback', :via => :get
+    match 'oauth/authorize' => 'oauth#authorize', :via => :get
+    match 'oauth/user' => 'oauth#user', :via => :get
+
     resources :service, :only => [:index, :show] do
       member do
         get 'stats'
@@ -52,5 +56,12 @@ Rails.application.routes.draw do
         match "/history/resolution" => "stats#resolution", :via => :get
       end
     end
+
+    match 'settings' => 'settings#index', :via => :get
+    match 'settings' => 'settings#update', :via => :post
+    match 'settings/admin' => 'settings#admin_list', :via => :get
+    match 'settings/admin' => 'settings#admin_update', :via => :post
+
+    match 'github/search/:type' => 'github#search', :via => :get
   end
 end

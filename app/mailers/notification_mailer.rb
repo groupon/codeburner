@@ -24,7 +24,7 @@
 class NotificationMailer < ApplicationMailer
 
   def notification_email dest, burn_id, previous_stats
-    @link_host = $app_config.mail.link_host[Rails.env.to_sym]
+    @link_host = Setting.email['link_host']
     @burn = Burn.find(burn_id)
     @findings = Finding.burn_id(burn_id)
     @previous_stats = previous_stats

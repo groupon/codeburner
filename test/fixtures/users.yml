@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  github_uid: 1
+  name: MyString
+  profile_url: MyString
+  avatar_url: MyString
+  access_token: MyString
+
+two:
+  github_uid: 1
+  name: MyString
+  profile_url: MyString
+  avatar_url: MyString
+  access_token: MyString

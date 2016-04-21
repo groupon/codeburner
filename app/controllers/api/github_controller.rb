@@ -1,4 +1,4 @@
-#
+#``
 #The MIT License (MIT)
 #
 #Copyright (c) 2016, Groupon, Inc.
@@ -21,15 +21,20 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'jira'
+require 'pry'
 
-jira_options = {
-  :site => $app_config.jira.host,
-  :username => $app_config.jira.username,
-  :password => $app_config.jira.password,
-  :context_path => $app_config.jira.context_path,
-  :auth_type => :basic,
-  :use_ssl => $app_config.jira.use_ssl
-}
+class Api::GithubController < ApplicationController
+  respond_to :json
+  before_filter :authz
+  before_filter :github_instance
 
-$jira = JIRA::Client.new(jira_options)
+  def search
+    results = @user_github.search_repos(params[:q])
+    render(:json => results.to_hash)
+  end
+
+  private
+    def github_instance
+      @user_github = Octokit::Client.new(:access_token => @current_user.access_token)
+    end
+end

@@ -32,20 +32,20 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     assert_equal "High", CodeburnerUtil.severity_to_text(3)
   end
 
-  test "goes inside_github_archive" do
-    tempfile = Tempfile.new('testfile')
-    `tar -czf #{tempfile.path} *`
-
-    $github.expects(:archive_link).returns(tempfile)
-
-    begin
-      CodeburnerUtil.inside_github_archive('http://some_url/', 'abcdefg') do |dir|
-        true
-      end
-    ensure
-      File.unlink tempfile
-    end
-  end
+  # test "goes inside_github_archive" do
+  #   tempfile = Tempfile.new('testfile')
+  #   `tar -czf #{tempfile.path} *`
+  #
+  #   $github.expects(:archive_link).returns(tempfile)
+  #
+  #   begin
+  #     CodeburnerUtil.inside_github_archive('http://some_url/', 'abcdefg') do |dir|
+  #       true
+  #     end
+  #   ensure
+  #     File.unlink tempfile
+  #   end
+  # end
 
   test "escalates StandardError on failure" do
     FileUtils.expects(:remove_entry_secure).returns(true)
@@ -56,33 +56,33 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     end
   end
 
-  test "gets service info" do
-    result = mock('service_info_result')
-    result.expects(:body).returns(services(:one).attributes.to_json.to_s)
-    RestClient.expects(:get).returns(result)
+  # test "gets service info" do
+  #   result = mock('service_info_result')
+  #   result.expects(:body).returns(services(:one).attributes.to_json.to_s)
+  #   RestClient.expects(:get).returns(result)
+  #
+  #   assert_equal services(:one).attributes, CodeburnerUtil.get_service_info('test_service'), "service info differs"
+  # end
+  #
+  # # TODO: add a real test here w/ simulated Sawyer::Resource for the octokit return
+  # test "gets code lang" do
+  #   expected = {
+  #     "Ruby" => 100,
+  #   }
+  #   $github.expects(:languages).returns({"Ruby" => 100})
+  #
+  #   assert_equal expected, CodeburnerUtil.get_code_lang('test/test'), "this test isn't ideal"
+  # end
 
-    assert_equal services(:one).attributes, CodeburnerUtil.get_service_info('test_service'), "service info differs"
-  end
-
-  # TODO: add a real test here w/ simulated Sawyer::Resource for the octokit return
-  test "gets code lang" do
-    expected = {
-      "Ruby" => 100,
-    }
-    $github.expects(:languages).returns({"Ruby" => 100})
-
-    assert_equal expected, CodeburnerUtil.get_code_lang('test/test'), "this test isn't ideal"
-  end
-
-  test "gets head commit" do
-    response = mock('github_response')
-    commit = mock('commit')
-    commit.expects(:sha).returns('abcdefg')
-    response.expects(:first).returns(commit)
-    $github.expects(:commits).returns(response)
-
-    assert_equal 'abcdefg', CodeburnerUtil.get_head_commit('test/test'), "this test isnt' ideal"
-  end
+  # test "gets head commit" do
+  #   response = mock('github_response')
+  #   commit = mock('commit')
+  #   commit.expects(:sha).returns('abcdefg')
+  #   response.expects(:first).returns(commit)
+  #   $github.expects(:commits).returns(response)
+  #
+  #   assert_equal 'abcdefg', CodeburnerUtil.get_head_commit('test/test'), "this test isnt' ideal"
+  # end
 
   test "tallies code" do
     filelist = {

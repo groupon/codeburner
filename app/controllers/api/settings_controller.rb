@@ -1,4 +1,4 @@
-#
+#``
 #The MIT License (MIT)
 #
 #Copyright (c) 2016, Groupon, Inc.
@@ -21,10 +21,49 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-Octokit.configure do |c|
-  if $app_config.github.api_endpoint
-    c.api_endpoint = $app_config.github.api_endpoint
-  end
-end
+require 'pry'
 
-$github = Octokit::Client.new(:access_token => $app_config.github.api_access_token)
+class Api::SettingsController < ApplicationController
+  respond_to :json
+  before_filter :authz, only: [:admin_update]
+  before_filter :authz_no_fail, only: [:index, :update, :admin_list]
+  before_filter :admin_only
+
+  def index
+    settings = {}
+    Setting.get_all.keys.each {|k| settings[k] = Setting[k]}
+
+    render(:json => settings)
+  end
+
+  def update
+    results = {}
+
+    params[:settings].each do |setting, value|
+      Setting.merge!(setting.to_sym, value)
+      results.merge!({setting.to_sym => value})
+    end
+
+    render(:json => results)
+  end
+
+  def admin_list
+    render(:json => User.admin.all, :only => [ :name, :fullname, :profile_url, :avatar_url ])
+  end
+
+  def admin_update
+    if params[:admins]
+      User.admin.update_all(:role => 'user')
+      params[:admins].each do |admin|
+        if admin.length > 0
+          user = User.find_or_create_by(name: admin)
+          user.role = 'admin'
+          user.save
+        end
+      end
+    end
+
+    render(:json => User.admin.all, :only => [ :name, :fullname, :profile_url, :avatar_url ])
+  end
+
+end

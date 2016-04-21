@@ -278,7 +278,7 @@ Gets the list of findings matching specified criteria.  With no parameters speci
 * **per_page**:     An **integer** to override the default of 100 results per page
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/finding?service_name=codeburner?per_page=1</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/findings?service_name=codeburner?per_page=1</code></pre>
 
 #### Sample response:
 

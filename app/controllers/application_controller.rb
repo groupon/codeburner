@@ -21,8 +21,35 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class ApplicationController < ActionController::Base
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :null_session
+
+  def admin_only
+    if User.admin.count > 0
+      unless @current_user and @current_user.admin?
+        render(:json => {:error => 'Administrator role required'}, :status => 403)
+      end
+    end
+  end
+
+  private
+    def authz
+      begin
+        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        @current_user = User.find_by(github_uid: uid)
+      rescue JWT::DecodeError
+        render(:json => {:error => 'GitHub OAuth Required'}, :status => 403)
+      end
+    end
+
+    def authz_no_fail
+      begin
+        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        @current_user = User.find_by(github_uid: uid)
+      rescue JWT::DecodeError
+        @current_user = nil
+      end
+    end
+
 end

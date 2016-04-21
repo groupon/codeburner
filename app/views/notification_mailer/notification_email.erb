@@ -17,7 +17,7 @@ Codeburner has finished burning <b><%= @burn.service.pretty_name %></b> - <a hre
 </table>
 <br>
 You can view the full results and sort/filter/publish findings here:<br>
-<a href="https://<%= @link_host %>/#finding?burn_id=<%= @burn.id %>">http://<%= @link_host %>/#finding?burn_id=<%= @burn.id %></a>
+<a href="https://<%= @link_host %>/#findings?burn_id=<%= @burn.id %>">http://<%= @link_host %>/#findings?burn_id=<%= @burn.id %></a>
 <% @findings.each do |finding| %>
   <% if finding.status == 0 %>
     <br>

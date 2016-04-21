@@ -29,6 +29,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
   lastFindingHighlighted: null
   initialize: (@collection, @serviceCollection) ->
     do @undelegateEvents
+
   events:
     'click .toggle-checkbox': (e) ->
       parent = $(e.target).parent()
@@ -91,6 +92,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
     'click #publish-submit': ->
       method = $('input[name=ticket-option]:radio:checked').val()
+
       project = $('#project-name').val()
       id = $('.highlight-row:selected').data 'id'
 
@@ -108,7 +110,11 @@ Codeburner.Views.FindingList = Backbone.View.extend
         do @renderFindings
       ), (data) ->
         $('#publishDialog').modal('hide')
-        Codeburner.Utilities.alert "#{data.responseJSON.error}"
+        if data.status == 403
+          localStorage.setItem "authRedirect", Backbone.history.location.hash
+          Codeburner.Utilities.notify "API Response: #{data.responseJSON.error}<br><br>Publishing issues to GitHub requires OAuth Sign-in<br><hr><br><a href='api/oauth/authorize'>Sign-in Now</a>"
+        else
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
     'change input[name=ticket-option]': ->
       @setTicketOption $('input[name=ticket-option]:radio:checked').val()
@@ -162,7 +168,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
       do @collection.resetFilter
       unless selected
         @collection.filters.service_id = id
-        Backbone.history.navigate "finding?service_id=#{id}"
+        Backbone.history.navigate "findings?service_id=#{id}"
       else
         @collection.filters.service_id = null
         Backbone.history.navigate "finding"

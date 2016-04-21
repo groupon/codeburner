@@ -1,0 +1,13 @@
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <img class="avatar" src="<%= avatarUrl %>" style="height:20px;"/>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li>Signed in as <strong><a href="<%= profileUrl %>" target="_blank"><%= name %></a></strong></li>
+    <li class="dropdown-item">&nbsp;</li>
+    <li class="dropdown-item" onclick="$('.nav-item').removeClass('active');"><span class="octicon octicon-gear"></span> Settings</li>
+    <li class="divider"></li>
+    <li id="user-signout" class="dropdown-item"><span class="octicon octicon-sign-out"></span> Sign Out</li>
+  </ul>
+</li>

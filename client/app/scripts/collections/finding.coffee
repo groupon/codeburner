@@ -64,4 +64,4 @@ class Codeburner.Collections.Finding extends Backbone.PageableCollection
         @queryParams[key] = data
       else
         @queryParams[key] = null
-    Backbone.history.navigate "finding?#{query.join '&'}"
+    Backbone.history.navigate "findings?#{query.join '&'}"

@@ -50,8 +50,6 @@ module Codeburner
 
     config.autoload_paths += %W[#{config.root}/app/validators/]
 
-    $app_config = DeepStruct.from_file('./config/app.yml')
-
     case ENV['RAILS_ENV']
     when 'production'
       $redis_options = {

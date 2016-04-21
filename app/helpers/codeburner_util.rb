@@ -27,6 +27,16 @@ require 'pipeline'
 
 module CodeburnerUtil
 
+  def self.github
+    Octokit.configure do |c|
+      if Setting.github['api_endpoint']
+        c.api_endpoint = Setting.github['api_endpoint']
+      end
+    end
+
+    Octokit::Client.new(:access_token => Setting.github['api_access_token'])
+  end
+
   def self.severity_to_text severity
     sev_text = [ 'Unknown', 'Low', 'Medium', 'High' ]
     return sev_text[severity]
@@ -40,7 +50,7 @@ module CodeburnerUtil
   def self.inside_github_archive repo_url, ref
     dir = Dir.mktmpdir
     filename = Dir::Tmpname.make_tmpname(['codeburner', '.tar.gz'], nil)
-    archive_link = $github.archive_link(strip_github_path(repo_url), {:ref => ref})
+    archive_link = self.github.archive_link(strip_github_path(repo_url), {:ref => ref})
 
     IO.copy_stream(open(archive_link), "#{dir}/#{filename}")
 
@@ -58,17 +68,17 @@ module CodeburnerUtil
   end
 
   def self.get_service_info service_name
-    url_string = "#{$app_config.service_portal_host}/services/#{service_name}.json"
+    url_string = "#{Setting.service_portal_host}/services/#{service_name}.json"
     response = RestClient.get(url_string)
     return JSON.parse(response.body)
   end
 
   def self.get_code_lang repo_url
-    $github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
+    self.github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
   end
 
   def self.get_head_commit repo_url
-    $github.commits(strip_github_path(repo_url)).first.sha
+    self.github.commits(strip_github_path(repo_url)).first.sha
   end
 
   def self.tally_code dir, languages

@@ -22,18 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <div class="form-group label-floating">
-  <label for="service-name" class="control-label">Service Name</label>
-  <input type="text" id="service-name" required class="form-control validated">
-  <span class="help-block">Enter service's short name from Service Portal to tie this burn to an existing service</span>
-</div>
-<div class="form-group label-floating">
-  <label for="repo_url" class="control-label">Repository URL</label>
-  <input type="url" id="repo_url" required class="form-control validated">
-  <span class="help-block">Enter the full URL (including https://) for your project on GitHub</span>
+  <select id="select-repo" class="repositories single validated" placeholder="Pick a repository..." tabindex="-1" style="display: none;"></select>
 </div>
 <div class="form-group label-floating">
   <label for="revision" class="control-label">Revision (optional)</label>
-  <input type="text" id="revision" class="form-control validated">
+  <input type="text" id="revision" class="form-control">
   <span class="help-block">Enter a specific commit SHA or git tag to scan, defaults to master-HEAD</span>
 </div>
 <div class="form-group label-floating">

@@ -114,13 +114,6 @@ class Api::BurnControllerTest < ActionController::TestCase
     end
   end
 
-  test "fails to create a non-service portal burn with blank repo_url" do
-    assert_no_difference('Burn.count') do
-      post(:create, {:service_name => 'my_non_fixture_service', :revision => '1234', :service_portal => false})
-      assert_response(400)
-    end
-  end
-
   test "creates notifications when notify is set" do
     assert_difference('Notification.count') do
       post(:create, {:service_name => 'my_non_fixture_service', :revision => '1234', :repo_url => 'http://blah.com', :notify => 'test@test.com'})
