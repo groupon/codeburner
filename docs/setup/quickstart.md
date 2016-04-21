@@ -23,28 +23,6 @@ The rest of this guide assumes you're inside the directory created by unpacking 
 
 ***
 
-## Configure
-Minimally you'll want to configure GitHub access.  See the [Configuration Guide](/setup/configuration/) if you need to configure additional items (like JIRA access, etc).
-
-### Generate a Token
-To configure GitHub API access you'll need to generate a personal access token for Codeburner to use.  GitHub publishes a handy guide on creating tokens if you need help:
-
-<a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a>
-
-### Configuration
-Once you have an access token, you can add it to <a href="https://github.com/groupon/codeburner/blob/master/config/app.yml" target="_blank">config/app.yml</a>:
-
-```yaml
-github:
-  api_endpoint: https://api.github.com/
-  api_access_token: my_github_api_token
-  link_host: https://www.github.com
-```
-
-If you're using GitHub Enterprise instead of public GitHub, you'll also want to change 'api_endpoint' here to the appropriate URL for API requests and 'link_host' to the base URL for generating clickable links, both according to your local GHE installation.
-
-***
-
 ## Build
 To build the container to run Codeburner and the scanning tools, you'll need to run the provided script:
 
@@ -59,3 +37,37 @@ To build the container to run Codeburner and the scanning tools, you'll need to 
 Once the container image is built, you can start the Codeburner application and all the dependent containers with docker-compose:
 
 <pre class="command-line language-bash"><code>docker-compose up</code></pre>
+
+You can then bring up Codeburner in a web browser by pointing it at your docker IP on port 3000.
+
+!!! NOTE
+    If you're running docker under docker-machine, you can get the docker IP with the command <strong>docker-machine ip</strong>
+
+## Configure
+
+### Generate Tokens
+To configure GitHub API access you'll need to generate both a personal access token for Codeburner to use for scanning and an OAuth key pair for authentication/authorization use.  GitHub publishes a handy guide on creating tokens if you need help:
+
+<a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use/" target="_blank">https://help.github.com/articles/creating-an-access-token-for-command-line-use/</a>
+
+You'll also need to register Codeburner as an OAuth Application here:
+
+<a href="https://github.com/settings/applications/new" target="_blank">https://github.com/settings/applications/new</a>
+
+Make sure to copy both your personal access token and Client ID/Client Secret from the above steps to a secure location for entering in the Codeburner interface later.
+
+### Required Configuration
+Once you have an access token and client id/secret, you can configure Codeburner by clicking the "System Settings" link in the top menu bar.
+
+First you'll want to configure GitHub access using the tokens generated above.  After you do that, you should sign-in to GitHub using the link on the far right of the top menu.  
+
+When you return to the system settings interface, you can visit "Administrator Access" to configure Codeburner administrators.
+
+!!! NOTE
+    Settings are initially visible to any user.  Once you've specified administrator users however, only those users can view the settings page going forward.
+
+### Optional Configuration
+
+After configuring authentication and admin access, you can proceed to make any other config changes you need to.  We just switched over to the GUI-based configuration, but you can roughly follow the existing <a href="/setup/configuration/" target="_blank">Configuration Guide</a> if you need pointers... just put the appropriate values in to the UI instead of app.yml.
+
+***

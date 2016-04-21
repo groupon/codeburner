@@ -20,6 +20,7 @@ Codeburner uses the <a href="https://github.com/OWASP/pipeline" target="_blank">
 * <a href="https://nodesecurity.io/" target="_blank">NodeSecurityProject</a>
 * <a href="https://pmd.github.io/" target="_blank">PMD</a>
 * <a href="https://retirejs.github.io/retire.js/" target="_blank">Retire.js</a>
+* <a href="https://snyk.io" target="_blank">Snyk</a>
 
 <small>** commercial license required</small>
 
