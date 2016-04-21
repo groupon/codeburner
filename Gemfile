@@ -69,4 +69,4 @@ gem 'paper_trail', '>= 4.0.0'
 gem 'jwt'
 
 # for settings
-gem 'rails-settings-cached', '~> 0.5.6'
+gem 'rails-settings-cached'

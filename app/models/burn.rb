@@ -136,7 +136,7 @@ class Burn < ActiveRecord::Base
       findings = []
 
       languages.each do |lang|
-        pipeline_options[:run_tasks] << Setting.pipeline['tasks_for'][lang].to_a
+        pipeline_options[:run_tasks] << Setting.pipeline['tasks_for'][lang].split(",")
       end
 
       pipeline_options[:run_tasks] = pipeline_options[:run_tasks].flatten.uniq.compact

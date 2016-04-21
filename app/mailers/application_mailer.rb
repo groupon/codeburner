@@ -22,6 +22,11 @@
 #THE SOFTWARE.
 #
 class ApplicationMailer < ActionMailer::Base
-  default from: Setting.email['from']
+  begin
+    default from: Setting.email['from']
+  rescue ActiveRecord::StatementInvalid
+    Rails.logger.info "settings table not initialized"
+  end
+
   layout 'mailer'
 end

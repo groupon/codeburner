@@ -36,21 +36,16 @@ Setting.defaults[:github] = {
 
 Setting.defaults[:email] = {
   :from => '"Codeburner" <codeburner@mydomain.com>',
-  :link_host => {
-    :development => 'localhost:9000',
-    :staging => '',
-    :production => '',
-    :test => 'localhost:9000'
-  }
+  :link_host => 'localhost:9000'
 }
 
 Setting.defaults[:pipeline] = {
   :npm_registry => 'https://registry.npmjs.org/',
   :tasks_for => {
-    :Ruby => [ 'BundleAudit', 'Brakeman', 'Dawnscanner' ],
-    :JavaScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
-    :CoffeeScript => [ 'NPM', 'RetireJS', 'NodeSecurityProject', 'Snyk' ],
-    :Java => [ 'PMD', 'FindSecurityBugs' ]
+    :Ruby => 'BundleAudit,Brakeman,Dawnscanner',
+    :JavaScript => 'NPM,RetireJS,NodeSecurityProject,Snyk',
+    :CoffeeScript => 'NPM,RetireJS,NodeSecurityProject,Snyk',
+    :Java => 'PMD,FindSecurityBugs'
   },
   :pmd_path => '/pmd/pmd-bin-5.4.1',
   :findsecbugs_path => '/findsecbugs',
