@@ -71,8 +71,6 @@ Codeburner.Views.Settings = Backbone.View.extend
         else
           value = valueString
 
-        console.log value
-
         if $(setting).parent().parent().is("span")
           heading = $(setting).parent().parent().data("id")
           newSettings.settings[category][heading] = {} unless newSettings.settings[category].hasOwnProperty(heading)

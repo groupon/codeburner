@@ -1,3 +1,3 @@
 # RailsSettings Model
-class Setting < RailsSettings::CachedSettings
+class Setting < RailsSettings::Base
 end

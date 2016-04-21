@@ -30,7 +30,10 @@ class Api::SettingsController < ApplicationController
   before_filter :admin_only
 
   def index
-    render(:json => Setting.get_all)
+    settings = {}
+    Setting.get_all.keys.each {|k| settings[k] = Setting[k]}
+
+    render(:json => settings)
   end
 
   def update

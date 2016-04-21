@@ -33,7 +33,6 @@ Codeburner.Views.Default = Backbone.View.extend
         stats: data
 
   render: ->
-    console.log "rendering"
     do @delegateEvents
     @$el.html JST['app/scripts/templates/default.ejs']
     do @renderStats

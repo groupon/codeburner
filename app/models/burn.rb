@@ -21,6 +21,7 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
   validates :service_id, presence: true, uniqueness: { scope: :revision }
@@ -97,7 +98,7 @@ class Burn < ActiveRecord::Base
   end
 
   def ignite
-    supported_langs = Setting.pipeline['tasks_for'].keys.map{|l| l.to_s}
+    supported_langs = Setting.pipeline['tasks_for'].keys
 
     # this line actually triggers a service-portal lookup for the display name: .pretty_name(true)
     Rails.logger.info "IGNITION: #{self.service.pretty_name(true)} #{self.revision}"
@@ -136,7 +137,7 @@ class Burn < ActiveRecord::Base
       findings = []
 
       languages.each do |lang|
-        pipeline_options[:run_tasks] << Setting.pipeline['tasks_for'][lang].split(",")
+        pipeline_options[:run_tasks] << Setting.pipeline['tasks_for'][lang].split(",") unless Setting.pipeline['tasks_for'][lang].nil?
       end
 
       pipeline_options[:run_tasks] = pipeline_options[:run_tasks].flatten.uniq.compact

@@ -22,6 +22,12 @@
 #THE SOFTWARE.
 #
 require 'pry'
+
+# Uncomment the following lines to test the burn process inline (and debug w/ pry etc.
+#)
+# require 'sidekiq'
+# require 'sidekiq/testing/inline'
+
 class Api::BurnController < ApplicationController
   protect_from_forgery
   respond_to :json, :html

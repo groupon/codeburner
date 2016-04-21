@@ -1,0 +1,41 @@
+defaults: &defaults
+  email:
+    from: '"Codeburner"<codeburner@localhost>'
+    link_host: localhost:9000
+  github:
+    api_endpoint: https://api.github.com/
+    api_access_token:
+    link_host: https://github.com
+    oauth:
+      client_id:
+      client_secret:
+      scope: user,repo,read:org,admin:repo_hook
+  pipeline:
+    npm_registry: https://registry.npmjs.org/
+    tasks_for:
+      Ruby: BundleAudit,Brakeman,Dawnscanner
+      JavaScript: NPM,RetireJS,NodeSecurityProject,Snyk
+      CoffeeScript: NPM,RetireJS,NodeSecurityProject,Snyk
+      Java: PMD,FindSecurityBugs
+    pmd_path: /pmd/pmd-bin-5.4.1
+    findsecbugs_path: /findsecbugs
+    checkmarx_server:
+    checkmarx_user:
+    checkmarx_password:
+    checkmarx_log:
+  jira:
+    username:
+    password:
+    host:
+    context_path:
+    use_ssl: false
+    link_host: https://my_jira_host
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
