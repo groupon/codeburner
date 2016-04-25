@@ -21,8 +21,6 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'pry'
-
 class Api::GithubController < ApplicationController
   respond_to :json
   before_filter :authz

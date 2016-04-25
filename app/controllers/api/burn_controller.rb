@@ -21,7 +21,6 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'pry'
 
 # Uncomment the following lines to test the burn process inline (and debug w/ pry etc.
 #)

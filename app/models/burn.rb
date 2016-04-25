@@ -21,7 +21,6 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'pry'
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
   validates :service_id, presence: true, uniqueness: { scope: :revision }
