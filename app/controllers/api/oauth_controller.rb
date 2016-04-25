@@ -27,7 +27,7 @@ class Api::OauthController < ApplicationController
   before_filter :authz, only: [ :user ]
 
   def authorize
-    csrf_token = JWT.encode({:client_id => Setting.github['oauth']['client_id'], :exp => 1.minute.from_now.to_i }, Rails.application.secrets.secret_key_base)
+    csrf_token = JWT.encode({:client_id => Setting.github['oauth']['client_id'], :exp => 1.hour.from_now.to_i }, Rails.application.secrets.secret_key_base)
     authorize_url = "#{Setting.github['link_host']}/login/oauth/authorize?client_id=#{Setting.github['oauth']['client_id']}&scope=#{Setting.github['oauth']['scope']}&state=#{csrf_token}"
 
     redirect_to authorize_url
@@ -57,6 +57,11 @@ class Api::OauthController < ApplicationController
     response = JSON.parse(RestClient.post(token_url, payload, {:Accept => 'application/json'}))
 
     if response.has_key? 'access_token'
+      Octokit.configure do |c|
+        if Setting.github['api_endpoint']
+          c.api_endpoint = Setting.github['api_endpoint']
+        end
+      end
       user_github = Octokit::Client.new(:access_token => response['access_token'])
       user_info = user_github.user
 
