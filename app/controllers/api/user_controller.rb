@@ -1,4 +1,4 @@
-#
+#``
 #The MIT License (MIT)
 #
 #Copyright (c) 2016, Groupon, Inc.
@@ -21,19 +21,20 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-'use strict'
+class Api::UserController < ApplicationController
+  respond_to :json
+  before_filter :authz
 
-class Codeburner.Collections.Burn extends Backbone.PageableCollection
-  model: Codeburner.Models.Burn
-  url: '/api/burn'
-  mode: 'server'
-  state:
-    pageSize: 10
-    sortKey: 'count'
-    order: 1
+  VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url ]
 
-  parseState: (data) ->
-    totalRecords: data.count
+  def index
+    render(:json => @current_user, :only => VALID_ATTRS)
+  end
 
-  parseRecords: (data) ->
-    data.results
+  def show
+    render(:json => User.find(params[:id]), :only => VALID_ATTRS)
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no burn with that id found}"}, :status => 404)
+  end
+
+end

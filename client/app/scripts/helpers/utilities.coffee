@@ -164,7 +164,7 @@ Codeburner.Utilities =
       parsedQuery = Codeburner.Utilities.parseQueryString(query)
       unless parsedQuery.authz == undefined
         localStorage.setItem "authz", parsedQuery.authz
-        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+        Codeburner.Utilities.getRequest "/api/user", ((data) =>
           Codeburner.User = data
           Codeburner.Utilities.authz()
           redirectTo = localStorage.getItem "authRedirect"
@@ -177,7 +177,7 @@ Codeburner.Utilities =
 
   authz: ->
     if localStorage.getItem "authz"
-      Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+      Codeburner.Utilities.getRequest "/api/user", ((data) =>
         Codeburner.User = data
         $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
           name: Codeburner.User.name
@@ -186,6 +186,8 @@ Codeburner.Utilities =
         $('#user-signout').on 'click', ->
           localStorage.removeItem "authz"
           window.location = "/"
+        $('#user-preferences').on 'click', ->
+          window.location ="/#user"
       ), (data) ->
         Codeburner.User = null
         console.log "invalid authz token"

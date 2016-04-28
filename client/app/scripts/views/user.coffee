@@ -23,17 +23,29 @@
 #
 'use strict'
 
-class Codeburner.Collections.Burn extends Backbone.PageableCollection
-  model: Codeburner.Models.Burn
-  url: '/api/burn'
-  mode: 'server'
-  state:
-    pageSize: 10
-    sortKey: 'count'
-    order: 1
+Codeburner.Views.User = Backbone.View.extend
+  el: $('#content')
+  initialize: (@settings) ->
+    do @undelegateEvents
 
-  parseState: (data) ->
-    totalRecords: data.count
+  events:
+    'click .settings-list': (e) ->
+      target = $(e.target).parent()
+      id = target.data 'id'
+      selected = target.prop 'selected'
 
-  parseRecords: (data) ->
-    data.results
+      unless selected
+        $('.settings-list').removeClass 'highlight-settings-row'
+        $('.settings-list').prop 'selected', false
+        target.addClass 'highlight-settings-row'
+        target.prop 'selected', true
+
+      @renderUserDetail id
+
+  renderUserDetail: (id) ->
+    $('#user-detail').html JST["app/scripts/templates/user/#{id}.ejs"]
+      user: Codeburner.User
+
+  render: ->
+    do @delegateEvents
+    @$el.html JST['app/scripts/templates/user_page.ejs']

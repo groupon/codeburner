@@ -131,6 +131,7 @@ Codeburner.Views.BurnList = Backbone.View.extend
       $('#burn_list').html JST['app/scripts/templates/burn.ejs']
         burns: @burnCollection.models
         services: @serviceCollection.models
+        tagIdentifiers: [ '-', '.', '_' ]
 
       Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize
 

@@ -27,7 +27,11 @@ class Api::GithubController < ApplicationController
   before_filter :github_instance
 
   def search
-    results = @user_github.search_repos(params[:q])
+    permitted_types = ['repos', 'users']
+
+    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:q) and permitted_types.include?(params[:type])
+
+    results = @user_github.send("search_#{params[:type]}", params[:q])
     render(:json => results.to_hash)
   end
 

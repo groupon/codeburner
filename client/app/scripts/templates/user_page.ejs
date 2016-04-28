@@ -22,24 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
 <div class="container-fluid">
-  <div class="row" id="settings">
+  <div class="row" id="user">
     <div class="col-lg-3">
       <div class="panel panel-default">
-        <div class="panel-heading">Codeburner Settings</div>
+        <div class="panel-heading">User Preferences - <%= user.name %></div>
         <div class="panel-body">
           <table class="table borderless">
             <tbody>
-              <tr class="settings-list" data-id="github" selected><td>GitHub</td></tr>
-              <tr class="settings-list" data-id="admin" selected><td>Administrator Access</td></tr>
-              <tr class="settings-list" data-id="email"><td>E-mail Notifications</td></tr>
-              <tr class="settings-list" data-id="pipeline"><td>OWASP Pipeline</td></tr>
-              <tr class="settings-list" data-id="jira"><td>JIRA</td></tr>
+              <tr class="settings-list" data-id="github" selected><td>Repositories</td></tr>
+              <tr class="settings-list" data-id="admin" selected><td>API Tokens</td></tr>
             <tbody>
           </table>
         </div>
       </div>
     </div>
-    <div id="settings-detail" class="col-lg-6">
+    <div id="user-detail" class="col-lg-6">
     </div>
   </div>
 </div>

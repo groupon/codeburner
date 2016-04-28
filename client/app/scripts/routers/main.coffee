@@ -37,6 +37,8 @@ class Codeburner.Routers.Main extends Backbone.Router
     @statsView = new Codeburner.Views.Stats serviceCollection
 
     @settingsView = new Codeburner.Views.Settings
+    
+    @userView = new Codeburner.Views.User
 
     @defaultView = new Codeburner.Views.Default
 
@@ -47,6 +49,7 @@ class Codeburner.Routers.Main extends Backbone.Router
     'stats': 'statsAction'
     'settings': 'settingsAction'
     'burns': 'burnsAction'
+    'user': 'userAction'
     '*query': 'defaultAction'
 
   execute: (callback, args, name) ->
@@ -67,7 +70,7 @@ class Codeburner.Routers.Main extends Backbone.Router
       unless parsedQuery.authz == undefined
         localStorage.setItem "authz", parsedQuery.authz
 
-        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+        Codeburner.Utilities.getRequest "/api/user", ((data) =>
           Codeburner.User = data
           Codeburner.Utilities.authz()
 
@@ -107,6 +110,9 @@ class Codeburner.Routers.Main extends Backbone.Router
 
   burnsAction: (query) ->
     do @burnListView.render
+
+  userAction: (query) ->
+    do @userView.render
 
   defaultAction: (action, query) ->
     do @defaultView.render

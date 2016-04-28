@@ -57,6 +57,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :user, :only => [:index]
+
     match 'settings' => 'settings#index', :via => :get
     match 'settings' => 'settings#update', :via => :post
     match 'settings/admin' => 'settings#admin_list', :via => :get
