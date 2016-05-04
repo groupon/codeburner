@@ -73,13 +73,16 @@ Codeburner.Views.BurnList = Backbone.View.extend
     'click .burn-show-findings': (e) ->
       burn_id = $(e.target).closest('.burn-show-findings').data 'id'
       service_id = $(e.target).closest('.burn-show-findings').data 'service'
-      window.router.navigate "#findings?burn_id=#{burn_id}&service_id=#{service_id}", {trigger: true, replace: true}
+      window.router.navigate "#findings?&service_id=#{service_id}", {trigger: true, replace: true}
 
     'click .burn-reignite': (e) ->
       burn_id = $(e.target).closest('.burn-reignite').data 'id'
       service_id = $(e.target).closest('.burn-reignite').data 'service'
 
-      Codeburner.Utilities.confirm "Are you sure you want to reignite burn #{burn_id}?", ((data) ->
+      revision = @burnCollection.get(burn_id).get 'revision'
+      name = @serviceCollection.get(service_id).get 'short_name'
+
+      Codeburner.Utilities.confirm "Are you sure you want to rescan <strong>#{name}</strong> revision #{revision}?", ((data) ->
         Codeburner.Utilities.getRequest "/api/burn/#{burn_id}/reignite", ((data) =>
           do window.router.burnListView.renderBurns
         ), (data) =>

@@ -118,7 +118,14 @@ class Api::FindingController < ApplicationController
       order = params[:order].upcase if ['ASC','DESC'].include? params[:order].upcase
     end
 
-    results = Finding.id(params[:id]) \
+    if params.has_key?(:only_current) and ["false", "no", "n"].include? params[:only_current].downcase
+      only_current = false
+    else
+      only_current = true
+    end
+
+    results = Finding.only_current(only_current) \
+      .id(params[:id]) \
       .service_id(params[:service_id]) \
       .burn_id(params[:burn_id]) \
       .service_name(params[:service_name]) \

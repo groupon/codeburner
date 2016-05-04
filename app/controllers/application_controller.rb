@@ -57,7 +57,6 @@ class ApplicationController < ActionController::Base
     end
 
     def github_auth_error
-      binding.pry
       render(:json => {error: 'GitHub authorization failure.  Try logging in again.'}, :status => 401)
     end
 

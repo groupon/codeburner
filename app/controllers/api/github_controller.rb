@@ -46,10 +46,21 @@ class Api::GithubController < ApplicationController
       repo = Service.find_by_short_name(params[:repository][:full_name])
       revision = params[:after]
     elsif event == 'pull_request'
-      return render(:json => {error: "only scanning on open state"}) unless params[:pull_request][:state] == 'open'
-
       repo = Service.find_by_short_name(params[:pull_request][:head][:repo][:full_name])
       revision = params[:pull_request][:head][:sha]
+
+      if params[:pull_request][:state] == 'closed'
+        binding.pry
+        Burn.where(:revision => revision).each do |burn|
+          Finding.burn_id(burn.id).destroy_all
+          Burn.destroy(burn.id)
+        end
+
+        Finding.burn_id(Burn.service_id(repo.id).status('done').last.id).update_all(:current => true)
+
+        return render(:json => {result: 'closed'})
+      end
+      # return render(:json => {error: "only scanning on open state"}) unless params[:pull_request][:state] == 'open'
     else
       return render(:json => {error: "invalid event"})
     end
@@ -68,8 +79,6 @@ class Api::GithubController < ApplicationController
     repo_url = github.repo(repo.short_name).html_url
 
     burn = Burn.create({:user => repo.webhook_user, :service => repo, :revision => revision, :repo_url => repo_url, :status_reason => "created via github webhook on #{Time.now}", :report_status => true})
-
-    github.create_status repo.short_name, revision, 'pending', :context => 'Codeburner'
 
     BurnWorker.perform_async burn.id
 

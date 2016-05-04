@@ -130,11 +130,11 @@ module CodeburnerUtil
     {
       :services => Service.joins(:burns).where('burns.service_id = services.id').distinct.count,
       :burns => Burn.count,
-      :total_findings => Finding.count,
-      :open_findings => Finding.status(Finding.status_code[:open]).count,
-      :hidden_findings => Finding.status(Finding.status_code[:hidden]).count,
-      :published_findings => Finding.status(Finding.status_code[:published]).count,
-      :filtered_findings => Finding.status(Finding.status_code[:filtered]).count,
+      :total_findings => Finding.only_current(true).count,
+      :open_findings => Finding.only_current(true).status(Finding.status_code[:open]).count,
+      :hidden_findings => Finding.only_current(true).status(Finding.status_code[:hidden]).count,
+      :published_findings => Finding.only_current(true).status(Finding.status_code[:published]).count,
+      :filtered_findings => Finding.only_current(true).status(Finding.status_code[:filtered]).count,
       :files => Burn.sum(:num_files),
       :lines => Burn.sum(:num_lines)
     }
@@ -173,7 +173,7 @@ module CodeburnerUtil
 
   def self.get_service_stats service_id
     service = Service.find(service_id)
-    findings = Finding.service_id(service.id)
+    findings = Finding.service_id(service.id).only_current(true)
     return {
       :burns => Burn.service_id(service.id).count,
       :open_findings => findings.status(Finding.status_code[:open]).count,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160502185332) do
+ActiveRecord::Schema.define(version: 20160504140816) do
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -49,20 +49,22 @@ ActiveRecord::Schema.define(version: 20160502185332) do
   add_index "filters", ["service_id"], name: "index_filters_on_service_id", using: :btree
 
   create_table "findings", force: :cascade do |t|
-    t.string   "description", limit: 255
-    t.integer  "severity",    limit: 4
-    t.string   "fingerprint", limit: 255
-    t.text     "detail",      limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.integer  "status",      limit: 4
-    t.integer  "burn_id",     limit: 4
-    t.integer  "service_id",  limit: 4
-    t.string   "scanner",     limit: 255
-    t.text     "file",        limit: 65535
-    t.integer  "line",        limit: 4
-    t.text     "code",        limit: 65535
-    t.integer  "filter_id",   limit: 4
+    t.string   "description",    limit: 255
+    t.integer  "severity",       limit: 4
+    t.string   "fingerprint",    limit: 255
+    t.text     "detail",         limit: 65535
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "status",         limit: 4
+    t.integer  "burn_id",        limit: 4
+    t.integer  "service_id",     limit: 4
+    t.string   "scanner",        limit: 255
+    t.text     "file",           limit: 65535
+    t.integer  "line",           limit: 4
+    t.text     "code",           limit: 65535
+    t.integer  "filter_id",      limit: 4
+    t.string   "first_appeared", limit: 255
+    t.boolean  "current"
   end
 
   add_index "findings", ["burn_id"], name: "index_findings_on_burn_id", using: :btree

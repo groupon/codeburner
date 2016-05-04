@@ -271,7 +271,7 @@ class Api::BurnController < ApplicationController
     new_burn.status = 'created'
     new_burn.save
 
-    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner' if new_burn.report_status
+    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
 
     render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
 

@@ -98,6 +98,10 @@ class Burn < ActiveRecord::Base
   end
 
   def ignite
+    github = CodeburnerUtil.user_github(self.user)
+
+    github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
+
     supported_langs = Setting.pipeline['tasks_for'].keys
 
     # this line actually triggers a service-portal lookup for the display name: .pretty_name(true)
@@ -161,8 +165,11 @@ class Burn < ActiveRecord::Base
 
       previous_stats = CodeburnerUtil.get_service_stats(self.service_id)
 
+      Finding.service_id(self.service_id).update_all(:current => false)
+
       findings.flatten.each do |result|
         Finding.create({
+          :current => true,
           :service => self.service,
           :burn => self,
           :description => result.description,
@@ -180,9 +187,9 @@ class Burn < ActiveRecord::Base
 
       if self.report_status
         if ServiceStat.find_by_service_id(self.service_id).open_findings == 0
-          CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?burn_id=#{self.id}"
+          github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}"
         else
-          CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?burn_id=#{self.id}"
+          github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}"
         end
       end
 

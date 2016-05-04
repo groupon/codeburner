@@ -22,7 +22,7 @@
 #THE SOFTWARE.
 #
 class Finding < ActiveRecord::Base
-  validates :service_id, presence: true, uniqueness: { scope: :fingerprint }
+  validates :service_id, presence: true
   validates :burn_id, presence: true
   validates :fingerprint, presence: true
 
@@ -53,8 +53,19 @@ class Finding < ActiveRecord::Base
   scope :status,              -> (status)       { scope_multiselect('findings.status', status) }
   scope :filtered_by,         -> (filter_id)    { joins(:filter).where("filters.id = ?", filter_id)}
   scope :service_portal,      -> (select)       { joins(:burn).where("burns.service_portal = ?", select) }
+  scope :only_current,        -> (select)       { scope_current(select) }
 
   def filter!
+    previous = Finding.where(:service_id => self.service_id, :fingerprint => self.fingerprint).last
+
+    if previous
+      self.status = previous.status
+      self.first_appeared = previous.first_appeared
+      self.filter_id = previous.filter_id
+    else
+      self.first_appeared = self.revision
+    end
+
     hit = self.filtered_by?
 
     if hit.count > 0
@@ -73,6 +84,12 @@ class Finding < ActiveRecord::Base
       .file(self.file) \
       .line(self.line.to_s) \
       .code(self.code)
+  end
+
+  def self.scope_current only_current
+    if only_current
+      where("findings.current = ?", true)
+    end
   end
 
   def self.scope_multiselect attribute, value
@@ -105,5 +122,5 @@ class Finding < ActiveRecord::Base
       :filtered => 3
     }
   end
-  
+
 end
