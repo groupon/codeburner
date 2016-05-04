@@ -23,11 +23,12 @@
 #
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
-  validates :service_id, presence: true, uniqueness: { scope: :revision }
+  validates :service_id, presence: true
   attr_default :status, 'created'
 
   belongs_to :service
   belongs_to :finding
+  belongs_to :user
 
   after_save :update_caches
 
@@ -176,6 +177,15 @@ class Burn < ActiveRecord::Base
       end
       files,lines = CodeburnerUtil.tally_code(dir, languages)
       self.update(num_files: files, num_lines: lines)
+
+      if self.report_status
+        if ServiceStat.find_by_service_id(self.service_id).open_findings == 0
+          CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?burn_id=#{self.id}"
+        else
+          CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?burn_id=#{self.id}"
+        end
+      end
+
       send_notifications(previous_stats)
     end
   rescue StandardError => e
@@ -192,6 +202,8 @@ class Burn < ActiveRecord::Base
   end
 
   def send_failure_notifications
+    CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'error', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/#burns" if self.report_status
+
     Notification.where(:burn => [self.id.to_s, 'all']).each do |notification|
       notification.fail(self.id)
     end

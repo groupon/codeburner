@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160415142013) do
+ActiveRecord::Schema.define(version: 20160502185332) do
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -25,9 +25,12 @@ ActiveRecord::Schema.define(version: 20160415142013) do
     t.integer  "service_id",     limit: 4
     t.boolean  "service_portal"
     t.text     "status_reason",  limit: 65535
+    t.integer  "user_id",        limit: 4
+    t.boolean  "report_status"
   end
 
   add_index "burns", ["service_id"], name: "index_burns_on_service_id", using: :btree
+  add_index "burns", ["user_id"], name: "index_burns_on_user_id", using: :btree
 
   create_table "filters", force: :cascade do |t|
     t.integer  "service_id",  limit: 4
@@ -89,11 +92,21 @@ ActiveRecord::Schema.define(version: 20160415142013) do
   add_index "service_stats", ["service_id"], name: "index_service_stats_on_service_id", using: :btree
 
   create_table "services", force: :cascade do |t|
-    t.string   "short_name",     limit: 255
-    t.string   "pretty_name",    limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "short_name",      limit: 255
+    t.string   "pretty_name",     limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.boolean  "service_portal"
+    t.string   "html_url",        limit: 255
+    t.string   "languages",       limit: 255
+    t.integer  "webhook_user_id", limit: 4
+  end
+
+  add_index "services", ["webhook_user_id"], name: "index_services_on_webhook_user_id", using: :btree
+
+  create_table "services_users", id: false, force: :cascade do |t|
+    t.integer "service_id", limit: 4
+    t.integer "user_id",    limit: 4
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -131,6 +144,16 @@ ActiveRecord::Schema.define(version: 20160415142013) do
     t.datetime "updated_at",                   null: false
   end
 
+  create_table "tokens", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.string   "name",       limit: 255
+    t.string   "token",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "tokens", ["user_id"], name: "index_tokens_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.integer  "github_uid",   limit: 4
     t.string   "name",         limit: 255
@@ -155,9 +178,12 @@ ActiveRecord::Schema.define(version: 20160415142013) do
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
   add_foreign_key "burns", "services"
+  add_foreign_key "burns", "users"
   add_foreign_key "filters", "services"
   add_foreign_key "findings", "burns"
   add_foreign_key "findings", "filters"
   add_foreign_key "findings", "services"
   add_foreign_key "service_stats", "services"
+  add_foreign_key "services", "users", column: "webhook_user_id"
+  add_foreign_key "tokens", "users"
 end

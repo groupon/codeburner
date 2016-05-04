@@ -34,7 +34,7 @@ THE SOFTWARE.
                 </optgroup>
                 <optgroup label="Services">
                   <% services.forEach(function(service) { %>
-                    <option value="<%= service.get('id') %>"><%= service.get('pretty_name') %></option>
+                    <option value="<%= service.get('id') %>"><%= service.get('short_name') %></option>
                   <% }); %>
                 </optgroup>
               </select>

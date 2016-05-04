@@ -188,7 +188,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
         id: id
         model: model
         code: code
-        service_name: @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: model.get('service_id')})].get('pretty_name')
+        service_name: @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: model.get('service_id')})].get('short_name')
         display_severity: window.constants.display_severity[model.get('severity')]
 
       do $('#filterModal').modal
@@ -252,7 +252,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
     if filter
       regex = new RegExp "^#{filter.replace('*','.*').toLowerCase()}.*"
       _.filter services, (element) ->
-        element.get('pretty_name').toLowerCase().match(regex)
+        element.get('short_name').toLowerCase().match(regex)
     else
       services
 
@@ -283,7 +283,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
   renderFindings: ->
     if @collection.filters.service_id
-      @service_name = @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: parseInt(@collection.filters.service_id)})].get('pretty_name')
+      @service_name = @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: parseInt(@collection.filters.service_id)})].get('short_name')
     else
       @service_name = null
 

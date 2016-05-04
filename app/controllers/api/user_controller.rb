@@ -24,8 +24,10 @@
 class Api::UserController < ApplicationController
   respond_to :json
   before_filter :authz
+  #before_filter :fake_authz
 
   VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url ]
+  WEBHOOK_URL = "http://appsec-codeburner1.snc1:8081/api/github/webhook"
 
   def index
     render(:json => @current_user, :only => VALID_ATTRS)
@@ -34,7 +36,65 @@ class Api::UserController < ApplicationController
   def show
     render(:json => User.find(params[:id]), :only => VALID_ATTRS)
   rescue ActiveRecord::RecordNotFound
-    render(:json => {error: "no burn with that id found}"}, :status => 404)
+    render(:json => {error: "no user with that id found"}, :status => 404)
   end
+
+  def repos
+    render(:json => @current_user.services)
+  end
+
+  def webhooks
+    render(:json => Service.where(:webhook_user_id => @current_user.id))
+  end
+
+  def add_repo_hook
+    repo = Service.find_or_create_by(:short_name => params[:repo])
+    github = CodeburnerUtil.user_github(@current_user)
+
+    result = github.create_hook(
+      repo.short_name,
+      'web',
+      {
+        :url => WEBHOOK_URL,
+        :content_type => 'json'
+      },
+      {
+        :events => ['push', 'pull_request'],
+        :active => true
+      }
+    )
+
+    if result
+      repo.update(:webhook_user => @current_user, :html_url => github.repo(repo.short_name).html_url, :languages => github.languages(repo.short_name).to_hash.keys.join(", "))
+      render(:json => {result: 'success'})
+    else
+      render(:json => {error: 'failed to add GitHub webhook'}, :status => 400)
+    end
+  rescue Octokit::UnprocessableEntity => e
+    render(:json => {error: e.errors.first[:message]}, :status => 400)
+  end
+
+  def remove_repo_hook
+    repo = Service.find(params[:repo])
+    github = CodeburnerUtil.user_github(@current_user)
+    hook = github.hooks(repo.short_name).detect {|h| h.config[:url] == WEBHOOK_URL}
+
+    if hook
+      result = github.remove_hook repo.short_name, hook.id
+    else
+      repo.update(:webhook_user => nil)
+      return render(:json => {error: "No hook with that ID found"}, :status => 404)
+    end
+
+    if result
+      repo.update(:webhook_user => nil)
+      render(:json => {result: "success"})
+    else
+      render(:json => {error: "failed to remove hook"}, :status => 500)
+    end
+  rescue ActiveRecord::RecordNotFound
+    return render(:json => {error: "No repo with that ID found"}, :status => 404)
+  end
+
 
 end

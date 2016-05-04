@@ -81,6 +81,18 @@ module CodeburnerUtil
     self.github.commits(strip_github_path(repo_url)).first.sha
   end
 
+  def self.user_github user
+    return nil unless user
+
+    Octokit.configure do |c|
+      if Setting.github['api_endpoint']
+        c.api_endpoint = Setting.github['api_endpoint']
+      end
+    end
+
+    return Octokit::Client.new(:access_token => user.access_token)
+  end
+
   def self.tally_code dir, languages
     num_files, num_lines = 0, 0
 

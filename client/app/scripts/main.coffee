@@ -36,7 +36,7 @@ window.constants =
     2: 'Medium'
     3: 'High'
   display_status:
-    0: 'Created'
+    0: 'Open'
     1: 'Hidden'
     2: 'Published'
     3: 'Filtered'

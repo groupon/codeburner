@@ -25,7 +25,10 @@
 
 Codeburner.Views.User = Backbone.View.extend
   el: $('#content')
+  tokens: []
+  repos: []
   initialize: (@settings) ->
+
     do @undelegateEvents
 
   events:
@@ -42,10 +45,69 @@ Codeburner.Views.User = Backbone.View.extend
 
       @renderUserDetail id
 
+    'click #generate-token': (e) ->
+      do $('#token-dialog').show
+      do $('#token-dialog').modal
+
+    'click #generate-token-confirm': (e) ->
+      name = $('#token-name').val()
+
+      unless name
+        Codeburner.Utilities.alert "token name required"
+
+      Codeburner.Utilities.postRequest '/api/token', {'name': name}, ((data) ->
+        window.router.userView.renderUserDetail 'tokens'
+      ), (data) ->
+        Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+    'click #add-repo': (e) ->
+      do Codeburner.Utilities.selectRepo
+      do $('#add-repo-dialog').show
+      do $('#add-repo-dialog').modal
+
+    'click #add-repo-confirm': (e) ->
+      repo = $('#select-repo').val()
+
+      if repo.length > 1
+        Codeburner.Utilities.postRequest "/api/user/#{Codeburner.User.id}/repos", {'repo': repo}, ((data) ->
+          window.router.userView.renderUserDetail 'repos'
+        ), (data) ->
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+    'click .delete-repo-btn': (e) ->
+      repo = $(e.target).closest('.delete-repo-btn').data 'repo'
+
+      Codeburner.Utilities.deleteRequest "/api/user/#{Codeburner.User.id}/repos/#{repo}", ((data) ->
+        window.router.userView.renderUserDetail 'repos'
+      ), (data) ->
+        Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+
   renderUserDetail: (id) ->
+    switch id
+      when 'tokens'
+        Codeburner.Utilities.getRequest "/api/token", ((data) =>
+          tokens = data
+          $('#user-detail').html JST["app/scripts/templates/user/tokens.ejs"]
+            user: Codeburner.User
+            tokens: data
+        ), (data) ->
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+      when 'repos'
+        Codeburner.Utilities.getRequest "/api/user/#{Codeburner.User.id}/webhooks", ((data) =>
+          $('#user-detail').html JST["app/scripts/templates/user/repos.ejs"]
+            user: Codeburner.User
+            repos: data
+        ), (data) ->
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
     $('#user-detail').html JST["app/scripts/templates/user/#{id}.ejs"]
       user: Codeburner.User
+      tokens: @tokens
+      repos: @repos
 
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/user_page.ejs']
+      user: Codeburner.User

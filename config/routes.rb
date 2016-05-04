@@ -42,7 +42,12 @@ Rails.application.routes.draw do
     end
 
     resources :filter, :only => [:index, :show, :create, :destroy]
-    resources :burn, :only => [:index, :show, :create]
+
+    resources :burn, :only => [:index, :show, :create ] do
+      member do
+        get 'reignite'
+      end
+    end
 
     resources :finding, :only => [:index, :show, :update] do
       put 'publish', on: :member
@@ -57,7 +62,15 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :user, :only => [:index]
+    resources :user, :only => [ :index, :show ] do
+      member do
+        get 'webhooks'
+        match 'repos' => 'user#add_repo_hook', :via => :post
+        match 'repos/:repo' => 'user#remove_repo_hook', :via => :delete
+      end
+    end
+
+    resources :token, :only => [ :index, :show, :create, :destroy ]
 
     match 'settings' => 'settings#index', :via => :get
     match 'settings' => 'settings#update', :via => :post
@@ -65,5 +78,6 @@ Rails.application.routes.draw do
     match 'settings/admin' => 'settings#admin_update', :via => :post
 
     match 'github/search/:type' => 'github#search', :via => :get
+    match 'github/webhook' => 'github#webhook', :via => :post
   end
 end

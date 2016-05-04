@@ -27,6 +27,8 @@ class Service < ActiveRecord::Base
   has_many :burns
   has_many :findings
   has_one  :service_stat
+  has_and_belongs_to_many :users, join_table: 'services_users'
+  belongs_to :webhook_user, class_name: 'User'
 
   after_save :update_caches
 

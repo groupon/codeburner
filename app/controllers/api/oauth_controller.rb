@@ -70,13 +70,12 @@ class Api::OauthController < ApplicationController
         u.fullname = user_info[:name]
         u.profile_url = user_info[:html_url]
         u.avatar_url = user_info[:avatar_url]
+        u.access_token = response['access_token']
       end
-
-      user.update(:access_token => response['access_token'])
 
       jwt = JWT.encode({:uid => user.github_uid, :exp => 6.hours.from_now.to_i}, Rails.application.secrets.secret_key_base)
 
-      authenticated_url = "//#{Setting.email['link_host']}#?authz=#{jwt}"
+      authenticated_url = "#{Setting.email['link_host']}#?authz=#{jwt}"
 
       redirect_to authenticated_url
     else

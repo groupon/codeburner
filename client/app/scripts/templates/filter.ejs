@@ -27,7 +27,7 @@ THE SOFTWARE.
       <b id="filter-header"><button class="btn btn-sm btn-no-padding btn-filter-list btn-flat" id="link-findings" data-id="<%= model.get('id') %>"><span class="badge" data-id="<%= model.get('id') %>"><%= model.get('finding_count') %></span></button> &nbsp;
       <% if (model.get('service_id')) { %>
         <% var service = services[_.findIndex(services, {id: model.get('service_id')})].attributes %>
-        <%= service.pretty_name %>
+        <%= service.short_name %>
       <% } else { %>
         All Services
       <% }; %>
@@ -39,7 +39,7 @@ THE SOFTWARE.
           <dl class="dl-horizontal" id="filter-detail">
             <dt>Service:</dt><dd>
               <% if (model.get('service_id')) { %>
-                <%= service.pretty_name %>
+                <%= service.short_name %>
               <% } else { %>
                 ANY
               <% }; %>

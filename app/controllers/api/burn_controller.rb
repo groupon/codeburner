@@ -30,6 +30,7 @@
 class Api::BurnController < ApplicationController
   protect_from_forgery
   respond_to :json, :html
+  before_filter :authz, only: [ :destroy, :reignite ]
 
   # START ServiceDiscovery
   # resource: burns.index
@@ -257,6 +258,26 @@ class Api::BurnController < ApplicationController
     render(:json => {burn_id: burn.id, service_id: service.id, service_name: params[:service_name], revision: burn.revision, status: burn.status})
 
     BurnWorker.perform_async(burn.id)
+  end
+
+  def reignite
+    burn = Burn.find(params[:id])
+    github = CodeburnerUtil.user_github(@current_user)
+    has_push_perms = github.repo(burn.service.short_name).permissions.push
+
+    return render(:json => {error: "User #{@current_user.name} does not have push access to #{burn.service.short_name}"}) unless has_push_perms or @current_user.admin?
+
+    new_burn = burn.dup
+    new_burn.status = 'created'
+    new_burn.save
+
+    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner' if new_burn.report_status
+
+    render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
+
+    BurnWorker.perform_async(new_burn.id)
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
 
 end

@@ -191,3 +191,38 @@ Codeburner.Utilities =
       ), (data) ->
         Codeburner.User = null
         console.log "invalid authz token"
+
+  selectRepo: ->
+    $('#select-repo').selectize(
+      valueField: 'full_name'
+      labelField: 'full_name'
+      searchField: [ 'name', 'html_url', 'full_name' ]
+      create: false
+      render:
+        option: (item, escape) ->
+          html = '<div>' +
+            '<span class="title">' +
+              '<span class="name"><span class="octicon ' + if item.fork then 'oction-repo-forked' else 'octicon-repo' + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
+            '</span>' +
+            '<span class="description">' + escape(item.description) + '</span>' +
+            '<ul class="meta">' +
+              '<li class="language"><span class="octicon octicon-code"></span> ' + escape(item.language) + '</li>' +
+              '<li class="stargazers"><span class="octicon octicon-star"></span><span> ' + escape(item.stargazers_count) + '</span> </li>' +
+              '<li class="forks"><span class="octicon octicon-repo-forked"></span><span> ' + escape(item.forks) + '</span> </li>' +
+            '</ul>' +
+          '</div>'
+
+          return html
+
+      score: (search) ->
+        score = this.getScoreFunction search
+        return (item) ->
+          return score(item) * (1 + Math.min(item.stargazers_count / 100, 1))
+
+      load: (query, callback) ->
+        return callback() unless query.length
+        Codeburner.Utilities.getRequest "/api/github/search/repos?q=#{encodeURIComponent(query)}", ((data) ->
+          callback(data.items)
+        ), (data) ->
+          do callback
+    )
