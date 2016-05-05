@@ -50,7 +50,6 @@ class Api::GithubController < ApplicationController
       revision = params[:pull_request][:head][:sha]
 
       if params[:pull_request][:state] == 'closed'
-        binding.pry
         Burn.where(:revision => revision).each do |burn|
           Finding.burn_id(burn.id).destroy_all
           Burn.destroy(burn.id)

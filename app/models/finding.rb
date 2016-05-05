@@ -56,7 +56,7 @@ class Finding < ActiveRecord::Base
   scope :only_current,        -> (select)       { scope_current(select) }
 
   def filter!
-    previous = Finding.where(:service_id => self.service_id, :fingerprint => self.fingerprint).last
+    previous = Finding.where(:service_id => self.service_id, :fingerprint => self.fingerprint).order("created_at").last
 
     if previous
       self.status = previous.status
