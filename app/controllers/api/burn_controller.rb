@@ -230,12 +230,8 @@ class Api::BurnController < ApplicationController
     return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
 
     repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
-
-    if params.has_key?(:revision)
-      revision = params[:revision]
-    else
-      revision = CodeburnerUtil.get_head_commit(repo_url)
-    end
+    params[:branch] ||= 'refs/heads/master'
+    revision = CodeburnerUtil.get_head_commit(repo_url, params[:branch])
 
     duplicate_burn = Burn.service_short_name(params[:service_name]).revision(revision)
     if duplicate_burn.count > 0
@@ -245,11 +241,9 @@ class Api::BurnController < ApplicationController
     end
 
     service = Service.find_by_short_name(params[:service_name])
-    if service.nil?
-      service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]})
-    end
+    service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]}) if service.nil?
 
-    burn = Burn.create({:service => service, :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:service => service, :branch => params[:branch], :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})

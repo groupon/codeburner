@@ -50,7 +50,8 @@ class Codeburner.Collections.Finding extends Backbone.PageableCollection
       burn_id: null
       service_id: null
       filtered_by: null
-      only_current: null
+      branch: 'master'
+      only_current: true
 
   changeFilter: ->
     query = []

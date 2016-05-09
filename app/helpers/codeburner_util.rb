@@ -77,8 +77,9 @@ module CodeburnerUtil
     self.github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
   end
 
-  def self.get_head_commit repo_url
-    self.github.commits(strip_github_path(repo_url)).first.sha
+  def self.get_head_commit repo_url, branch
+    branch ||= 'refs/heads/master'
+    self.github.commits(strip_github_path(repo_url), branch).first.sha
   end
 
   def self.user_github user

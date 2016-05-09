@@ -71,9 +71,12 @@ Codeburner.Views.BurnList = Backbone.View.extend
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
     'click .burn-show-findings': (e) ->
-      burn_id = $(e.target).closest('.burn-show-findings').data 'id'
-      service_id = $(e.target).closest('.burn-show-findings').data 'service'
-      window.router.navigate "#findings?&service_id=#{service_id}", {trigger: true, replace: true}
+      burnDom = $(e.target).closest('.burn-show-findings')
+      burn_id = burnDom.data 'id'
+      service_id = burnDom.data 'service'
+      branch = burnDom.data 'branch'
+
+      window.router.navigate "#findings?service_id=#{service_id}&burn_id=#{burn_id}&branch=#{branch}&only_current=false", {trigger: true, replace: true}
 
     'click .burn-reignite': (e) ->
       burn_id = $(e.target).closest('.burn-reignite').data 'id'

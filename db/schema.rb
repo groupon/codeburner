@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160504140816) do
+ActiveRecord::Schema.define(version: 20160506135435) do
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(version: 20160504140816) do
     t.text     "status_reason",  limit: 65535
     t.integer  "user_id",        limit: 4
     t.boolean  "report_status"
+    t.string   "branch",         limit: 255
+    t.string   "pull_request",   limit: 255
   end
 
   add_index "burns", ["service_id"], name: "index_burns_on_service_id", using: :btree

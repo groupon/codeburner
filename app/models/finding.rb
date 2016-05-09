@@ -54,16 +54,17 @@ class Finding < ActiveRecord::Base
   scope :filtered_by,         -> (filter_id)    { joins(:filter).where("filters.id = ?", filter_id)}
   scope :service_portal,      -> (select)       { joins(:burn).where("burns.service_portal = ?", select) }
   scope :only_current,        -> (select)       { scope_current(select) }
+  scope :branch,              -> (branch)       { joins(:burn).where("burns.branch LIKE ?", branch ||= "%") }
 
   def filter!
-    previous = Finding.where(:service_id => self.service_id, :fingerprint => self.fingerprint).order("created_at").last
+    previous = Finding.service_id(self.service_id).fingerprint(self.fingerprint).branch(self.burn.branch).order("created_at").last
 
     if previous
       self.status = previous.status
       self.first_appeared = previous.first_appeared
       self.filter_id = previous.filter_id
     else
-      self.first_appeared = self.revision
+      self.first_appeared = self.burn.revision
     end
 
     hit = self.filtered_by?

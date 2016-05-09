@@ -27,7 +27,7 @@ class Burn < ActiveRecord::Base
   attr_default :status, 'created'
 
   belongs_to :service
-  belongs_to :finding
+  has_many :findings
   belongs_to :user
 
   after_save :update_caches
@@ -41,6 +41,8 @@ class Burn < ActiveRecord::Base
   scope :repo_url,            -> (repo_url)     { where("repo_url LIKE ? OR repo_url IS NULL", repo_url ||= "%") }
   scope :status,              -> (status)       { where("status LIKE ?", status ||= "%") }
   scope :service_portal,      -> (select)       { where("burns.service_portal = ?", select) }
+  scope :branch,              -> (branch)       { where("burns.branch = ?", branch ||= "%") }
+  scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request ||= "%") }
 
   def update_caches
     Rails.cache.write('burn_list', CodeburnerUtil.get_burn_list)
@@ -100,7 +102,13 @@ class Burn < ActiveRecord::Base
   def ignite
     github = CodeburnerUtil.user_github(self.user)
 
-    github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
+    if self.pull_request
+      repo_name = self.pull_request
+    else
+      repo_name = self.service.short_name
+    end
+
+    github.create_status repo_name, self.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
 
     supported_langs = Setting.pipeline['tasks_for'].keys
 
@@ -165,11 +173,16 @@ class Burn < ActiveRecord::Base
 
       previous_stats = CodeburnerUtil.get_service_stats(self.service_id)
 
-      Finding.service_id(self.service_id).update_all(:current => false)
+      if self.revision == github.commits(self.service.short_name, self.branch).first.sha
+        Finding.service_id(self.service_id).update_all(:current => false)
+        current = true
+      else
+        current = false
+      end
 
       findings.flatten.each do |result|
         Finding.create({
-          :current => true,
+          :current => current,
           :service => self.service,
           :burn => self,
           :description => result.description,
@@ -186,10 +199,10 @@ class Burn < ActiveRecord::Base
       self.update(num_files: files, num_lines: lines)
 
       if self.report_status
-        if ServiceStat.find_by_service_id(self.service_id).open_findings == 0
-          github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}"
+        if self.findings.status(0).count == 0
+          github.create_status repo_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
         else
-          github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}"
+          github.create_status repo_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
         end
       end
 

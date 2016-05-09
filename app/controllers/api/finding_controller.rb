@@ -127,6 +127,7 @@ class Api::FindingController < ApplicationController
     results = Finding.only_current(only_current) \
       .id(params[:id]) \
       .service_id(params[:service_id]) \
+      .branch(params[:branch]) \
       .burn_id(params[:burn_id]) \
       .service_name(params[:service_name]) \
       .severity(params[:severity]) \
