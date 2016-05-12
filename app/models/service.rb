@@ -26,6 +26,7 @@ class Service < ActiveRecord::Base
   validates :short_name, uniqueness: true
   has_many :burns
   has_many :findings
+  has_many :branches
   has_one  :service_stat
   has_and_belongs_to_many :users, join_table: 'services_users'
   belongs_to :webhook_user, class_name: 'User'

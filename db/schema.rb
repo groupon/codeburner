@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160506135435) do
+ActiveRecord::Schema.define(version: 20160512151442) do
+
+  create_table "branches", force: :cascade do |t|
+    t.integer  "service_id", limit: 4
+    t.string   "ref",        limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "branches", ["service_id"], name: "index_branches_on_service_id", using: :btree
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -27,12 +36,17 @@ ActiveRecord::Schema.define(version: 20160506135435) do
     t.text     "status_reason",  limit: 65535
     t.integer  "user_id",        limit: 4
     t.boolean  "report_status"
-    t.string   "branch",         limit: 255
     t.string   "pull_request",   limit: 255
+    t.integer  "branch_id",      limit: 4
   end
 
   add_index "burns", ["service_id"], name: "index_burns_on_service_id", using: :btree
   add_index "burns", ["user_id"], name: "index_burns_on_user_id", using: :btree
+
+  create_table "burns_findings", id: false, force: :cascade do |t|
+    t.integer "burn_id",    limit: 4, null: false
+    t.integer "finding_id", limit: 4, null: false
+  end
 
   create_table "filters", force: :cascade do |t|
     t.integer  "service_id",  limit: 4
@@ -58,7 +72,6 @@ ActiveRecord::Schema.define(version: 20160506135435) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.integer  "status",         limit: 4
-    t.integer  "burn_id",        limit: 4
     t.integer  "service_id",     limit: 4
     t.string   "scanner",        limit: 255
     t.text     "file",           limit: 65535
@@ -69,7 +82,6 @@ ActiveRecord::Schema.define(version: 20160506135435) do
     t.boolean  "current"
   end
 
-  add_index "findings", ["burn_id"], name: "index_findings_on_burn_id", using: :btree
   add_index "findings", ["filter_id"], name: "index_findings_on_filter_id", using: :btree
   add_index "findings", ["service_id"], name: "index_findings_on_service_id", using: :btree
 
@@ -181,10 +193,10 @@ ActiveRecord::Schema.define(version: 20160506135435) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
+  add_foreign_key "branches", "services"
   add_foreign_key "burns", "services"
   add_foreign_key "burns", "users"
   add_foreign_key "filters", "services"
-  add_foreign_key "findings", "burns"
   add_foreign_key "findings", "filters"
   add_foreign_key "findings", "services"
   add_foreign_key "service_stats", "services"

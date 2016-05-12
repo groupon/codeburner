@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
 
   private
     def fake_authz
-      @current_user = User.find(1)
+      @current_user = User.first
     end
 
     def authz

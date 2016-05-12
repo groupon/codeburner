@@ -26,7 +26,7 @@
 
 class Api::GithubController < ApplicationController
   respond_to :json
-  before_filter :authz, only: [ :search ]
+  before_filter :authz, only: [ :search, :branches ]
 
   def search
     permitted_types = ['repos', 'users']
@@ -35,6 +35,13 @@ class Api::GithubController < ApplicationController
 
     results = CodeburnerUtil.user_github(@current_user).send("search_#{params[:type]}", params[:q])
     render(:json => results.to_hash)
+  end
+
+  def branches
+    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:repo)
+
+    results = CodeburnerUtil.user_github(@current_user).branches(params[:repo])
+    render(:json => results.map{|r| r.to_hash})
   end
 
   def webhook

@@ -25,9 +25,9 @@ class Burn < ActiveRecord::Base
   validates :revision, presence: true
   validates :service_id, presence: true
   attr_default :status, 'created'
-
   belongs_to :service
-  has_many :findings
+  belongs_to :branch
+  has_and_belongs_to_many :findings
   belongs_to :user
 
   after_save :update_caches

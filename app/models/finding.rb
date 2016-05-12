@@ -34,8 +34,10 @@ class Finding < ActiveRecord::Base
   end
 
   attr_default  :status, 0
-  belongs_to    :burn
+  
+  has_and_belongs_to_many    :burns
   belongs_to    :service
+  belongs_to    :branch
   belongs_to    :filter
 
   scope :id,                  -> (finding_id)   { scope_multiselect('findings.id', finding_id) }

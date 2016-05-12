@@ -78,6 +78,7 @@ Rails.application.routes.draw do
     match 'settings/admin' => 'settings#admin_update', :via => :post
 
     match 'github/search/:type' => 'github#search', :via => :get
+    match 'github/branches' => 'github#branches', :via => :get
     match 'github/webhook' => 'github#webhook', :via => :post
   end
 end
