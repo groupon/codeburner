@@ -21,8 +21,8 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-require 'sidekiq'
-require 'sidekiq/testing/inline'
+# require 'sidekiq'
+# require 'sidekiq/testing/inline'
 
 class Api::GithubController < ApplicationController
   respond_to :json
