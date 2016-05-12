@@ -30,7 +30,7 @@
 class Api::BurnController < ApplicationController
   protect_from_forgery
   respond_to :json, :html
-  before_filter :authz, only: [ :destroy, :reignite ]
+  before_filter :authz, only: [ :create, :destroy, :reignite ]
 
   # START ServiceDiscovery
   # resource: burns.index
@@ -249,7 +249,7 @@ class Api::BurnController < ApplicationController
       end
     end
 
-    burn = Burn.create({:service => repo, :branch => branch, :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:service => repo, :branch => branch, :revision => revision, :user => @current_user, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})
