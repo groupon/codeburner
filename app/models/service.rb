@@ -69,6 +69,17 @@ class Service < ActiveRecord::Base
     end
   end
 
+  def to_json
+    {
+    :id => self[:id],
+    :short_name => self[:short_name],
+    :pretty_name => self[:pretty_name],
+    :repo_url => "#{Setting.github['link_host']}/#{self[:short_name]}",
+    :html_url => self[:html_url],
+    :languages => self[:languages]
+    }.as_json
+  end
+
   def self.scope_pretty_name name
     if name.nil?
       Service.where("pretty_name LIKE '%'")

@@ -23,7 +23,6 @@
 #
 class Finding < ActiveRecord::Base
   validates :service_id, presence: true
-  validates :burn_id, presence: true
   validates :fingerprint, presence: true
 
   before_create :filter!
@@ -34,17 +33,19 @@ class Finding < ActiveRecord::Base
   end
 
   attr_default  :status, 0
-  
+
   has_and_belongs_to_many    :burns
   belongs_to    :service
   belongs_to    :branch
   belongs_to    :filter
 
   scope :id,                  -> (finding_id)   { scope_multiselect('findings.id', finding_id) }
-  scope :burn_id,             -> (burn_id)      { where('findings.burn_id LIKE ?', burn_id ||= "%") }
+  scope :burn_id,             -> (burn_id)      { joins("INNER JOIN burns_findings ON findings.id = burns_findings.finding_id").where("burns_findings.burn_id LIKE ? OR burns_findings.burn_id IS NULL", burn_id ||= "%") }
   scope :description,         -> (description)  { where("findings.description LIKE ? OR findings.description IS NULL", description ||= "%") }
   scope :detail,              -> (detail)       { where("findings.detail LIKE ? OR findings.detail IS NULL", detail ||= "%" ) }
   scope :service_id,          -> (service_id)   { scope_multiselect('findings.service_id', service_id) }
+  scope :branch_id,           -> (branch_id)    { scope_multiselect('findings.branch_id', branch_id) }
+  scope :branch_name,         -> (branch_name)  { joins(:branch).where("branches.name LIKE ?", branch_name ||= "%") }
   scope :service_name,        -> (service_name) { joins(:service).scope_service_name(service_name) }
   scope :severity,            -> (severity)     { where("findings.severity LIKE ? OR findings.severity IS NULL", severity ||= "%") }
   scope :fingerprint,         -> (fingerprint)  { where("findings.fingerprint LIKE ?", fingerprint ||= "%") }
@@ -56,19 +57,10 @@ class Finding < ActiveRecord::Base
   scope :filtered_by,         -> (filter_id)    { joins(:filter).where("filters.id = ?", filter_id)}
   scope :service_portal,      -> (select)       { joins(:burn).where("burns.service_portal = ?", select) }
   scope :only_current,        -> (select)       { scope_current(select) }
-  scope :branch,              -> (branch)       { joins(:burn).where("burns.branch LIKE ?", branch ||= "%") }
+  scope :latest,              ->                {  }
+  scope :branch,              -> (branch)       { where("findings.branch_id LIKE ?", branch ||= "%") }
 
   def filter!
-    previous = Finding.service_id(self.service_id).fingerprint(self.fingerprint).branch(self.burn.branch).order("created_at").last
-
-    if previous
-      self.status = previous.status
-      self.first_appeared = previous.first_appeared
-      self.filter_id = previous.filter_id
-    else
-      self.first_appeared = self.burn.revision
-    end
-
     hit = self.filtered_by?
 
     if hit.count > 0

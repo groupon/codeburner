@@ -30,9 +30,7 @@ THE SOFTWARE.
         <dt>Date</dt>
         <dd><%= moment(model.get('created_at')).format('LLL') %></dd>
         <dt>Service</dt>
-        <dd><%= services[_.findIndex(services, {id: model.get('service_id')})].get('short_name') %></dd>
-        <dt>Revision</dt>
-        <dd><a href="<%= burnList[model.get('burn_id')].repoUrl %>/tree/<%= burnList[model.get('burn_id')].revision %>" target="_blank"><%= burnList[model.get('burn_id')].revision %></a></dd>
+        <dd><%= service.get('short_name') %></dd>
         <dt>Severity</dt>
         <dd><%= window.constants.display_severity[model.get('severity')] %></dd>
         <dt>Fingerprint</dt>
@@ -52,7 +50,7 @@ THE SOFTWARE.
             <% if (model.get('scanner') == 'RetireJS' || model.get('scanner') == 'Snyk' || model.get('scanner') == 'NodeSecurityProject') { %>
                 <dd><%= model.get('file') %>
             <% } else { %>
-                <dd><a href="<%= burnList[model.get('burn_id')].repoUrl %>/blob/<%= burnList[model.get('burn_id')].revision %>/<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>
+                <dd><a href="<%= service.get('repo_url') %>/tree<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>
             <% } %>
             <% if (model.get('line')) { %>
                 , <b>Line </b><%= model.get('line') %>

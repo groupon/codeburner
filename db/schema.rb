@@ -11,11 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512151442) do
+ActiveRecord::Schema.define(version: 20160512171856) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "service_id", limit: 4
-    t.string   "ref",        limit: 255
+    t.string   "name",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
@@ -80,8 +80,10 @@ ActiveRecord::Schema.define(version: 20160512151442) do
     t.integer  "filter_id",      limit: 4
     t.string   "first_appeared", limit: 255
     t.boolean  "current"
+    t.integer  "branch_id",      limit: 4
   end
 
+  add_index "findings", ["branch_id"], name: "index_findings_on_branch_id", using: :btree
   add_index "findings", ["filter_id"], name: "index_findings_on_filter_id", using: :btree
   add_index "findings", ["service_id"], name: "index_findings_on_service_id", using: :btree
 
@@ -197,6 +199,7 @@ ActiveRecord::Schema.define(version: 20160512151442) do
   add_foreign_key "burns", "services"
   add_foreign_key "burns", "users"
   add_foreign_key "filters", "services"
+  add_foreign_key "findings", "branches"
   add_foreign_key "findings", "filters"
   add_foreign_key "findings", "services"
   add_foreign_key "service_stats", "services"

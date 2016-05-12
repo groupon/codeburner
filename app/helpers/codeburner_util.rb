@@ -78,7 +78,7 @@ module CodeburnerUtil
   end
 
   def self.get_head_commit repo_url, branch
-    branch ||= 'refs/heads/master'
+    branch ||= 'master'
     self.github.commits(strip_github_path(repo_url), branch).first.sha
   end
 
@@ -147,7 +147,8 @@ module CodeburnerUtil
   end
 
   def self.get_services
-    return Service.has_burns.order("services.pretty_name ASC").as_json
+    services = Service.has_burns.order("services.short_name ASC").map{|s| s.to_json}
+    return services
   end
 
   def self.pack_service_name objects

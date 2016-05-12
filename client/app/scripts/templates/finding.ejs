@@ -37,10 +37,6 @@ THE SOFTWARE.
   <table class="table">
     <thead class="table-bordered" bgcolor="#F6F6F6">
       <tr>
-        <th class="header" data-id="burn_id" width="10%">
-          Burn
-          <span class="sorting hidden" data-id="burn_id"><span class="caret" data-id="burn_id"></span></span>
-        </th>
         <th class="header" data-id="description" width="62%">
           Description
           <span class="sorting hidden" data-id="description"><span class="caret" data-id="description"></span></span>
@@ -73,7 +69,6 @@ THE SOFTWARE.
       %>
 
       <tr class="<%= color_class %> finding-row" id="finding-row" selected="false" data-id="<%= model.get('id') %>">
-        <td class="show-detail"><%= model.get('burn_id') %></td>
         <td class="show-detail"><%= model.get('description') %></td>
         <td class="show-detail"><%= display_severity %></td>
         <td class="show-detail"><%= display_status %></td>

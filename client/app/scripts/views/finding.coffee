@@ -37,7 +37,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
       checkBox.prop 'checked', !checkBox.prop('checked')
 
     'click .show-detail': (e) ->
-      target = $(e.target).parent()
+      target = $(e.target).closest('.finding-row')
       id = target.data 'id'
 
       if @lastFindingHighlighted?
@@ -51,7 +51,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#detail').html JST['app/scripts/templates/detail.ejs']
         id: id
         model: @collection.get id
-        services: @serviceCollection.models
+        service: @serviceCollection.get(@collection.get(id).get('service_id'))
         burnList: @collection.burnList
 
       if $('#fingerprint-span').height() > 20

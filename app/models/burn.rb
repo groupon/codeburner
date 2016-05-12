@@ -41,7 +41,7 @@ class Burn < ActiveRecord::Base
   scope :repo_url,            -> (repo_url)     { where("repo_url LIKE ? OR repo_url IS NULL", repo_url ||= "%") }
   scope :status,              -> (status)       { where("status LIKE ?", status ||= "%") }
   scope :service_portal,      -> (select)       { where("burns.service_portal = ?", select) }
-  scope :branch,              -> (branch)       { where("burns.branch = ?", branch ||= "%") }
+  scope :branch_name,         -> (branch)       { joins(:branch).where("branches.name LIKE ?", branch ||= "%") }
   scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request ||= "%") }
 
   def update_caches
@@ -102,13 +102,7 @@ class Burn < ActiveRecord::Base
   def ignite
     github = CodeburnerUtil.user_github(self.user)
 
-    if self.pull_request
-      repo_name = self.pull_request
-    else
-      repo_name = self.service.short_name
-    end
-
-    github.create_status repo_name, self.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
+    github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
 
     supported_langs = Setting.pipeline['tasks_for'].keys
 
@@ -173,36 +167,51 @@ class Burn < ActiveRecord::Base
 
       previous_stats = CodeburnerUtil.get_service_stats(self.service_id)
 
-      if self.revision == github.commits(self.service.short_name, self.branch).first.sha
-        Finding.service_id(self.service_id).update_all(:current => false)
+      if self.revision == github.commits(self.service.short_name, self.branch.name).first.sha
+        Finding.service_id(self.service_id).branch_id(self.branch_id).update_all(:current => false)
         current = true
       else
         current = false
       end
 
       findings.flatten.each do |result|
-        Finding.create({
-          :current => current,
-          :service => self.service,
-          :burn => self,
-          :description => result.description,
-          :severity => result.severity,
-          :fingerprint => result.fingerprint,
-          :detail => result.detail,
-          :scanner => result.source[:scanner],
-          :file => result.source[:file],
-          :line => result.source[:line],
-          :code => result.source[:code]
-          })
+        previous = Finding.service_id(self.service_id).branch(self.branch).fingerprint(result.fingerprint).order("created_at").last
+
+        if previous
+          self.findings << previous unless self.findings.include?(previous)
+          previous.burns << self unless previous.burns.include?(self)
+          previous.update(:current => current)
+          next
+        else
+          f = Finding.create({
+            :service => self.service,
+            :branch => self.branch,
+            :current => current,
+            :description => result.description,
+            :severity => result.severity,
+            :fingerprint => result.fingerprint,
+            :first_appeared => self.revision,
+            :detail => result.detail,
+            :scanner => result.source[:scanner],
+            :file => result.source[:file],
+            :line => result.source[:line],
+            :code => result.source[:code]
+            })
+
+          if f.valid?
+            f.burns << self unless f.burns.include?(self)
+            self.findings << f unless self.findings.include?(f)
+          end
+        end
       end
       files,lines = CodeburnerUtil.tally_code(dir, languages)
       self.update(num_files: files, num_lines: lines)
 
       if self.report_status
         if self.findings.status(0).count == 0
-          github.create_status repo_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
+          github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
         else
-          github.create_status repo_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
+          github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
         end
       end
 

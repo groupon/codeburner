@@ -21,8 +21,8 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-# require 'sidekiq'
-# require 'sidekiq/testing/inline'
+require 'sidekiq'
+require 'sidekiq/testing/inline'
 
 class Api::GithubController < ApplicationController
   respond_to :json
@@ -50,29 +50,22 @@ class Api::GithubController < ApplicationController
 
     if event == 'push'
       repo = Service.find_by_short_name(params[:repository][:full_name])
-      branch = params[:ref].split('/').last
+      branch = Branch.find_or_create_by(:service_id => repo.id, :name => params[:ref].split('/').last)
       revision = params[:after]
     elsif event == 'pull_request'
-      parent_repo   = Service.find_by(:short_name => params[:pull_request][:base][:repo][:full_name])
-      repo          = Service.create_with(:webhook_user => parent_repo.webhook_user, :repo_url => params[:pull_request][:head][:repo][:html_url]).find_or_create_by(:short_name => params[:pull_request][:head][:repo][:full_name])
-      branch        = params[:pull_request][:head][:ref]
+      repo          = Service.find_by(:short_name => params[:pull_request][:base][:repo][:full_name])
+      branch        = Branch.find_or_create_by(:service_id => repo.id, :name => params[:pull_request][:head][:ref])
       revision      = params[:pull_request][:head][:sha]
       pull_request  = params[:pull_request][:base][:repo][:full_name]
 
       if params[:pull_request][:state] == 'closed'
         if params[:pull_request][:merged]
-          old_burn = Burn.service_id(repo.id).branch(branch).revision(revision).pull_request(pull_request).status('done').order('created_at').last
+          old_burn = Burn.service_id(repo.id).branch_name(branch.name).revision(revision).pull_request(pull_request).status('done').order('created_at').last
 
           unless old_burn.nil?
-            if branch != params[:pull_request][:base][:ref] or parent_repo != repo
-              parent_repo.findings.update_all(:current => false)
-              new_burn = Burn.create(:service => parent_repo, :branch => params[:pull_request][:base][:ref], :revision => params[:pull_request][:merge_commit_sha])
+            repo.findings.update_all(:current => false)
 
-              findings = old_burn.findings.dup
-              findings.update_all(:service_id => parent_repo.id, :burn_id => new_burn.id, :current => true)
-
-              new_burn.update(:status => 'done')
-            end
+            old_burn.findings.update_all(:current => true)
           end
 
           return render(:json => {result: 'merged'})
@@ -88,13 +81,13 @@ class Api::GithubController < ApplicationController
 
     github = CodeburnerUtil.user_github(repo.webhook_user)
 
-    duplicate_burn = Burn.service_short_name(repo.short_name).branch(branch).revision(revision).order("created_at").last
+    duplicate_burn = Burn.service_short_name(repo.short_name).branch_name(branch.name).revision(revision).order("created_at").last
     if duplicate_burn
       unless duplicate_burn.status == 'failed'
         if duplicate_burn.findings.status(0).count == 0
-          github.create_status parent_repo.short_name, revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}"
+          github.create_status repo.short_name, revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}"
         else
-          github.create_status parent_repo.short_name, revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}"
+          github.create_status repo.short_name, revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}"
         end
         return render(:json => {error: "Already burning #{repo.short_name} - #{revision}"})
       end
@@ -106,7 +99,7 @@ class Api::GithubController < ApplicationController
 
     BurnWorker.perform_async burn.id
 
-    render(:json => {burn_id: burn.id, repository: repo, branch: branch, revision: burn.revision, status: burn.status})
+    render(:json => {burn_id: burn.id, repository: repo, branch: branch.name, revision: burn.revision, status: burn.status})
   end
 
 end
