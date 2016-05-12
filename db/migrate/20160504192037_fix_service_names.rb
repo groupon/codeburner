@@ -7,9 +7,9 @@ class FixServiceNames < ActiveRecord::Migration
         name = URI.parse(burn.repo_url).path[1..-1]
         service.update(:short_name => name, :pretty_name => name)
       else
-        Burn.service_id(service.id).destroy_all
-        ServiceStat.destroy(Service.find(service.id).service_stat.id)
-        Service.destroy(service.id)
+        # Burn.service_id(service.id).destroy_all
+        # ServiceStat.destroy(Service.find(service.id).service_stat.id)
+        # Service.destroy(service.id)
       end
     end
   end

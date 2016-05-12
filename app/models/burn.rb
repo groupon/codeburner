@@ -209,9 +209,9 @@ class Burn < ActiveRecord::Base
 
       if self.report_status
         if self.findings.status(0).count == 0
-          github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
+          github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
         else
-          github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch}"
+          github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
         end
       end
 
