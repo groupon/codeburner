@@ -230,27 +230,32 @@ class Api::BurnController < ApplicationController
   def create
     return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
 
-    repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
-    params[:branch] ||= 'refs/heads/master'
-    revision = CodeburnerUtil.get_head_commit(repo_url, params[:branch])
+    repo = Service.find_by_short_name(params[:service_name])
+    repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]}) if repo.nil?
 
-    duplicate_burn = Burn.service_short_name(params[:service_name]).revision(revision)
+    repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
+    branch = Branch.find_or_create_by(:service_id => repo.id, :name => params[:branch])
+
+    if params.has_key?(:revision)
+      revision = params[:revision]
+    else
+      revision = CodeburnerUtil.get_head_commit(repo_url, branch.name)
+    end
+
+    duplicate_burn = Burn.service_short_name(repo.short_name).branch_name(branch.name).revision(revision).order("created_at")
     if duplicate_burn.count > 0
       unless duplicate_burn.status('failed').count > 0 and duplicate_burn.status('done').count == 0
         return render(:json => {error: "Already burning #{params[:service_name]} release #{revision}"}, :status => 409)
       end
     end
 
-    service = Service.find_by_short_name(params[:service_name])
-    service = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]}) if service.nil?
-
-    burn = Burn.create({:service => service, :branch => params[:branch], :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:service => repo, :branch => branch, :revision => revision, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})
     end
 
-    render(:json => {burn_id: burn.id, service_id: service.id, service_name: params[:service_name], revision: burn.revision, status: burn.status})
+    render(:json => {burn_id: burn.id, service_id: repo.id, service_name: params[:service_name], revision: burn.revision, status: burn.status})
 
     BurnWorker.perform_async(burn.id)
   end
