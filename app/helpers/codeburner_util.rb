@@ -156,7 +156,8 @@ module CodeburnerUtil
 
     objects.each do |result|
       result_hash = result.attributes
-      result_hash[:service_name] = result.service.pretty_name
+      result_hash[:service_name] = result.service.short_name
+      result_hash[:branch] = result.branch.name
       results << result_hash
     end
     return results

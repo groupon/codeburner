@@ -75,12 +75,14 @@ class Burn < ActiveRecord::Base
   def to_json
     {
       :id => self.id,
+      :service_id => self.service_id,
       :service_name => self.service.pretty_name,
+      :branch => self.branch.name,
       :revision => self.revision,
       :code_lang => self[:code_lang],
       :repo_url => self[:repo_url],
       :status => self.status
-    }.to_json
+    }.as_json
   end
 
   def repo_url

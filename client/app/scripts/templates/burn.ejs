@@ -25,8 +25,9 @@ THE SOFTWARE.
   <ul class="list-unstyled">
     <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button></li>
     <% burns.forEach(function(item) { %>
-      <% var burn = item.attributes; %>
-      <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes; %>
+      <% var burn = item.attributes %>
+      <% console.log(burn) %>
+      <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes %>
       <li>
         <div class="row burn-list-item" style="padding:1em;margin:1em;">
           <div class="col-md-4">

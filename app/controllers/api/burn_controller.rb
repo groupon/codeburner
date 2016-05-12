@@ -124,7 +124,7 @@ class Api::BurnController < ApplicationController
       .page(params[:page]) \
       .per(params[:per_page]) \
 
-    render(:json => {count: burns.total_count, results: burns})
+    render(:json => {count: burns.total_count, results: burns.map{|b| b.to_json} })
   end
 
   # START ServiceDiscovery
@@ -178,7 +178,8 @@ class Api::BurnController < ApplicationController
   #       description: the reason for the current status
   # END ServiceDiscovery
   def show
-    render(:json => Burn.find(params[:id]).as_json)
+    burn = Burn.find(params[:id])
+    render(:json => burn.attributes.merge({:branch => burn.branch.name}).as_json)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
