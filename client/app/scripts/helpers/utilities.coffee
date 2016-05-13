@@ -193,7 +193,7 @@ Codeburner.Utilities =
         console.log "invalid authz token"
 
   selectRepo: ->
-    $('#select-repo').selectize(
+    $('#select-repo').selectize
       valueField: 'full_name'
       labelField: 'full_name'
       searchField: [ 'name', 'html_url', 'full_name' ]
@@ -225,4 +225,24 @@ Codeburner.Utilities =
           callback(data.items)
         ), (data) ->
           do callback
-    )
+
+      onChange: (value) ->
+        do $('#branch-div').show
+        if $('#select-branch')[0].selectize
+          do $('#select-branch')[0].selectize.destroy
+        branchSelector = $('#select-branch').selectize
+          valueField: 'name'
+          labelField: 'name'
+          searchField: ['name']
+          create: false
+          preload: true
+          load: (query, callback) ->
+            Codeburner.Utilities.getRequest "/api/github/branches?repo=#{encodeURIComponent(value)}", ((data) ->
+              callback data
+            ), (data) ->
+              do callback
+          onLoad: (data) ->
+            if _.where(data, {name: 'master'}).length > 0
+              branchSelector[0].selectize.setValue 'master'
+            else
+              branchSelector[0].selectize.setValue data[0].name
