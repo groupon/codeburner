@@ -30,10 +30,10 @@ THE SOFTWARE.
       <li>
         <div class="row burn-list-item" style="padding:1em;margin:1em;">
           <div class="col-md-4">
-            <span class="octicon octicon-repo"></span> &nbsp;<%= service.short_name %><span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch %><br>
             <% if (burn.pull_request) { %>
               <span class="octicon octicon-git-pull-request" style="margin-left:1em;"></span>&nbsp;<a href="<%= burn.repo_url %>/pull/<%= burn.pull_request %>" target="_blank">#<%= burn.pull_request %></a>
             <% }; %>
+            <span class="octicon octicon-repo"></span> &nbsp;<%= service.short_name %><span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch %><br>
             <span class="octicon octicon-git-commit" style="margin-left:1em;"></span>&nbsp;
             <% if (tagIdentifiers.some(function(i) { return burn.revision.indexOf(i) != -1; })) { %>
               <%= burn.revision %>
