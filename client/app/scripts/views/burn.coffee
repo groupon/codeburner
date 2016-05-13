@@ -60,10 +60,10 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
     'click #submit-burn': ->
       postData = {'service_name': $('#select-repo').val()}
-      if $('#revision').val()
-        postData['revision'] = $('#revision').val().trim()
+
       if $('#notify').val()
         postData['notify'] = $('#notify').val().trim()
+
       Codeburner.Utilities.postRequest '/api/burn', postData, ((data) =>
         @serviceCollection.fetch().done =>
           do @renderBurns

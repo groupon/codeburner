@@ -230,10 +230,13 @@ class Api::BurnController < ApplicationController
   def create
     return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
 
+    params[:branch] ||= 'master'
+
     repo = Service.find_by_short_name(params[:service_name])
     repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]}) if repo.nil?
 
     repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
+
     branch = Branch.find_or_create_by(:service_id => repo.id, :name => params[:branch])
 
     if params.has_key?(:revision)
