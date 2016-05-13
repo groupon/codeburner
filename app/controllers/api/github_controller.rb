@@ -52,7 +52,7 @@ class Api::GithubController < ApplicationController
       repo = Service.find_by_short_name(params[:repository][:full_name])
       branch = Branch.find_or_create_by(:service_id => repo.id, :name => params[:ref].split('/').last)
       revision = params[:after]
-    elsif event == 'pull_request' and ['opened', 'closed', 'reopened', 'synchronize'].include? params[:action]
+    elsif event == 'pull_request' and ['opened', 'closed', 'reopened', 'synchronize'].include? params[:github][:action]
       repo          = Service.find_by(:short_name => params[:pull_request][:base][:repo][:full_name])
       branch        = Branch.find_or_create_by(:service_id => repo.id, :name => params[:pull_request][:base][:ref])
       revision      = params[:pull_request][:head][:sha]

@@ -26,18 +26,20 @@ THE SOFTWARE.
     <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button></li>
     <% burns.forEach(function(item) { %>
       <% var burn = item.attributes %>
-      <% console.log(burn) %>
-      <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes %>
+      <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes; %>
       <li>
         <div class="row burn-list-item" style="padding:1em;margin:1em;">
           <div class="col-md-4">
-            <span class="octicon octicon-repo"></span> &nbsp;<a href="<%= burn.repo_url %>" target="_blank"><%= service.short_name %> - <%= burn.branch %></a><br>
-            <span class="octicon octicon-git-commit" style="margin-left:1em;"></span> &nbsp;
+            <span class="octicon octicon-repo"></span> &nbsp;<%= service.short_name %><span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch %><br>
+            <% if (burn.pull_request) { %>
+              <span class="octicon octicon-git-pull-request" style="margin-left:1em;"></span>&nbsp;<a href="<%= burn.repo_url %>/pull/<%= burn.pull_request %>" target="_blank">#<%= burn.pull_request %></a>
+            <% }; %>
+            <span class="octicon octicon-git-commit" style="margin-left:1em;"></span>&nbsp;
             <% if (tagIdentifiers.some(function(i) { return burn.revision.indexOf(i) != -1; })) { %>
               <%= burn.revision %>
             <% } else { %>
               <%= burn.revision.slice(0,8) %>
-            <% } %>
+            <% }; %>
 
           </div>
           <div class="col-md-4"><span class="octicon octicon-code"></span> &nbsp;<%= burn.code_lang %></div>
