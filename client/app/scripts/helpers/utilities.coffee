@@ -227,22 +227,30 @@ Codeburner.Utilities =
           do callback
 
       onChange: (value) ->
-        do $('#branch-div').show
-        if $('#select-branch')[0].selectize
-          do $('#select-branch')[0].selectize.destroy
-        branchSelector = $('#select-branch').selectize
-          valueField: 'name'
-          labelField: 'name'
-          searchField: ['name']
-          create: false
-          preload: true
-          load: (query, callback) ->
-            Codeburner.Utilities.getRequest "/api/github/branches?repo=#{encodeURIComponent(value)}", ((data) ->
-              callback data
-            ), (data) ->
-              do callback
-          onLoad: (data) ->
-            if _.where(data, {name: 'master'}).length > 0
-              branchSelector[0].selectize.setValue 'master'
-            else
-              branchSelector[0].selectize.setValue data[0].name
+        Codeburner.Utilities.renderBranchSelector value
+
+  renderBranchSelector: (repo, selectedRepo, cb) ->
+    do $('#branch-div').show
+    if $('#select-branch')[0].selectize
+      do $('#select-branch')[0].selectize.destroy
+    branchSelector = $('#select-branch').selectize
+      valueField: 'name'
+      labelField: 'name'
+      searchField: ['name']
+      create: false
+      preload: true
+      load: (query, callback) ->
+        Codeburner.Utilities.getRequest "/api/github/branches?repo=#{encodeURIComponent(repo)}", ((data) ->
+          callback data
+        ), (data) ->
+          do callback
+      onLoad: (data) ->
+        if selectedRepo?
+            branchSelector[0].selectize.setValue selectedRepo
+        else
+          if _.where(data, {name: 'master'}).length > 0
+            branchSelector[0].selectize.setValue 'master'
+          else
+            branchSelector[0].selectize.setValue data[0].name
+      onChange: (value) ->
+        cb repo, value if cb?

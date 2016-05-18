@@ -29,32 +29,42 @@ THE SOFTWARE.
   </div>
 
   <div class="row">
-    <div class="col-lg-2">
-      <div class="form-group label-floating no-margin">
-        <label for="filter" class="control-label">Filter Services</label>
-        <input type="text" class="form-control" id="filter">
-        <span class="help-block">Use * for wildcard</span>
-      </div>
+    <div class="col-lg-3">
+      <select id="select-repo" placeholder="Pick a repository..." style="display: none;"></select>
     </div>
+    <div class="col-lg-3" id="branch-div">
+      <select id="select-branch" placeholder="Pick a branch..." style="display: none;"></select>
+    </div>
+  </div>
 
-    <div class="col-lg-5">
-      <div class="togglebutton"><label class="toggle-label">Show Published &nbsp;&nbsp;<input type="checkbox" id="show-publish" <% if(publish){ %>checked <% } %>></label>&nbsp;&nbsp;<label class="toggle-label">Show Hidden &nbsp;&nbsp;<input type="checkbox" id="show-hidden" <% if(hidden){ %>checked <% } %>></label>&nbsp;&nbsp;<label class="toggle-label">Show Filtered &nbsp;&nbsp;<input type="checkbox" id="show-filtered" <% if(filtered){ %>checked <% } %>></label></div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="togglebutton">
+        <label class="toggle-label">
+          Show Published &nbsp;&nbsp;<input type="checkbox" id="show-publish" <% if(publish){ %>checked <% } %>>
+        </label>
+
+        <label class="toggle-label">
+          Show Hidden &nbsp;&nbsp;<input type="checkbox" id="show-hidden" <% if(hidden){ %>checked <% } %>>
+        </label>
+
+        <label class="toggle-label">
+          Show Filtered &nbsp;&nbsp;<input type="checkbox" id="show-filtered" <% if(filtered){ %>checked <% } %>>
+        </label>
+      </div>
     </div>
 
   </div>
   <br>
 
   <div class="row">
-    <div class="col-lg-2 service-sidebar" id="service-list">
-    </div>
-
-    <div class="col-lg-5">
+    <div class="col-lg-6">
       <div id="finding-list">
       </div>
       <div class="row paginater"> </div>
     </div>
 
-    <div class="col-lg-5" id="detail">
+    <div class="col-lg-6" id="detail">
     </div>
   </div>
 </div>

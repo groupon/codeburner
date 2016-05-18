@@ -146,36 +146,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
       do @collection.changeFilter
       do @renderFindings
 
-    'keyup #filter': ->
-      $('.service-list').removeClass 'highlight-service-row'
-      $('.service-list').prop 'selected', false
-      @renderServiceList $('#filter').val()
-
-    'click .service-list': (e) ->
-      target = $(e.target).parent()
-      id = target.data 'id'
-      selected = target.prop 'selected'
-
-      if selected
-        target.removeClass 'highlight-service-row'
-        target.prop 'selected', false
-      else
-        $('.service-list').removeClass 'highlight-service-row'
-        $('.service-list').prop 'selected', false
-        target.addClass 'highlight-service-row'
-        target.prop 'selected', true
-
-      do @collection.resetFilter
-      unless selected
-        @collection.filters.service_id = id
-        Backbone.history.navigate "findings?service_id=#{id}"
-      else
-        @collection.filters.service_id = null
-        Backbone.history.navigate "finding"
-
-      do @collection.changeFilter
-      do @renderFindings
-
     'click #filter-btn': ->
       id = $('#filter-btn').data 'finding-id'
       model = @collection.get id
@@ -256,18 +226,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
     else
       services
 
-  renderServiceList: (query) ->
-    $('.service-list').removeClass 'highlight-service-row'
-    $('.service-list').prop 'selected', false
-
-    $('#service-list').html JST['app/scripts/templates/service_list.ejs']
-      services: @filterServiceList @serviceCollection.models, query
-
-    if @collection.filters.service_id
-      selectedRow = $(".service-list[data-id='#{@collection.filters.service_id}']")
-      selectedRow.addClass 'highlight-service-row'
-      selectedRow.prop 'selected', true
-
   updateBurnList: ->
       burns = []
       for model in @collection.models
@@ -305,12 +263,46 @@ Codeburner.Views.FindingList = Backbone.View.extend
       Codeburner.Utilities.renderPaginater @currentPage, @collection.state.totalPages, @collection.state.totalRecords, @collection.state.pageSize
       do @updateBurnList
 
+  filterFindings: (repo, branch) ->
+    if repo?
+      @collection.filters.service_id = @serviceCollection.findWhere(
+        short_name: repo
+      ).get 'id'
+    else
+      @collection.filters.service_id = null
+    @collection.filters.branch = branch
+    do @collection.changeFilter
+    do @renderFindings
+
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/finding_page.ejs']
       filtered: '3' in @collection.filters.status
       publish: '2' in @collection.filters.status
       hidden: '1' in @collection.filters.status
-    do @renderServiceList
+
+    if @collection.filters.service_id?[0]?
+      service_id = parseInt @collection.filters.service_id[0], 10
+      repo = @serviceCollection.get(service_id).get 'short_name'
+    else
+      repo = null
+    branch = @collection.filters.branch
+
+    $('#select-repo').selectize
+      valueField: 'name'
+      labelField: 'name'
+      searchField: ['name']
+      options: @serviceCollection.models.map (item) ->
+        name: item.get 'short_name'
+      create: false
+      onInitialize: =>
+        if repo?
+          $('#select-repo').selectize()[0].selectize.setValue repo
+          Codeburner.Utilities.renderBranchSelector repo, branch, (repo, branch) =>
+            @filterFindings repo, branch
+      onChange: (value) =>
+        Codeburner.Utilities.renderBranchSelector value, null, (repo, branch) =>
+          @filterFindings repo, branch
+
     do @renderFindings
     $("body").tooltip({ selector: '[data-toggle=tooltip]' })
