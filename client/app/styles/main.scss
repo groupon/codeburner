@@ -376,3 +376,16 @@ a.dropdown-toggle span.caret {
 .selectized.select-border {
   border-bottom: 1px solid $black;
 }
+
+.burn-log {
+  font-size: 0.8em;
+  color: #f1f1f1;
+  background-color: #444;
+  overflow: scroll;
+  height: 25em;
+  margin: 1em;
+}
+
+.btn-highlight {
+  background-color: rgba(153, 153, 153, 0.2) !important;
+}

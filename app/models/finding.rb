@@ -109,6 +109,10 @@ class Finding < ActiveRecord::Base
     end
   end
 
+  def to_json
+    self.attributes.merge({:branch => self.branch.name}).as_json
+  end
+
   def self.status_code
     {
       :open => 0,

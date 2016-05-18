@@ -26,7 +26,7 @@ class Api::UserController < ApplicationController
   before_filter :authz
   #before_filter :fake_authz
 
-  VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url ]
+  VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url, :role ]
   WEBHOOK_URL = "http://appsec-codeburner1.snc1:8081/api/github/webhook"
 
   def index
@@ -34,7 +34,8 @@ class Api::UserController < ApplicationController
   end
 
   def show
-    render(:json => User.find(params[:id]), :only => VALID_ATTRS)
+    user = User.find(params[:id])
+    render(:json => user, :only => VALID_ATTRS)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no user with that id found"}, :status => 404)
   end

@@ -26,6 +26,7 @@
 Codeburner.Views.BurnList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
+  logSources: {}
   initialize: (@burnCollection, @serviceCollection) ->
     do @undelegateEvents
 
@@ -109,6 +110,34 @@ Codeburner.Views.BurnList = Backbone.View.extend
       else
         $(e.target).parent().find('.floating-label').addClass 'invalid'
 
+    'click .burn-toggle-log': (e) ->
+      target = $(e.target).closest('.burn-toggle-log')
+      burnId = target.data 'id'
+      logSpan = target.parent().parent().parent().find('.burn-log')
+
+      if logSpan.is(':visible')
+        if @logSources[burnId]
+          logSpan.slideUp(300)
+          @logSources[burnId].close()
+          @logSources[burnId] = null
+      else
+        logSource = new EventSource("api/burn/#{burnId}/log")
+
+        logSource.addEventListener('message', (e) ->
+          console.log e.data
+          logSpan.append "#{e.data}\n"
+          logSpan.scrollTop logSpan[0].scrollHeight
+        , false)
+
+        logSource.addEventListener('error', (e) ->
+          e.srcElement.close()
+        , false)
+
+        logSpan.slideDown(300)
+
+        @logSources[burnId] = logSource
+
+
   renderStats: ->
     url = '/api/stats'
     Codeburner.Utilities.getRequest url, (data) ->
@@ -135,7 +164,7 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
     $("body").tooltip({ selector: '[data-toggle=tooltip]' })
 
-    @burnRefreshInterval = setInterval =>
-      do @renderStats
-      do @renderBurns
-    , window.constants.refresh_interval
+    # @burnRefreshInterval = setInterval =>
+    #   do @renderStats
+    #   do @renderBurns
+    # , window.constants.refresh_interval

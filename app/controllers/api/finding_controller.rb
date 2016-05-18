@@ -142,7 +142,7 @@ class Api::FindingController < ApplicationController
       results = results.filtered_by(params[:filtered_by])
     end
 
-    render(:json => { "count": results.total_count, "results": results })
+    render(:json => { "count": results.total_count, "results": results.map{|r| r.to_json} })
   end
 
   # START ServiceDiscovery

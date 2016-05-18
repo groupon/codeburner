@@ -28,6 +28,8 @@
 # require 'sidekiq/testing/inline'
 
 class Api::BurnController < ApplicationController
+  include ActionController::Live
+
   protect_from_forgery
   respond_to :json, :html
   before_filter :authz, only: [ :create, :destroy, :reignite ]
@@ -274,13 +276,62 @@ class Api::BurnController < ApplicationController
     new_burn.status = 'created'
     new_burn.save
 
-    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
+    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
 
     render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
 
     BurnWorker.perform_async(new_burn.id)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no burn with that id found}"}, :status => 404)
+  end
+
+  def log
+    response.headers['Content-Type'] = 'text/event-stream'
+
+    burn = Burn.find(params[:id])
+
+    begin
+      if burn.status == 'burning'
+        @redis = Redis.new($redis_options)
+
+        existing_log = @redis.get("burn:#{burn.id}:log")
+
+        if existing_log
+          existing_log.each_line do |line|
+            response.stream.write "data: #{line}\n\n"
+          end
+        end
+
+        pubsub_thread = Thread.new do
+          @redis.subscribe("burn:#{burn.id}:log") do |on|
+            on.message do |channel, body|
+              if body == 'END_PIPELINE_LOG'
+                @redis.unsubscribe "burn:#{burn.id}:log"
+              else
+                response.stream.write "data: #{body}\n\n"
+              end
+            end
+          end
+        end
+
+        pubsub_thread.join
+
+        response.stream.write "data: \n\n\n"
+        response.stream.close
+      else
+        burn.log.each_line do |line|
+          response.stream.write "data: #{line}\n\n"
+        end
+
+        response.stream.write "data: \n\n\n"
+        response.stream.close
+      end
+    rescue ActionController::Live::ClientDisconnected
+      Rails.logger.info "client disconnected from log streaming"
+      response.stream.close
+    ensure
+      response.stream.close
+    end
   end
 
 end

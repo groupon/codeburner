@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<div class="container col-md-9">
+<div class="container row">
   <ul class="list-unstyled">
     <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button></li>
     <% burns.forEach(function(item) { %>
@@ -30,17 +30,17 @@ THE SOFTWARE.
       <li>
         <div class="row burn-list-item" style="padding:1em;margin:1em;">
           <div class="col-md-4">
-            <% if (burn.pull_request) { %>
-              <span class="octicon octicon-git-pull-request" style="margin-left:1em;"></span>&nbsp;<a href="<%= burn.repo_url %>/pull/<%= burn.pull_request %>" target="_blank">#<%= burn.pull_request %></a>
-            <% }; %>
-            <span class="octicon octicon-repo"></span> &nbsp;<%= service.short_name %><span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch %><br>
+            <span class="octicon octicon-repo"></span> &nbsp;<%= service.short_name %><br>
+            <span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch %>
             <span class="octicon octicon-git-commit" style="margin-left:1em;"></span>&nbsp;
             <% if (tagIdentifiers.some(function(i) { return burn.revision.indexOf(i) != -1; })) { %>
               <%= burn.revision %>
             <% } else { %>
-              <%= burn.revision.slice(0,8) %>
+              <%= burn.revision.slice(0,7) %>
             <% }; %>
-
+            <% if (burn.pull_request) { %>
+              <span class="octicon octicon-git-pull-request" style="margin-left:1em;"></span>&nbsp;<a href="<%= burn.repo_url %>/pull/<%= burn.pull_request %>" target="_blank">#<%= burn.pull_request %></a>
+            <% }; %>
           </div>
           <div class="col-md-4"><span class="octicon octicon-code"></span> &nbsp;<%= burn.code_lang %></div>
           <div class="col-md-2">
@@ -49,6 +49,7 @@ THE SOFTWARE.
           </div>
           <div class="col-md-2">
             <div class="pull-right">
+              <a href="javascript:void(0)" class="burn-toggle-log btn btn-default btn-xs" data-id="<%= burn.id %>" data-service="<%= service.id %>"><i class="octicon octicon-three-bars"></i></a>
               <% if (burn.status == "done") { %>
                 <a href="javascript:void(0)" class="btn btn-default btn-xs burn-show-findings" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Show findings for this burn" data-id="<%= burn.id %>" data-branch="<%= burn.branch %>" data-service="<%= service.id %>"><i class="octicon octicon-search"></i></a>
               <% }; %>
@@ -56,6 +57,9 @@ THE SOFTWARE.
                 <a href="javascript:void(0)" class="btn btn-default btn-xs burn-reignite" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Re-ignite this burn" data-id="<%= burn.id %>" data-service="<%= service.id %>"><i class="octicon octicon-sync"></i></a>
               <% }; %>
             </div>
+          </div>
+          <div class="row">
+            <pre class="burn-log" hidden></pre>
           </div>
         </div>
       </li>

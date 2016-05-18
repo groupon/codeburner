@@ -85,9 +85,9 @@ class Api::GithubController < ApplicationController
     if duplicate_burn
       unless duplicate_burn.status == 'failed'
         if duplicate_burn.findings.status(0).count == 0
-          github.create_status repo.short_name, revision, 'success', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
+          github.create_status repo.short_name, revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
         else
-          github.create_status repo.short_name, revision, 'failure', :context => 'Codeburner', :description => 'Static security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
+          github.create_status repo.short_name, revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
         end
         return render(:json => {error: "Already burning #{repo.short_name} - #{revision}"})
       end

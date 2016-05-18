@@ -1,3 +1,20 @@
+PATH
+  remote: ../pipeline
+  specs:
+    owasp-pipeline (0.8.6)
+      brakeman (>= 3.0.5)
+      bundler-audit (>= 0.3.1)
+      curb (>= 0.8.8)
+      dawnscanner (>= 1.6.0)
+      fastercsv (>= 1.5)
+      highline (>= 1.6.20)
+      jsonpath (>= 0.5.7)
+      multi_json (>= 1.2)
+      nokogiri (>= 1.6.6.2)
+      rake
+      redcarpet
+      terminal-table (>= 1.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -186,7 +203,7 @@ GEM
       ruby-progressbar
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    multi_json (1.11.2)
+    multi_json (1.11.3)
     multipart-post (2.0.0)
     mysql2 (0.3.20)
     net-scp (1.2.1)
@@ -198,19 +215,6 @@ GEM
     oauth (0.4.7)
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
-    owasp-pipeline (0.8.6)
-      brakeman (>= 3.0.5)
-      bundler-audit (>= 0.3.1)
-      curb (>= 0.8.8)
-      dawnscanner (>= 1.6.0)
-      fastercsv (>= 1.5)
-      highline (>= 1.6.20)
-      jsonpath (>= 0.5.7)
-      multi_json (>= 1.2)
-      nokogiri (>= 1.6.6.2)
-      rake
-      redcarpet
-      terminal-table (>= 1.4)
     paper_trail (4.1.0)
       activerecord (>= 3.0, < 6.0)
       activesupport (>= 3.0, < 6.0)
@@ -225,6 +229,7 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     ptools (1.3.3)
+    puma (3.4.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -360,10 +365,11 @@ DEPENDENCIES
   mocha
   mysql2 (~> 0.3.20, >= 0.3.20)
   octokit
-  owasp-pipeline (>= 0.8.6)
+  owasp-pipeline (>= 0.8.6)!
   paper_trail (>= 4.0.0)
   pry-byebug
   pry-rails
+  puma
   rails (= 4.2.5.1)
   rails-settings-cached
   redis-rails

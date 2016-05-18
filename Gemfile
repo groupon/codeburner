@@ -55,7 +55,7 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'owasp-pipeline', '>= 0.8.6'
+gem 'owasp-pipeline', '>= 0.8.6', :path => '../pipeline'
 gem 'whenever'
 gem 'chronic'
 
@@ -70,3 +70,6 @@ gem 'jwt'
 
 # for settings
 gem 'rails-settings-cached'
+
+# for eventsource
+gem 'puma'

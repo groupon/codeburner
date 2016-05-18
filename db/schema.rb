@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160512171856) do
+ActiveRecord::Schema.define(version: 20160518213345) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "service_id", limit: 4
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 20160512171856) do
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
     t.string   "status",         limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.string   "repo_url",       limit: 255
     t.string   "code_lang",      limit: 255
     t.integer  "num_files",      limit: 4
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20160512171856) do
     t.boolean  "report_status"
     t.string   "pull_request",   limit: 255
     t.integer  "branch_id",      limit: 4
+    t.text     "log",            limit: 16777215
   end
 
   add_index "burns", ["service_id"], name: "index_burns_on_service_id", using: :btree

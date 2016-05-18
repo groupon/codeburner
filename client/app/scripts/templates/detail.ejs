@@ -50,7 +50,7 @@ THE SOFTWARE.
             <% if (model.get('scanner') == 'RetireJS' || model.get('scanner') == 'Snyk' || model.get('scanner') == 'NodeSecurityProject') { %>
                 <dd><%= model.get('file') %>
             <% } else { %>
-                <dd><a href="<%= service.get('repo_url') %>/tree<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>
+                <dd><a href="<%= service.get('repo_url') %>/tree/<%= model.get('branch') %>/<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>
             <% } %>
             <% if (model.get('line')) { %>
                 , <b>Line </b><%= model.get('line') %>
