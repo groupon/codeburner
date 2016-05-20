@@ -200,9 +200,14 @@ Codeburner.Utilities =
       create: false
       render:
         option: (item, escape) ->
+          if item.fork
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
           html = '<div>' +
             '<span class="title">' +
-              '<span class="name"><span class="octicon ' + if item.fork then 'oction-repo-forked' else 'octicon-repo' + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
+              '<span class="name"><span class="octicon ' + repoIcon + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
             '</span>' +
             '<span class="description">' + escape(item.description) + '</span>' +
             '<ul class="meta">' +
@@ -213,6 +218,13 @@ Codeburner.Utilities =
           '</div>'
 
           return html
+        item: (item, escape) =>
+          if item.fork
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{item.full_name}</div>"
 
       score: (search) ->
         score = this.getScoreFunction search
@@ -239,6 +251,11 @@ Codeburner.Utilities =
       searchField: ['name']
       create: false
       preload: true
+      render:
+        option: (option, escape) ->
+          return "<div><span class='octicon octicon-git-branch'></span>&nbsp;#{option.name}</div>"
+        item: (item, escape) ->
+          return "<div><span class='octicon octicon-git-branch'></span>&nbsp;#{item.name}</div>"
       load: (query, callback) ->
         Codeburner.Utilities.getRequest "/api/github/branches?repo=#{encodeURIComponent(repo)}", ((data) ->
           callback data

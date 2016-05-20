@@ -234,8 +234,12 @@ class Api::BurnController < ApplicationController
 
     params[:branch] ||= 'master'
 
+    github = CodeburnerUtil.user_github(@current_user)
+
     repo = Service.find_by_short_name(params[:service_name])
-    repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name]}) if repo.nil?
+    forked = github.repo(params[:service_name]).fork
+    binding.pry
+    repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name], :forked => forked}) if repo.nil?
 
     repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
 

@@ -382,10 +382,19 @@ a.dropdown-toggle span.caret {
   color: #f1f1f1;
   background-color: #444;
   overflow: scroll;
-  height: 25em;
+  height: 40em;
   margin: 1em;
 }
 
 .btn-highlight {
   background-color: rgba(153, 153, 153, 0.2) !important;
+}
+
+.btn-link.btn-hightlight {
+  background-color: rgba(153, 153, 153, 0.2) !important;
+}
+
+.btn-link:focus,.btn-link:active,.btn-link:hover :not(.btn-hightlight) {
+  background-color: transparent;
+  outline: transparent;
 }

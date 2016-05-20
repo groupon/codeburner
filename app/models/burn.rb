@@ -81,7 +81,9 @@ class Burn < ActiveRecord::Base
       :revision => self.revision,
       :code_lang => self[:code_lang],
       :repo_url => self[:repo_url],
-      :status => self.status
+      :status => self.status,
+      :pull_request => self.pull_request,
+      :forked => self.forked
     }.as_json
   end
 
@@ -107,7 +109,7 @@ class Burn < ActiveRecord::Base
       logfile = File.open(Rails.root.join("log/burns/#{self.id}.log"), 'a')
       logfile.sync = true
 
-      github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if self.report_status
+      github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns?id=#{self.id}" if self.report_status
 
       supported_langs = Setting.pipeline['tasks_for'].keys
 

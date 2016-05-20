@@ -84,7 +84,7 @@ class Api::ServiceController < ApplicationController
   #
   # END ServiceDiscovery
   def show
-    render(:json => Service.find(params[:id]))
+    render(:json => Service.find(params[:id]).to_json)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no service with that id found}"}, :status => 404)
   end

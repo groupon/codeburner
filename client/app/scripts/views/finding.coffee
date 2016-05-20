@@ -294,7 +294,23 @@ Codeburner.Views.FindingList = Backbone.View.extend
       searchField: ['name']
       options: @serviceCollection.models.map (item) ->
         name: item.get 'short_name'
+        forked: item.get 'forked'
       create: false
+      render:
+        option: (option, escape) =>
+          if option.forked
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{option.name}</div>"
+        item: (item, escape) =>
+          if item.forked
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{item.name}</div>"
       onInitialize: =>
         if repo?
           $('#select-repo').selectize()[0].selectize.setValue repo
@@ -305,4 +321,3 @@ Codeburner.Views.FindingList = Backbone.View.extend
           @filterFindings repo, branch
 
     do @renderFindings
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' })

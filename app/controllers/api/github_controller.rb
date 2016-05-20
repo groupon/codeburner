@@ -33,7 +33,13 @@ class Api::GithubController < ApplicationController
 
     return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:q) and permitted_types.include?(params[:type])
 
-    results = CodeburnerUtil.user_github(@current_user).send("search_#{params[:type]}", params[:q])
+    if params[:type] == 'repos'
+      query = "#{params[:q]} fork:true"
+    else
+      query = params[:q]
+    end
+
+    results = CodeburnerUtil.user_github(@current_user).send("search_#{params[:type]}", query)
     render(:json => results.to_hash)
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160518213345) do
+ActiveRecord::Schema.define(version: 20160520185107) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "service_id", limit: 4
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 20160518213345) do
     t.string   "html_url",        limit: 255
     t.string   "languages",       limit: 255
     t.integer  "webhook_user_id", limit: 4
+    t.boolean  "forked"
   end
 
   add_index "services", ["webhook_user_id"], name: "index_services_on_webhook_user_id", using: :btree

@@ -37,7 +37,7 @@ class Codeburner.Routers.Main extends Backbone.Router
     @statsView = new Codeburner.Views.Stats serviceCollection
 
     @settingsView = new Codeburner.Views.Settings
-    
+
     @userView = new Codeburner.Views.User
 
     @defaultView = new Codeburner.Views.Default
@@ -109,6 +109,11 @@ class Codeburner.Routers.Main extends Backbone.Router
     do @settingsView.render
 
   burnsAction: (query) ->
+    if query?
+      do @burnCollection.resetFilter
+      @burnCollection.filters = _.extend @burnCollection.filters, Codeburner.Utilities.parseQueryString(query)
+      do @burnCollection.changeFilter
+
     do @burnListView.render
 
   userAction: (query) ->
@@ -126,4 +131,5 @@ $ ->
   serviceCollection.fetch().done =>
     window.router = new Codeburner.Routers.Main serviceCollection
     do $.material.init
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
     do Backbone.history.start

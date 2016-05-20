@@ -111,38 +111,59 @@ Codeburner.Views.BurnList = Backbone.View.extend
         $(e.target).parent().find('.floating-label').addClass 'invalid'
 
     'click .burn-toggle-log': (e) ->
+      $('[data-toggle="tooltip"]').tooltip('hide')
       target = $(e.target).closest('.burn-toggle-log')
       burnId = target.data 'id'
-      logSpan = target.parent().parent().parent().find('.burn-log')
+      logSpan = target.closest('.burn-list-item').find('.burn-log')
+      button = $("button.burn-toggle-log[data-id=#{burnId}]")
+      button.toggleClass('btn-highlight')
 
       if logSpan.is(':visible')
         if @logSources[burnId]
           logSpan.slideUp(300)
+          logSpan.html ""
+
           @logSources[burnId].close()
+          delete @logSources[burnId]
           @logSources[burnId] = null
+
+          $('#burn-pause-alert').hide()
+          do @burnCollection.resetFilter
+          do @setRefreshInterval
       else
+        $('#burn-pause-alert').show()
+        do @clearRefreshInterval
+
+        allLogSpans = target.closest('.container').find('.burn-log')
+        allLogSpans.slideUp(300)
+
         logSource = new EventSource("api/burn/#{burnId}/log")
 
         logSource.addEventListener('message', (e) ->
-          console.log e.data
           logSpan.append "#{e.data}\n"
           logSpan.scrollTop logSpan[0].scrollHeight
         , false)
 
         logSource.addEventListener('error', (e) ->
           e.srcElement.close()
+          window.router.burnListView.burnCollection.getPage(window.router.burnListView.currentPage).done =>
+            burn = window.router.burnListView.burnCollection.get(burnId).attributes
+            $(".burn-status[data-id=#{burn.id}]").html "&nbsp;#{burn.status}"
+            $(".burn-done-buttons[data-id=#{burn.id}]").fadeIn(500)
         , false)
 
         logSpan.slideDown(300)
 
         @logSources[burnId] = logSource
 
+    'click #resume-burn-updates': (e) ->
+      $('#burn-pause-alert').slideUp(300)
+      do @burnCollection.resetFilter
+      do @setRefreshInterval
 
-  renderStats: ->
-    url = '/api/stats'
-    Codeburner.Utilities.getRequest url, (data) ->
-      $('#burn_stats').html JST['app/scripts/templates/burn_stats.ejs']
-        stats: data
+      $(e.target).closest('.container').find('.burn-log').slideUp(300)
+
+      do @renderBurns
 
   renderBurns: ->
     @burnCollection.getPage(@currentPage).done =>
@@ -153,18 +174,20 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
       Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize
 
+      if @burnCollection.filters.id
+        button = $("button.burn-toggle-log[data-id=#{@burnCollection.filters.id}]")
+        button.click()
+
   clearRefreshInterval: ->
     clearInterval @burnRefreshInterval
+
+  setRefreshInterval: ->
+    @burnRefreshInterval = setInterval =>
+      do @renderBurns
+    , window.constants.refresh_interval
 
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/burn_page.ejs']
-    do @renderStats
     do @renderBurns
-
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
-
-    # @burnRefreshInterval = setInterval =>
-    #   do @renderStats
-    #   do @renderBurns
-    # , window.constants.refresh_interval
+    do @setRefreshInterval

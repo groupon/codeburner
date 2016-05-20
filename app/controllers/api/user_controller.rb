@@ -49,8 +49,8 @@ class Api::UserController < ApplicationController
   end
 
   def add_repo_hook
-    repo = Service.find_or_create_by(:short_name => params[:repo])
     github = CodeburnerUtil.user_github(@current_user)
+    repo = Service.create_with(:forked => github.repo(repo.short_name).fork, :pretty_name => params[:repo]).find_or_create_by(:short_name => params[:repo])
 
     result = github.create_hook(
       repo.short_name,
