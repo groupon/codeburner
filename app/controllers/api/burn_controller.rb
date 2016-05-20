@@ -238,7 +238,6 @@ class Api::BurnController < ApplicationController
 
     repo = Service.find_by_short_name(params[:service_name])
     forked = github.repo(params[:service_name]).fork
-    binding.pry
     repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name], :forked => forked}) if repo.nil?
 
     repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
