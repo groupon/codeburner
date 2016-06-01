@@ -1,4 +1,4 @@
 <h3>Codeburner Report</h3>
-Codeburner <b><i>failed</i></b> burning <b><%= @burn.service.pretty_name %></b> - <a href="<%= @burn.repo_url %>/tree/<%= @burn.revision %>"><%= @burn.revision %></a>.<br>
+Codeburner <b><i>failed</i></b> burning <b><%= @burn.repo.full_name %></b> - <a href="<%= @burn.repo_url %>/tree/<%= @burn.revision %>"><%= @burn.revision %></a>.<br>
 <br>
 <b>Failure Reason: </b><%= @burn.status_reason %>

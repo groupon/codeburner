@@ -19,7 +19,7 @@ If you highlight/click on a specific burn from the list, you'll be taken to the 
 You can also submit a burn through the REST API (useful for scripting or as part of a CI process):
 
 ```bash
-curl -X POST -d '{"service_name":"codeburner","repo_url":"https://github.com/groupon/codeburner"}' http://localhost:8080/api/burn
+curl -X POST -d '{"repo_name":"codeburner","repo_url":"https://github.com/groupon/codeburner"}' http://localhost:8080/api/burn
 ```
 
 

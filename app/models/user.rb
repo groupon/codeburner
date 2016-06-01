@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_many :tokens
   has_many :burns
-  has_and_belongs_to_many :services
+  has_and_belongs_to_many :repos
 
   enum role: [:user, :admin]
   after_initialize :set_default_role, :if => :new_record?

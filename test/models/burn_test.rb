@@ -27,7 +27,7 @@ require 'pipeline'
 class BurnTest < ActiveSupport::TestCase
 
   def setup_basic
-    CodeburnerUtil.stubs(:get_service_info).returns({ 'repository' => { 'url' => 'http://fake.server/a/path', 'language' => 'Ruby'}})
+    CodeburnerUtil.stubs(:get_repo_info).returns({ 'repository' => { 'url' => 'http://fake.server/a/path', 'language' => 'Ruby'}})
     CodeburnerUtil.stubs(:tally_code).returns(1,1)
 
     @github = mock('github')
@@ -53,18 +53,18 @@ class BurnTest < ActiveSupport::TestCase
     Pipeline.expects(:run).returns(@tracker).twice
   end
 
-  test "only valid with service and revision set" do
+  test "only valid with repo and revision set" do
     burn = Burn.new
-    refute burn.valid?, "Valid without service or revision"
-    burn.service = services(:one)
+    refute burn.valid?, "Valid without repo or revision"
+    burn.repo = repos(:one)
     refute burn.valid?, "Valid without revision"
     burn.revision = '123456789'
-    assert burn.valid?, 'Failed to save with service and revision set'
+    assert burn.valid?, 'Failed to save with repo and revision set'
   end
 
-  test "only valid with unique service and revision combo" do
-    burn = Burn.new({:service => burns(:one).service, :revision => burns(:one).revision})
-    refute burn.valid?, "Valid with duplicate service and revision combo"
+  test "only valid with unique repo and revision combo" do
+    burn = Burn.new({:repo => burns(:one).repo, :revision => burns(:one).revision})
+    refute burn.valid?, "Valid with duplicate repo and revision combo"
   end
 
   test "ignites properly" do
@@ -79,16 +79,16 @@ class BurnTest < ActiveSupport::TestCase
     setup_basic
     code_langs = { :lang1 => 100, :lang2 => 10 }
     CodeburnerUtil.expects(:get_code_lang).returns(code_langs).once
-    burn = Burn.create({:service_id => services(:one).id, :revision => 'abcdefg12345'})
+    burn = Burn.create({:repo_id => repos(:one).id, :revision => 'abcdefg12345'})
     assert_equal "lang1, lang2", burn.code_lang, "code_lang is not 'lang1, lang2'"
   end
 
   test "searchable named scopes work properly" do
     assert_equal Burn.all.sort.inspect, \
       Burn.id(nil) \
-        .service_id(nil) \
-        .service_name(nil) \
-        .service_short_name(nil) \
+        .repo_id(nil) \
+        .repo_name(nil) \
+        .repo_name(nil) \
         .revision(nil) \
         .code_lang(nil) \
         .repo_url(nil) \
@@ -96,12 +96,12 @@ class BurnTest < ActiveSupport::TestCase
         .sort.inspect, "all named scopes nil is not Burn.all"
     assert_equal burns(:one, :two).sort.inspect, Burn.id("#{burns(:one).id},#{burns(:two).id}").sort.inspect, "multiselect is not #{burns(:one, :two).inspect}"
     assert_equal burns(:one).inspect, Burn.id(burns(:one).id).first.inspect, "single_select is not #{burns(:one).inspect}"
-    assert_equal burns(:one).inspect, Burn.service_name('test_service').first.inspect, "service_name select is not #{burns(:one).inspect}"
+    assert_equal burns(:one).inspect, Burn.repo_name('test_repo').first.inspect, "repo_name select is not #{burns(:one).inspect}"
   end
 
   test "to_json produces correct results" do
     test_json = File.read(File.join(Rails.root, 'test','fixtures','burn.json'))
-    assert_equal JSON.parse(test_json)['service_name'], JSON.parse(burns(:one).to_json)['service_name'], "burns(:one).to_json doesn't equal test_json"
+    assert_equal JSON.parse(test_json)['repo_name'], JSON.parse(burns(:one).to_json)['repo_name'], "burns(:one).to_json doesn't equal test_json"
   end
 
   test "fails on unsupported code_lang" do

@@ -24,7 +24,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  service: one
+  repo: one
   severity: 3
   fingerprint: abcdefg123456789
   scanner: test_scanner
@@ -35,7 +35,7 @@ one:
   code: some_test_code()
 
 two:
-  service: two
+  repo: two
   severity: 3
   fingerprint: gfedcba0987654321
   scanner: test_scanner

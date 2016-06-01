@@ -5,12 +5,12 @@ The statistics page uses the <a href="https://developers.google.com/chart/" targ
 
 ***
 
-## Select a service
-On the left you can select a specific service (the default is **All Services**) with substring matching:
+## Select a repo
+On the left you can select a specific repo (the default is **All Services**) with substring matching:
 
-![stats_service_list](images/stats_service_list.png)
+![stats_repo_list](images/stats_repo_list.png)
 
-If you select a new service, the charts will redraw automatically using default values.
+If you select a new repo, the charts will redraw automatically using default values.
 
 ***
 

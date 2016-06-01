@@ -31,13 +31,13 @@ Rails.application.routes.draw do
     match 'oauth/authorize' => 'oauth#authorize', :via => :get
     match 'oauth/user' => 'oauth#user', :via => :get
 
-    resources :service, :only => [:index, :show] do
+    resources :repo, :only => [:index, :show] do
       member do
         get 'stats'
-        match 'stats/history' => 'service#history', :via => :get
-        match 'stats/burns' => 'service#burns', :via => :get
-        match 'stats/history/range' => 'service#history_range', :via => :get
-        match 'stats/history/resolution' => 'service#history_resolution', :via => :get
+        match 'stats/history' => 'repo#history', :via => :get
+        match 'stats/burns' => 'repo#burns', :via => :get
+        match 'stats/history/range' => 'repo#history_range', :via => :get
+        match 'stats/history/resolution' => 'repo#history_resolution', :via => :get
       end
     end
 

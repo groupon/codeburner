@@ -5,16 +5,16 @@ The findings page is the primary interface of Codeburner.  This is where you can
 ***
 
 ## Service List
-On the left side of the findings page is a list of all the services you've created by submitting burns.  If you have a long list of services, you can click the "Filter Services" box at the top and start typing to filter the list of services.  You can use '*' as a wildcard, and it should honor it anywhere in the query string.
+On the left side of the findings page is a list of all the repos you've created by submitting burns.  If you have a long list of repos, you can click the "Filter Services" box at the top and start typing to filter the list of repos.  You can use '*' as a wildcard, and it should honor it anywhere in the query string.
 
-Click a specific service name to show findings for just that service.  If you clear the selection (by clicking again) it will switch back to displaying findings for all services.
+Click a specific repo name to show findings for just that repo.  If you clear the selection (by clicking again) it will switch back to displaying findings for all repos.
 
-![service_list](images/service_list.png)
+![repo_list](images/repo_list.png)
 
 ***
 
 ## Findings List
-The middle column of the findings page is the findings list.  By default it shows **open** findings for all services, or for the service selected in the service list on the left.
+The middle column of the findings page is the findings list.  By default it shows **open** findings for all repos, or for the repo selected in the repo list on the left.
 
 You can use the toggles at the top to show **hidden/published/filtered** findings (more on that later), and click any of the column headings to sort on that field.  
 

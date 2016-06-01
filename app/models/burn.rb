@@ -23,9 +23,9 @@
 #
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
-  validates :service_id, presence: true
+  validates :repo_id, presence: true
   attr_default :status, 'created'
-  belongs_to :service
+  belongs_to :repo
   belongs_to :branch
   has_and_belongs_to_many :findings
   belongs_to :user
@@ -33,20 +33,20 @@ class Burn < ActiveRecord::Base
   after_save :update_caches
 
   scope :id,                  -> (burn_id)      { scope_multiselect('burns.id', burn_id) }
-  scope :service_id,          -> (service_id)   { scope_multiselect('burns.service_id', service_id) }
-  scope :service_name,        -> (service_name) { joins(:service).scope_service_name(service_name) }
-  scope :service_short_name,  -> (short_name)   { joins(:service).where("services.short_name LIKE ?", short_name ||= '%') }
+  scope :repo_id,          -> (repo_id)   { scope_multiselect('burns.repo_id', repo_id) }
+  scope :repo_name,        -> (repo_name) { joins(:repo).scope_repo_name(repo_name) }
+  scope :repo_name,  -> (name)   { joins(:repo).where("repos.name LIKE ?", name ||= '%') }
   scope :revision,            -> (revision)     { where("revision LIKE ?", revision ||= "%") }
   scope :code_lang,           -> (code_lang)    { where("code_lang LIKE ? OR code_lang IS NULL", code_lang ||= "%") }
   scope :repo_url,            -> (repo_url)     { where("repo_url LIKE ? OR repo_url IS NULL", repo_url ||= "%") }
   scope :status,              -> (status)       { where("status LIKE ?", status ||= "%") }
-  scope :service_portal,      -> (select)       { where("burns.service_portal = ?", select) }
+  scope :repo_portal,      -> (select)       { where("burns.repo_portal = ?", select) }
   scope :branch_name,         -> (branch)       { joins(:branch).where("branches.name LIKE ?", branch ||= "%") }
   scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request ||= "%") }
 
   def update_caches
     Rails.cache.write('burn_list', CodeburnerUtil.get_burn_list)
-    CodeburnerUtil.update_service_stats(self.service_id)
+    CodeburnerUtil.update_repo_stats(self.repo_id)
     CodeburnerUtil.update_system_stats
   end
 
@@ -63,34 +63,32 @@ class Burn < ActiveRecord::Base
     end
   end
 
-  def self.scope_service_name name
+  def self.scope_repo_name name
     if name.nil?
-      Burn.where("services.pretty_name LIKE '%' OR services.short_name LIKE '%'")
+      Burn.where("repos.full_name LIKE '%' OR repos.name LIKE '%'")
     else
       name_query = "#{name.downcase}"
-      Burn.where("lower(services.pretty_name) LIKE ? OR lower(services.short_name) LIKE ?", name_query, name_query)
+      Burn.where("lower(repos.full_name) LIKE ? OR lower(repos.name) LIKE ?", name_query, name_query)
     end
   end
 
   def to_json
     {
       :id => self.id,
-      :service_id => self.service_id,
-      :service_name => self.service.pretty_name,
-      :branch => self.branch.name,
+      :repo => self.repo,
+      :branch => self.branch,
       :revision => self.revision,
       :code_lang => self[:code_lang],
       :repo_url => self[:repo_url],
       :status => self.status,
       :pull_request => self.pull_request,
-      :forked => self.forked
     }.as_json
   end
 
   def repo_url
     return self[:repo_url] unless self[:repo_url].nil?
 
-    self.update(repo_url: CodeburnerUtil.get_service_info(self.service.short_name)['repository']['url'])
+    self.update(repo_url: CodeburnerUtil.get_repo_info(self.repo.name)['repository']['url'])
 
     return self[:repo_url]
   end
@@ -109,12 +107,12 @@ class Burn < ActiveRecord::Base
       logfile = File.open(Rails.root.join("log/burns/#{self.id}.log"), 'a')
       logfile.sync = true
 
-      github.create_status self.service.short_name, self.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns?id=#{self.id}" if self.report_status
+      github.create_status self.repo.name, self.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns?id=#{self.id}" if self.report_status
 
       supported_langs = Setting.pipeline['tasks_for'].keys
 
-      # this line actually triggers a service-portal lookup for the display name: .pretty_name(true)
-      logfile.puts "[#{Time.now}] IGNITION: #{self.service.pretty_name(true)} #{self.revision}"
+      # this line actually triggers a repo-portal lookup for the display name: .full_name(true)
+      logfile.puts "[#{Time.now}] IGNITION: #{self.repo.full_name(true)} #{self.revision}"
 
       self.update(status: 'burning', status_reason: "started burning on #{Time.now}")
 
@@ -137,7 +135,7 @@ class Burn < ActiveRecord::Base
 
       CodeburnerUtil.inside_github_archive(self.repo_url, self.revision) do |dir|
         pipeline_options = {
-          :appname => self.service.short_name,
+          :appname => self.repo.name,
           :revision => self.revision,
           :target => "#{dir}/",
           :quiet => true,
@@ -192,17 +190,17 @@ class Burn < ActiveRecord::Base
           [ pipeline_thread, log_thread ].each {|t| t.join}
         end
 
-        previous_stats = CodeburnerUtil.get_service_stats(self.service_id)
+        previous_stats = CodeburnerUtil.get_repo_stats(self.repo_id)
 
-        if self.revision == github.commits(self.service.short_name, self.branch.name).first.sha
-          Finding.service_id(self.service_id).branch_id(self.branch_id).update_all(:current => false)
+        if self.revision == github.commits(self.repo.name, self.branch.name).first.sha
+          Finding.repo_id(self.repo_id).branch_id(self.branch_id).update_all(:current => false)
           current = true
         else
           current = false
         end
 
         findings.flatten.each do |result|
-          previous = Finding.service_id(self.service_id).branch(self.branch).fingerprint(result.fingerprint).order("created_at").last
+          previous = Finding.repo_id(self.repo_id).branch(self.branch).fingerprint(result.fingerprint).order("created_at").last
 
           if previous
             self.findings << previous unless self.findings.include?(previous)
@@ -211,7 +209,7 @@ class Burn < ActiveRecord::Base
             next
           else
             f = Finding.create({
-              :service => self.service,
+              :repo => self.repo,
               :branch => self.branch,
               :current => current,
               :description => result.description,
@@ -257,9 +255,9 @@ Findings:
 
         if self.report_status
           if self.findings.status(0).count == 0
-            github.create_status self.service.short_name, self.revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
+            github.create_status self.repo.name, self.revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{self.repo_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
           else
-            github.create_status self.service.short_name, self.revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?service_id=#{self.service_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
+            github.create_status self.repo.name, self.revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{self.repo_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
           end
         end
 
@@ -288,7 +286,7 @@ Findings:
   end
 
   def send_failure_notifications
-    CodeburnerUtil.user_github(self.user).create_status self.service.short_name, self.revision, 'error', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/#burns" if self.report_status
+    CodeburnerUtil.user_github(self.user).create_status self.repo.name, self.revision, 'error', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/#burns" if self.report_status
 
     Notification.where(:burn => [self.id.to_s, 'all']).each do |notification|
       notification.fail(self.id)

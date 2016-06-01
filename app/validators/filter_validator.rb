@@ -23,7 +23,7 @@
 #
 class FilterValidator < ActiveModel::Validator
   def validate record
-    hit = Filter.service_id(record.service_id) \
+    hit = Filter.repo_id(record.repo_id) \
       .severity(record.severity) \
       .fingerprint(record.fingerprint) \
       .scanner(record.scanner) \

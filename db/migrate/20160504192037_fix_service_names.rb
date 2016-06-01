@@ -1,15 +1,15 @@
 class FixServiceNames < ActiveRecord::Migration
   def change
-    Service.has_burns.all.each do |service|
-      burn = Burn.service_id(service.id).status('done').last
+    Repo.has_burns.all.each do |repo|
+      burn = Burn.repo_id(repo.id).status('done').last
 
       if burn
         name = URI.parse(burn.repo_url).path[1..-1]
-        service.update(:short_name => name, :pretty_name => name)
+        repo.update(:name => name, :full_name => name)
       else
-        # Burn.service_id(service.id).destroy_all
-        # ServiceStat.destroy(Service.find(service.id).service_stat.id)
-        # Service.destroy(service.id)
+        # Burn.repo_id(repo.id).destroy_all
+        # ServiceStat.destroy(Repo.find(repo.id).repo_stat.id)
+        # Repo.destroy(repo.id)
       end
     end
   end

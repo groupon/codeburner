@@ -47,21 +47,21 @@ class Api::BurnController < ApplicationController
   #       required: false
   #       location: query
   #       description: A comma-separated list of burn IDs
-  #     service_id:
+  #     repo_id:
   #       type: integer
   #       required: false
   #       location: query
-  #       description: A comma-separated list of service IDs
-  #     service_name:
+  #       description: A comma-separated list of repo IDs
+  #     repo_name:
   #       type: string
   #       required: false
   #       location: query
-  #       description: A case-insensitve search for a specific service name (short or long form)
+  #       description: A case-insensitve search for a specific repo name (short or long form)
   #     revision:
   #       type: string
   #       required: false
   #       location: query
-  #       description: The commit SHA or tag of a specific service revision
+  #       description: The commit SHA or tag of a specific repo revision
   #     status:
   #       type: string
   #       required: false
@@ -71,7 +71,7 @@ class Api::BurnController < ApplicationController
   #       type: string
   #       required: false
   #       location: query
-  #       description: The field to sort by, supported fields are id, service_id, service_name, revision, code_lang, repo_url, status
+  #       description: The field to sort by, supported fields are id, repo_id, repo_name, revision, code_lang, repo_url, status
   #     per_page:
   #       type: integer
   #       required: false
@@ -103,12 +103,12 @@ class Api::BurnController < ApplicationController
       return render(:json => {count: Rails.cache.fetch('stats'){CodeburnerUtil.get_stats}[:burns], results: burn_list })
     end
 
-    safe_sorts = ['id', 'service_id', 'service_name', 'revision', 'code_lang', 'repo_url', 'status']
+    safe_sorts = ['id', 'repo_id', 'repo_name', 'revision', 'code_lang', 'repo_url', 'status']
     sort_by = 'burns.id'
     order = nil
 
-    if params[:sort_by] == 'service_name'
-      sort_by = "services.pretty_name"
+    if params[:sort_by] == 'repo_name'
+      sort_by = "repos.full_name"
     else
       sort_by = "#{params[:sort_by]}" if safe_sorts.include? params[:sort_by]
     end
@@ -118,8 +118,8 @@ class Api::BurnController < ApplicationController
     end
 
     burns = Burn.id(params[:id]) \
-      .service_id(params[:service_id]) \
-      .service_name(params[:service_name]) \
+      .repo_id(params[:repo_id]) \
+      .repo_name(params[:repo_name]) \
       .revision(params[:revision]) \
       .status(params[:status]) \
       .order("#{sort_by} #{order}") \
@@ -153,7 +153,7 @@ class Api::BurnController < ApplicationController
   #       description: burn ID
   #     revision:
   #       type: string
-  #       description: commit SHA or git tag for a specific service revision
+  #       description: commit SHA or git tag for a specific repo revision
   #     status:
   #       type: string
   #       description: the current burn status
@@ -169,19 +169,19 @@ class Api::BurnController < ApplicationController
   #     num_lines:
   #       type: integer
   #       description: the number of lines scanned
-  #     service_id:
+  #     repo_id:
   #       type: integer
-  #       description: the service ID
-  #     service_portal:
+  #       description: the repo ID
+  #     repo_portal:
   #       type: boolean
-  #       description: is this a service known to service portal?
+  #       description: is this a repo known to repo portal?
   #     status_reason:
   #       type: string
   #       description: the reason for the current status
   # END ServiceDiscovery
   def show
     burn = Burn.find(params[:id])
-    render(:json => burn.attributes.merge({:branch => burn.branch.name}).as_json)
+    render(:json => burn.to_json)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
@@ -194,19 +194,19 @@ class Api::BurnController < ApplicationController
   #
   # request:
   #   parameters:
-  #     service_name:
+  #     repo_name:
   #       type: string
-  #       description: a reference to the service_id in service-portal
+  #       description: a reference to the repo_id in repo-portal
   #       location: body
   #       required: true
-  #     service_portal:
+  #     repo_portal:
   #       type: boolean
-  #       description: is this a service portal service?
+  #       description: is this a repo portal repo?
   #       location: body
   #       required: false
   #     repo_url:
   #       type: string
-  #       description: The github repository URL, required for service_portal = false
+  #       description: The github repository URL, required for repo_portal = false
   #       location: body
   #       required: false
   #     revision:
@@ -219,9 +219,9 @@ class Api::BurnController < ApplicationController
   #   description: Result of the call
   #   type: object
   #   properties:
-  #     service_name:
+  #     repo_name:
   #       type: string
-  #       description: The identifying service name
+  #       description: The identifying repo name
   #     revision:
   #       type: string
   #       description: the revision
@@ -230,19 +230,19 @@ class Api::BurnController < ApplicationController
   #       description: created
   # END ServiceDiscovery
   def create
-    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:service_name)
+    return render(:json => {error: "bad request"}, :status => 400) unless params.has_key?(:repo_name)
 
     params[:branch] ||= 'master'
 
     github = CodeburnerUtil.user_github(@current_user)
+    github_repo = github.repo(params[:repo_name])
 
-    repo = Service.find_by_short_name(params[:service_name])
-    forked = github.repo(params[:service_name]).fork
-    repo = Service.create({:short_name => params[:service_name], :pretty_name => params[:service_name], :forked => forked}) if repo.nil?
+    repo = Repo.find_by_name(params[:repo_name])
+    repo = Repo.create({:name => github_repo.name, :full_name => github_repo.full_name, :forked => github_repo.fork, :html_url => github_repo.html_url}) if repo.nil?
 
-    repo_url = "#{Setting.github['link_host']}/#{params[:service_name]}"
+    repo_url = "#{Setting.github['link_host']}/#{params[:repo_name]}"
 
-    branch = Branch.find_or_create_by(:service_id => repo.id, :name => params[:branch])
+    branch = Branch.find_or_create_by(:repo_id => repo.id, :name => params[:branch])
 
     if params.has_key?(:revision)
       revision = params[:revision]
@@ -250,20 +250,20 @@ class Api::BurnController < ApplicationController
       revision = CodeburnerUtil.get_head_commit(repo_url, branch.name)
     end
 
-    duplicate_burn = Burn.service_short_name(repo.short_name).branch_name(branch.name).revision(revision).order("created_at")
+    duplicate_burn = Burn.repo_name(repo.name).branch_name(branch.name).revision(revision).order("created_at")
     if duplicate_burn.count > 0
       unless duplicate_burn.status('failed').count > 0 and duplicate_burn.status('done').count == 0
-        return render(:json => {error: "Already burning #{params[:service_name]} release #{revision}"}, :status => 409)
+        return render(:json => {error: "Already burning #{params[:repo_name]} release #{revision}"}, :status => 409)
       end
     end
 
-    burn = Burn.create({:service => repo, :branch => branch, :revision => revision, :user => @current_user, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
+    burn = Burn.create({:repo => repo, :branch => branch, :revision => revision, :user => @current_user, :repo_url => repo_url, :status_reason => "created on #{Time.now}"})
 
     if params.has_key?(:notify)
       Notification.create({:burn => burn.id.to_s, :method => 'email', :destination => params[:notify]})
     end
 
-    render(:json => {burn_id: burn.id, service_id: repo.id, service_name: params[:service_name], revision: burn.revision, status: burn.status})
+    render(:json => {burn_id: burn.id, repo_id: repo.id, repo_name: params[:repo_name], revision: burn.revision, status: burn.status})
 
     BurnWorker.perform_async(burn.id)
   end
@@ -271,15 +271,15 @@ class Api::BurnController < ApplicationController
   def reignite
     burn = Burn.find(params[:id])
     github = CodeburnerUtil.user_github(@current_user)
-    has_push_perms = github.repo(burn.service.short_name).permissions.push
+    has_push_perms = github.repo(burn.repo.name).permissions.push
 
-    return render(:json => {error: "User #{@current_user.name} does not have push access to #{burn.service.short_name}"}) unless has_push_perms or @current_user.admin?
+    return render(:json => {error: "User #{@current_user.name} does not have push access to #{burn.repo.name}"}) unless has_push_perms or @current_user.admin?
 
     new_burn = burn.dup
     new_burn.status = 'created'
     new_burn.save
 
-    github.create_status new_burn.service.short_name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
+    github.create_status new_burn.repo.name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
 
     render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
 

@@ -28,46 +28,46 @@ THE SOFTWARE.
     <div class="panel-detail panel-body" id="detail_view"> -->
       <dl class="dl-horizontal">
         <dt>Date</dt>
-        <dd><%= moment(model.get('created_at')).format('LLL') %></dd>
-        <dt>Service</dt>
-        <dd><%= service.get('short_name') %></dd>
+        <dd><%= moment(finding.created_at).format('LLL') %></dd>
+        <dt>Repository</dt>
+        <dd><%= finding.repo.name %></dd>
         <dt>Severity</dt>
-        <dd><%= window.constants.display_severity[model.get('severity')] %></dd>
+        <dd><%= window.constants.display_severity[finding.severity] %></dd>
         <dt>Fingerprint</dt>
-        <dd class="wrap"><span id="fingerprint-span" class="truncated" data-fingerprint="<%= model.get('fingerprint') %>"><%= model.get('fingerprint')%></span></dd>
+        <dd class="wrap"><span id="fingerprint-span" class="truncated" data-fingerprint="<%= finding.fingerprint %>"><%= finding.fingerprint %></span></dd>
         <dt>Status</dt>
-        <dd><%= window.constants.display_status[model.get('status')] %></dd>
+        <dd><%= window.constants.display_status[finding.status] %></dd>
         <dt>Source</dt>
-        <dd><%= model.get('scanner') %></dd>
+        <dd><%= finding.scanner %></dd>
         <dt>Description</dt>
-        <dd><%= model.get('description') %></dd>
-        <% if (model.get('detail')) { %>
+        <dd><%= finding.description %></dd>
+        <% if (finding.detail) { %>
             <dt>Details</dt>
-            <dd><%= Autolinker.link(model.get('detail').replace(/\\n/g, "<br>"), { stripPrefix: false }) %></dd>
+            <dd><%= Autolinker.link(finding.detail.replace(/\\n/g, "<br>"), { stripPrefix: false }) %></dd>
         <% } %>
-        <% if (model.get('file')) { %>
+        <% if (finding.file) { %>
             <dt>File</dt>
-            <% if (model.get('scanner') == 'RetireJS' || model.get('scanner') == 'Snyk' || model.get('scanner') == 'NodeSecurityProject') { %>
-                <dd><%= model.get('file') %>
+            <% if (finding.scanner == 'RetireJS' || finding.scanner == 'Snyk' || finding.scanner == 'NodeSecurityProject') { %>
+                <dd><%= finding.file %>
             <% } else { %>
-                <dd><a href="<%= service.get('repo_url') %>/tree/<%= model.get('branch') %>/<%= model.get('file') %><% if (model.get('line')) { %>#L<%= model.get('line') %><% } %>" target="_blank"><%= model.get('file') %></a>
+                <dd><a href="<%= finding.repo.html_url %>/tree/<%= finding.branch.name %>/<%= finding.file %><% if (finding.line) { %>#L<%= finding.line %><% } %>" target="_blank"><%= finding.file %></a>
             <% } %>
-            <% if (model.get('line')) { %>
-                , <b>Line </b><%= model.get('line') %>
+            <% if (finding.line) { %>
+                , <b>Line </b><%= finding.line %>
             <% } %></dd>
         <% } %>
-        <% if (model.get('code')) { %>
+        <% if (finding.code) { %>
             <dt>Code</dt>
-            <dd><pre><code id="detail_code"><%= hljs.highlightAuto(model.get('code').trim()).value %></code></pre></dd>
+            <dd><pre><code id="detail_code"><%= hljs.highlightAuto(finding.code.trim()).value %></code></pre></dd>
         <% } %>
         <dd class="pull-right">
           <button class="btn btn-sm btn-flat" id="publish-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Publish issue from this finding" data-finding-id="<%= id %>"><i class="octicon octicon-issue-opened"></i></button>
-          <% if (model.get('status') === 1) { %>
+          <% if (finding.status === 1) { %>
             <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Un-hide this finding" data-finding-id="<%= id %>"><i class="octicon octicon-plus"></i></button>
           <% } else { %>
             <button class="btn btn-sm btn-flat" id="hide-issue" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Hide this finding" data-finding-id="<%= id %>"><i class="octicon octicon-x"></i></button>
           <% }; %>
-          <button class="btn btn-sm btn-flat" id="filter-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Filter findings like this" data-finding-id="<%= id %>" <% if(model.get('filter_id')) { %>disabled<% }; %>><i class="octicon octicon-diff"></i></button>
+          <button class="btn btn-sm btn-flat" id="filter-btn" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Filter findings like this" data-finding-id="<%= id %>" <% if(finding.filter) { %>disabled<% }; %>><i class="octicon octicon-diff"></i></button>
         </dd><br>
       </dl>
 <!--     </div> -->

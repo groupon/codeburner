@@ -70,7 +70,7 @@ class Api::FilterControllerTest < ActionController::TestCase
 
   test "creates a new filter" do
     assert_difference('Filter.count') do
-       post(:create, {:service_id => services(:one).id})
+       post(:create, {:repo_id => repos(:one).id})
        assert_response :success
     end
   end

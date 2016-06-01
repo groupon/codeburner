@@ -41,7 +41,7 @@ textarea {
   margin-left: 120px;
 }
 
-.service-sidebar {
+.repo-sidebar {
   height: 1000px !important;
   overflow-y: scroll !important;
 }
@@ -124,11 +124,11 @@ a:hover {
   color: $groupon_green;
 }
 
-tr.service-list:hover {
+tr.repo-list:hover {
   background-color: rgba(83, 163, 24, 0.2) !important;
 }
 
-tr.service-list.highlight-service-row {
+tr.repo-list.highlight-repo-row {
   background-color: $groupon_green !important;
   color: #fff !important;
 }

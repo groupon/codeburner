@@ -27,7 +27,7 @@ Codeburner.Views.BurnList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
   logSources: {}
-  initialize: (@burnCollection, @serviceCollection) ->
+  initialize: (@burnCollection, @repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -61,14 +61,14 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
     'click #submit-burn': ->
       postData =
-        'service_name': $('#select-repo').val()
+        'repo_name': $('#select-repo').val()
         'branch': $('#select-branch').val()
 
       if $('#notify').val()
         postData['notify'] = $('#notify').val().trim()
 
       Codeburner.Utilities.postRequest '/api/burn', postData, ((data) =>
-        @serviceCollection.fetch().done =>
+        @repoCollection.fetch().done =>
           do @renderBurns
       ), (data) ->
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
@@ -76,19 +76,19 @@ Codeburner.Views.BurnList = Backbone.View.extend
     'click .burn-show-findings': (e) ->
       burnDom = $(e.target).closest('.burn-show-findings')
       burn_id = burnDom.data 'id'
-      service_id = burnDom.data 'service'
+      repo_id = burnDom.data 'repo'
       branch = burnDom.data 'branch'
 
-      window.router.navigate "#findings?service_id=#{service_id}&burn_id=#{burn_id}&branch=#{branch}&only_current=false", {trigger: true, replace: true}
+      window.router.navigate "#findings?repo_id=#{repo_id}&burn_id=#{burn_id}&branch=#{branch}&only_current=false", {trigger: true, replace: true}
 
     'click .burn-reignite': (e) ->
       burn_id = $(e.target).closest('.burn-reignite').data 'id'
-      service_id = $(e.target).closest('.burn-reignite').data 'service'
+      repo_id = $(e.target).closest('.burn-reignite').data 'repo'
 
       revision = @burnCollection.get(burn_id).get 'revision'
-      name = @serviceCollection.get(service_id).get 'short_name'
+      name = @repoCollection.get(repo_id).get 'name'
 
-      Codeburner.Utilities.confirm "Are you sure you want to rescan <strong>#{name}</strong> revision #{revision}?", ((data) ->
+      Codeburner.Utilities.confirm "Are you sure you want to rescan ``<strong>#{name}</strong> revision #{revision}?", ((data) ->
         Codeburner.Utilities.getRequest "/api/burn/#{burn_id}/reignite", ((data) =>
           do window.router.burnListView.renderBurns
         ), (data) =>
@@ -116,9 +116,10 @@ Codeburner.Views.BurnList = Backbone.View.extend
       burnId = target.data 'id'
       logSpan = target.closest('.burn-list-item').find('.burn-log')
       button = $("button.burn-toggle-log[data-id=#{burnId}]")
-      button.toggleClass('btn-highlight')
 
       if logSpan.is(':visible')
+        $("button.burn-toggle-log").removeClass('btn-highlight')
+
         if @logSources[burnId]
           logSpan.slideUp(300)
           logSpan.html ""
@@ -133,6 +134,10 @@ Codeburner.Views.BurnList = Backbone.View.extend
       else
         $('#burn-pause-alert').show()
         do @clearRefreshInterval
+
+        $("button.burn-toggle-log").removeClass('btn-highlight')
+        button.addClass('btn-highlight')
+
 
         allLogSpans = target.closest('.container').find('.burn-log')
         allLogSpans.slideUp(300)
@@ -169,7 +174,6 @@ Codeburner.Views.BurnList = Backbone.View.extend
     @burnCollection.getPage(@currentPage).done =>
       $('#burn_list').html JST['app/scripts/templates/burn.ejs']
         burns: @burnCollection.models
-        services: @serviceCollection.models
         tagIdentifiers: [ '-', '.', '_' ]
 
       Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize

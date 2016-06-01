@@ -33,9 +33,9 @@ class Api::StatsController < ApplicationController
   #   description: Hash of statistics
   #   type: object
   #   properties:
-  #     services:
+  #     repos:
   #       type: integer
-  #       description: number of services
+  #       description: number of repos
   #     burns:
   #       type: integer
   #       description: number of burns

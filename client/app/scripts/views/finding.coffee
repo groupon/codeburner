@@ -27,7 +27,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
   lastFindingHighlighted: null
-  initialize: (@collection, @serviceCollection) ->
+  initialize: (@collection, @repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -50,8 +50,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
       $('#detail').html JST['app/scripts/templates/detail.ejs']
         id: id
-        model: @collection.get id
-        service: @serviceCollection.get(@collection.get(id).get('service_id'))
+        finding: @collection.get(id).attributes
         burnList: @collection.burnList
 
       if $('#fingerprint-span').height() > 20
@@ -158,7 +157,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
         id: id
         model: model
         code: code
-        service_name: @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: model.get('service_id')})].get('short_name')
+        repo_name: @repoCollection.models[_.findIndex(@repoCollection.models, {id: model.get('repo_id')})].get('name')
         display_severity: window.constants.display_severity[model.get('severity')]
 
       do $('#filterModal').modal
@@ -179,7 +178,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
           name = input.attr 'name'
           data[name] = value
-          for field in ['service_id', 'severity', 'detail', 'code']
+          for field in ['repo_id', 'severity', 'detail', 'code']
             if name is field
               checked.push field
 
@@ -218,13 +217,13 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#publish-dialog-body-jira').hide()
       $('#publish-submit').prop 'disabled', false
 
-  filterServiceList: (services, filter) ->
+  filterRepoList: (repos, filter) ->
     if filter
       regex = new RegExp "^#{filter.replace('*','.*').toLowerCase()}.*"
-      _.filter services, (element) ->
-        element.get('short_name').toLowerCase().match(regex)
+      _.filter repos, (element) ->
+        element.get('name').toLowerCase().match(regex)
     else
-      services
+      repos
 
   updateBurnList: ->
       burns = []
@@ -240,10 +239,10 @@ Codeburner.Views.FindingList = Backbone.View.extend
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
   renderFindings: ->
-    if @collection.filters.service_id
-      @service_name = @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: parseInt(@collection.filters.service_id)})].get('short_name')
+    if @collection.filters.repo_id
+      @repo_name = @repoCollection.models[_.findIndex(@repoCollection.models, {id: parseInt(@collection.filters.repo_id)})].get('name')
     else
-      @service_name = null
+      @repo_name = null
 
     @collection.getPage(@currentPage).done =>
       @lastHighlighted = null
@@ -251,8 +250,8 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#finding-list').html JST['app/scripts/templates/finding.ejs']
         models: @collection.models
         burn_id: @collection.filters.burn_id
-        service_name: @service_name
-        service_id: @collection.filters.service_id
+        repo_name: @repo_name
+        repo_id: @collection.filters.repo_id
         filtered_by: @collection.filters.filtered_by
 
       sortBy = $("[data-id='#{@collection.state.sortKey}']").find('span')
@@ -265,11 +264,11 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
   filterFindings: (repo, branch) ->
     if repo?
-      @collection.filters.service_id = @serviceCollection.findWhere(
-        short_name: repo
+      @collection.filters.repo_id = @repoCollection.findWhere(
+        name: repo
       ).get 'id'
     else
-      @collection.filters.service_id = null
+      @collection.filters.repo_id = null
     @collection.filters.branch = branch
     do @collection.changeFilter
     do @renderFindings
@@ -281,9 +280,9 @@ Codeburner.Views.FindingList = Backbone.View.extend
       publish: '2' in @collection.filters.status
       hidden: '1' in @collection.filters.status
 
-    if @collection.filters.service_id?[0]?
-      service_id = parseInt @collection.filters.service_id[0], 10
-      repo = @serviceCollection.get(service_id).get 'short_name'
+    if @collection.filters.repo_id?[0]?
+      repo_id = parseInt @collection.filters.repo_id[0], 10
+      repo = @repoCollection.get(repo_id).get 'name'
     else
       repo = null
     branch = @collection.filters.branch
@@ -292,8 +291,8 @@ Codeburner.Views.FindingList = Backbone.View.extend
       valueField: 'name'
       labelField: 'name'
       searchField: ['name']
-      options: @serviceCollection.models.map (item) ->
-        name: item.get 'short_name'
+      options: @repoCollection.models.map (item) ->
+        name: item.get 'name'
         forked: item.get 'forked'
       create: false
       render:

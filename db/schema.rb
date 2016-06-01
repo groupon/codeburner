@@ -11,16 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160520185107) do
+ActiveRecord::Schema.define(version: 20160601190842) do
 
   create_table "branches", force: :cascade do |t|
-    t.integer  "service_id", limit: 4
+    t.integer  "repo_id",    limit: 4
     t.string   "name",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  add_index "branches", ["service_id"], name: "index_branches_on_service_id", using: :btree
+  add_index "branches", ["repo_id"], name: "index_branches_on_repo_id", using: :btree
 
   create_table "burns", force: :cascade do |t|
     t.string   "revision",       limit: 255
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.string   "code_lang",      limit: 255
     t.integer  "num_files",      limit: 4
     t.integer  "num_lines",      limit: 4
-    t.integer  "service_id",     limit: 4
+    t.integer  "repo_id",        limit: 4
     t.boolean  "service_portal"
     t.text     "status_reason",  limit: 65535
     t.integer  "user_id",        limit: 4
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.text     "log",            limit: 16777215
   end
 
-  add_index "burns", ["service_id"], name: "index_burns_on_service_id", using: :btree
+  add_index "burns", ["repo_id"], name: "index_burns_on_repo_id", using: :btree
   add_index "burns", ["user_id"], name: "index_burns_on_user_id", using: :btree
 
   create_table "burns_findings", id: false, force: :cascade do |t|
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
   end
 
   create_table "filters", force: :cascade do |t|
-    t.integer  "service_id",  limit: 4
+    t.integer  "repo_id",     limit: 4
     t.integer  "severity",    limit: 4
     t.string   "fingerprint", limit: 255
     t.string   "scanner",     limit: 255
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.datetime "updated_at",                null: false
   end
 
-  add_index "filters", ["service_id"], name: "index_filters_on_service_id", using: :btree
+  add_index "filters", ["repo_id"], name: "index_filters_on_repo_id", using: :btree
 
   create_table "findings", force: :cascade do |t|
     t.string   "description",    limit: 255
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.integer  "status",         limit: 4
-    t.integer  "service_id",     limit: 4
+    t.integer  "repo_id",        limit: 4
     t.string   "scanner",        limit: 255
     t.text     "file",           limit: 65535
     t.integer  "line",           limit: 4
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
 
   add_index "findings", ["branch_id"], name: "index_findings_on_branch_id", using: :btree
   add_index "findings", ["filter_id"], name: "index_findings_on_filter_id", using: :btree
-  add_index "findings", ["service_id"], name: "index_findings_on_service_id", using: :btree
+  add_index "findings", ["repo_id"], name: "index_findings_on_service_id", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "burn",        limit: 255
@@ -96,8 +96,27 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.datetime "updated_at",              null: false
   end
 
+  create_table "repos", force: :cascade do |t|
+    t.string   "name",            limit: 255
+    t.string   "full_name",       limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.boolean  "service_portal"
+    t.string   "html_url",        limit: 255
+    t.string   "languages",       limit: 255
+    t.integer  "webhook_user_id", limit: 4
+    t.boolean  "forked"
+  end
+
+  add_index "repos", ["webhook_user_id"], name: "index_repositories_on_webhook_user_id", using: :btree
+
+  create_table "repos_users", id: false, force: :cascade do |t|
+    t.integer "service_id", limit: 4
+    t.integer "user_id",    limit: 4
+  end
+
   create_table "service_stats", force: :cascade do |t|
-    t.integer  "service_id",         limit: 4
+    t.integer  "repo_id",            limit: 4
     t.integer  "burns",              limit: 4
     t.integer  "total_findings",     limit: 4
     t.integer  "open_findings",      limit: 4
@@ -108,26 +127,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
     t.datetime "updated_at",                   null: false
   end
 
-  add_index "service_stats", ["service_id"], name: "index_service_stats_on_service_id", using: :btree
-
-  create_table "services", force: :cascade do |t|
-    t.string   "short_name",      limit: 255
-    t.string   "pretty_name",     limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.boolean  "service_portal"
-    t.string   "html_url",        limit: 255
-    t.string   "languages",       limit: 255
-    t.integer  "webhook_user_id", limit: 4
-    t.boolean  "forked"
-  end
-
-  add_index "services", ["webhook_user_id"], name: "index_services_on_webhook_user_id", using: :btree
-
-  create_table "services_users", id: false, force: :cascade do |t|
-    t.integer "service_id", limit: 4
-    t.integer "user_id",    limit: 4
-  end
+  add_index "service_stats", ["repo_id"], name: "index_service_stats_on_service_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255,   null: false
@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 20160520185107) do
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
   create_table "system_stats", force: :cascade do |t|
-    t.integer  "services",           limit: 4
+    t.integer  "repos",              limit: 4
     t.integer  "burns",              limit: 4
     t.integer  "total_findings",     limit: 4
     t.integer  "open_findings",      limit: 4
@@ -197,14 +197,14 @@ ActiveRecord::Schema.define(version: 20160520185107) do
 
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
-  add_foreign_key "branches", "services"
-  add_foreign_key "burns", "services"
+  add_foreign_key "branches", "repos"
+  add_foreign_key "burns", "repos"
   add_foreign_key "burns", "users"
-  add_foreign_key "filters", "services"
+  add_foreign_key "filters", "repos"
   add_foreign_key "findings", "branches"
   add_foreign_key "findings", "filters"
-  add_foreign_key "findings", "services"
-  add_foreign_key "service_stats", "services"
-  add_foreign_key "services", "users", column: "webhook_user_id"
+  add_foreign_key "findings", "repos"
+  add_foreign_key "repos", "users", column: "webhook_user_id"
+  add_foreign_key "service_stats", "repos"
   add_foreign_key "tokens", "users"
 end

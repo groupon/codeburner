@@ -28,7 +28,7 @@ local: &local
 ```
 
 ### Setup
-Once the mysql service is running and you've configured the password, you can initialize the database:
+Once the mysql repo is running and you've configured the password, you can initialize the database:
 
 <pre class="command-line"><code class="language-bash">bundle exec rake db:setup</code></pre>
 

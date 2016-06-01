@@ -6,7 +6,7 @@ class CreateJoinTableBurnFinding < ActiveRecord::Migration
     end
 
     Finding.all.each do |finding|
-      finding.burns << Burn.where(:service_id => finding.service_id, :status => 'done').order('created_at').last
+      finding.burns << Burn.where(:repo_id => finding.repo_id, :status => 'done').order('created_at').last
     end
 
   end

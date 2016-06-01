@@ -41,19 +41,20 @@ class Api::UserController < ApplicationController
   end
 
   def repos
-    render(:json => @current_user.services)
+    render(:json => @current_user.repos)
   end
 
   def webhooks
-    render(:json => Service.where(:webhook_user_id => @current_user.id))
+    render(:json => Repo.where(:webhook_user_id => @current_user.id))
   end
 
   def add_repo_hook
     github = CodeburnerUtil.user_github(@current_user)
-    repo = Service.create_with(:forked => github.repo(repo.short_name).fork, :pretty_name => params[:repo]).find_or_create_by(:short_name => params[:repo])
+    github_repo = github.repo(repo.name)
+    repo = Repo.create_with(:forked => github_repo.fork, :full_name => github_repo.full_name, :html_url => github_repo.html_url).find_or_create_by(:name => github_repo.name)
 
     result = github.create_hook(
-      repo.short_name,
+      repo.name,
       'web',
       {
         :url => WEBHOOK_URL,
@@ -66,7 +67,7 @@ class Api::UserController < ApplicationController
     )
 
     if result
-      repo.update(:webhook_user => @current_user, :html_url => github.repo(repo.short_name).html_url, :languages => github.languages(repo.short_name).to_hash.keys.join(", "))
+      repo.update(:webhook_user => @current_user, :html_url => github.repo(repo.name).html_url, :languages => github.languages(repo.name).to_hash.keys.join(", "))
       render(:json => {result: 'success'})
     else
       render(:json => {error: 'failed to add GitHub webhook'}, :status => 400)
@@ -76,12 +77,12 @@ class Api::UserController < ApplicationController
   end
 
   def remove_repo_hook
-    repo = Service.find(params[:repo])
+    repo = Repo.find(params[:repo])
     github = CodeburnerUtil.user_github(@current_user)
-    hook = github.hooks(repo.short_name).detect {|h| h.config[:url] == WEBHOOK_URL}
+    hook = github.hooks(repo.name).detect {|h| h.config[:url] == WEBHOOK_URL}
 
     if hook
-      result = github.remove_hook repo.short_name, hook.id
+      result = github.remove_hook repo.name, hook.id
     else
       repo.update(:webhook_user => nil)
       return render(:json => {error: "No hook with that ID found"}, :status => 404)

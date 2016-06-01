@@ -23,7 +23,7 @@
 #
 ARRAY_COLUMN = [
   'burn_id'
-  'service_id'
+  'repo_id'
   'status'
 ]
 PAGINATION_RANGE = 6

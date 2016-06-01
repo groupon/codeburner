@@ -24,17 +24,17 @@
 'use strict'
 
 class Codeburner.Routers.Main extends Backbone.Router
-  initialize: (serviceCollection) ->
+  initialize: (repoCollection) ->
     @findingCollection = new Codeburner.Collections.Finding
-    @findingListView = new Codeburner.Views.FindingList @findingCollection, serviceCollection
+    @findingListView = new Codeburner.Views.FindingList @findingCollection, repoCollection
 
     @burnCollection = new Codeburner.Collections.Burn
-    @burnListView = new Codeburner.Views.BurnList @burnCollection, serviceCollection
+    @burnListView = new Codeburner.Views.BurnList @burnCollection, repoCollection
 
     @filterCollection = new Codeburner.Collections.Filter
-    @filterListView = new Codeburner.Views.FilterList @filterCollection, serviceCollection
+    @filterListView = new Codeburner.Views.FilterList @filterCollection, repoCollection
 
-    @statsView = new Codeburner.Views.Stats serviceCollection
+    @statsView = new Codeburner.Views.Stats repoCollection
 
     @settingsView = new Codeburner.Views.Settings
 
@@ -126,10 +126,10 @@ $ ->
   Codeburner.Utilities.checkAuthz window.location.hash
   Codeburner.Utilities.authz()
 
-  serviceCollection = new Codeburner.Collections.Service
+  repoCollection = new Codeburner.Collections.Repo
 
-  serviceCollection.fetch().done =>
-    window.router = new Codeburner.Routers.Main serviceCollection
+  repoCollection.fetch().done =>
+    window.router = new Codeburner.Routers.Main repoCollection
     do $.material.init
     $("body").tooltip({ selector: '[data-toggle=tooltip]' })
     do Backbone.history.start

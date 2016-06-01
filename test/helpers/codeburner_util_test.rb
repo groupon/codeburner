@@ -24,8 +24,8 @@
 require 'test_helper'
 
 class CodeburnerUtilTest < ActiveSupport::TestCase
-  def service_json
-    @service_json ||= File.read('test/fixtures/service.json')
+  def repo_json
+    @repo_json ||= File.read('test/fixtures/repo.json')
   end
 
   test "converts severity to text" do
@@ -56,12 +56,12 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     end
   end
 
-  # test "gets service info" do
-  #   result = mock('service_info_result')
-  #   result.expects(:body).returns(services(:one).attributes.to_json.to_s)
+  # test "gets repo info" do
+  #   result = mock('repo_info_result')
+  #   result.expects(:body).returns(repos(:one).attributes.to_json.to_s)
   #   RestClient.expects(:get).returns(result)
   #
-  #   assert_equal services(:one).attributes, CodeburnerUtil.get_service_info('test_service'), "service info differs"
+  #   assert_equal repos(:one).attributes, CodeburnerUtil.get_repo_info('test_repo'), "repo info differs"
   # end
   #
   # # TODO: add a real test here w/ simulated Sawyer::Resource for the octokit return
@@ -113,14 +113,14 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     end
   end
 
-  test "gets service history range" do
-    service_id = services(:one).id
+  test "gets repo history range" do
+    repo_id = repos(:one).id
     mock_stat = mock('mock_stat')
     mock_stat.expects(:versions).returns(ServiceStat.all)
-    mock_service = mock('mock_service')
-    mock_service.expects(:service_stat).returns(mock_stat)
-    Service.expects(:find).returns(mock_service)
-    CodeburnerUtil.get_history_range service_id
+    mock_repo = mock('mock_repo')
+    mock_repo.expects(:repo_stat).returns(mock_stat)
+    Repo.expects(:find).returns(mock_repo)
+    CodeburnerUtil.get_history_range repo_id
   end
 
   test "returns correct history resolution" do
@@ -139,10 +139,10 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     mock_stat.expects(:version_at).returns(SystemStat.first).twice
     SystemStat.expects(:first).returns(mock_stat)
 
-    assert_equal 1, CodeburnerUtil.get_history[:services][0][1]
+    assert_equal 1, CodeburnerUtil.get_history[:repos][0][1]
   end
 
-  test "gets service history" do
+  test "gets repo history" do
     mock_stat = mock('mock_stat')
     mock_stat.expects(:versions).returns(ServiceStat.all)
     mock_stat.expects(:version_at).returns(ServiceStat.first)
@@ -150,7 +150,7 @@ class CodeburnerUtilTest < ActiveSupport::TestCase
     mock_where.expects(:first).returns(mock_stat)
     ServiceStat.expects(:where).returns(mock_where)
 
-    assert_equal 1, CodeburnerUtil.get_history(Time.now.to_s,Time.now.to_s,1.hour,nil,services(:one).id)[:burns][0][1]
+    assert_equal 1, CodeburnerUtil.get_history(Time.now.to_s,Time.now.to_s,1.hour,nil,repos(:one).id)[:burns][0][1]
   end
 
   test "gets burn history" do

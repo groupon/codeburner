@@ -48,7 +48,7 @@ class Codeburner.Collections.Finding extends Backbone.PageableCollection
     @filters =
       status: ['0']
       burn_id: null
-      service_id: null
+      repo_id: null
       filtered_by: null
       branch: 'master'
       only_current: true

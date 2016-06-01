@@ -24,41 +24,41 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  service: one
+  repo: one
   revision: abcdefg123456789
   code_lang: JavaScript, CSS, Shell
   repo_url: http://github.com/a/path
   num_files: 100
   num_lines: 5000
-  service_portal: true
+  repo_portal: true
   status: created
 
 two:
-  service: two
+  repo: two
   revision: 123456789abcdefg
   code_lang: Ruby, JavaScript, CoffeScript
   repo_url: http://fake.server/a/path
   num_files: 200
   num_lines: 10000
-  service_portal: false
+  repo_portal: false
   status: created
 
 three:
-  service: two
+  repo: two
   revision: 123456789qwerty
   code_lang: Ruby, Java, Python
   repo_url: http://fake.server/a/path
   num_files: 200
   num_lines: 10000
-  service_portal: true
+  repo_portal: true
   status: created
 
 four:
-  service: two
+  repo: two
   revision: 123456789zxcv
   code_lang: Invalid_Language
   repo_url: http://fake.server/a/path
   num_files: 200
   num_lines: 10000
-  service_portal: false
+  repo_portal: false
   status: created

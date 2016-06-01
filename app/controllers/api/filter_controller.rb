@@ -45,7 +45,7 @@ class Api::FilterController < ApplicationController
   #         $ref: filters.show.response
   # END ServiceDiscovery
   def index
-    safe_sorts = ['id', 'service_id' ]
+    safe_sorts = ['id', 'repo_id' ]
     sort_by = 'filters.id'
     order = nil
 
@@ -96,9 +96,9 @@ class Api::FilterController < ApplicationController
   #     id:
   #       type: integer
   #       description: filter ID
-  #     service_id:
+  #     repo_id:
   #       type: integer
-  #       descritpion: the service ID
+  #       descritpion: the repo ID
   #     severity:
   #       type: integer
   #       description: severity to filter (0 - 3)
@@ -140,9 +140,9 @@ class Api::FilterController < ApplicationController
   #
   # request:
   #   parameters:
-  #     service_id:
+  #     repo_id:
   #       type: integer
-  #       descritpion: service_id to filter
+  #       descritpion: repo_id to filter
   #       location: body
   #       required: false
   #     severity:
@@ -195,7 +195,7 @@ class Api::FilterController < ApplicationController
   # END ServiceDiscovery
   def create
     filter = Filter.new({
-      :service_id => params[:service_id],
+      :repo_id => params[:repo_id],
       :severity => params[:severity],
       :fingerprint => params[:fingerprint],
       :scanner => params[:scanner],
@@ -238,10 +238,10 @@ class Api::FilterController < ApplicationController
 
     filter = Filter.find(params[:id])
     filtered_by = Finding.filtered_by(filter.id)
-    service_ids = []
-    filtered_by.each {|finding| service_ids << finding.service_id}
-    service_ids.uniq.each do |service_id|
-      CodeburnerUtil.update_service_stats service_id
+    repo_ids = []
+    filtered_by.each {|finding| repo_ids << finding.repo_id}
+    repo_ids.uniq.each do |repo_id|
+      CodeburnerUtil.update_repo_stats repo_id
     end
 
     filtered_by.update_all(status: 0, filter_id: nil)

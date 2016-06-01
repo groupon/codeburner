@@ -1,5 +1,5 @@
 ## Application Server
-The primary Codeburner application is a ruby 2/rails 4 service that provides the REST API and manages the asynchronous workers for scanning and notifications.
+The primary Codeburner application is a ruby 2/rails 4 repo that provides the REST API and manages the asynchronous workers for scanning and notifications.
 
 It uses <a href="http://sidekiq.org/" target="_blank">Sidekiq</a> with a redis queue for the asynchronous work.
 

@@ -33,7 +33,7 @@ class Api::BurnControllerTest < ActionController::TestCase
 
   def stats
     {
-      :services => Service.count,
+      :repos => Repo.count,
       :burns => Burn.count,
       :findings => Finding.count,
       :files => Burn.sum(:num_files),
@@ -69,8 +69,8 @@ class Api::BurnControllerTest < ActionController::TestCase
     assert_equal good_results, JSON.parse(@response.body), "front page query isn't returning cached burn list"
   end
 
-  test "sorts by service_name" do
-    get(:index, {:sort_by => 'service_name', :order => 'asc'})
+  test "sorts by repo_name" do
+    get(:index, {:sort_by => 'repo_name', :order => 'asc'})
     results = JSON.parse(@response.body)
 
     assert_response :success
@@ -91,9 +91,9 @@ class Api::BurnControllerTest < ActionController::TestCase
   test "creates a burn" do
     assert_difference('Burn.count') do
       BurnWorker.expects(:perform_async).returns(true).once
-      post(:create, {:service_name => 'my_non_fixture_service', :revision => '0123456789', :repo_url => 'http://blah.com/'})
+      post(:create, {:repo_name => 'my_non_fixture_repo', :revision => '0123456789', :repo_url => 'http://blah.com/'})
       assert_response :success
-      assert_equal 'my_non_fixture_service', JSON.parse(@response.body)['service_name'], "service names don't match on create"
+      assert_equal 'my_non_fixture_repo', JSON.parse(@response.body)['repo_name'], "repo names don't match on create"
     end
   end
 
@@ -101,22 +101,22 @@ class Api::BurnControllerTest < ActionController::TestCase
     assert_difference('Burn.count') do
       BurnWorker.expects(:perform_async).returns(true).once
       CodeburnerUtil.expects(:get_head_commit).returns('abcdefg').once
-      post(:create, {:service_name => 'my_non_fixture_service', :repo_url => 'http://blah.com/'})
+      post(:create, {:repo_name => 'my_non_fixture_repo', :repo_url => 'http://blah.com/'})
       assert_response :success
-      assert_equal 'my_non_fixture_service', JSON.parse(@response.body)['service_name'], "service names don't match on create"
+      assert_equal 'my_non_fixture_repo', JSON.parse(@response.body)['repo_name'], "repo names don't match on create"
     end
   end
 
   test "returns error on duplicate burn" do
     assert_no_difference('Burn.count') do
-      post(:create, {:service_name => burns(:one).service.short_name, :revision => burns(:one).revision, :repo_url => burns(:one).repo_url})
+      post(:create, {:repo_name => burns(:one).repo.name, :revision => burns(:one).revision, :repo_url => burns(:one).repo_url})
       assert_response(409)
     end
   end
 
   test "creates notifications when notify is set" do
     assert_difference('Notification.count') do
-      post(:create, {:service_name => 'my_non_fixture_service', :revision => '1234', :repo_url => 'http://blah.com', :notify => 'test@test.com'})
+      post(:create, {:repo_name => 'my_non_fixture_repo', :revision => '1234', :repo_url => 'http://blah.com', :notify => 'test@test.com'})
       assert_response :success
     end
   end

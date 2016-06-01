@@ -1,7 +1,7 @@
 class Branch < ActiveRecord::Base
-  validates :name, uniqueness: { scope: :service_id, message: 'branch must be a unique service + name combo' }
+  validates :name, uniqueness: { scope: :repo_id, message: 'branch must be a unique repo + name combo' }
 
-  belongs_to :service
+  belongs_to :repo
   has_many :burns
   has_many :findings
 end

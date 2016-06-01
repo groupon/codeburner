@@ -3,7 +3,7 @@
 - [/api/burn](#apiburn)
 - [/api/finding](#apifinding)
 - [/api/filter](#apifilter)
-- [/api/service](#apiservice)
+- [/api/repo](#apirepo)
 - [/api/stats](#apistats)
 
 ## Format
@@ -31,17 +31,17 @@ The burn API allows you to submit new code burns and get information about exist
 Gets the list of burns matching specified criteria.  With no parameters specified, it will provide a paginated list of all burns at a rate of 100 per page as well as a total count of the results found.
 
 #### Parameters (all optional):
-* **service_id**:   An **integer** representing the service's ID
-* **service_name**: A **string** representing the service name associated with the burn
+* **repo_id**:   An **integer** representing the repo's ID
+* **repo_name**: A **string** representing the repo name associated with the burn
 * **revision**:     A **string** representing the commit SHA/tag
 * **status**:       A **string** representing the current status of the burn
-* **sort_by**:      A **string** for sortable field (**id**,**service_id**,**service_name**,**revision**,**code_lang**,**repo_url**,**status**)
+* **sort_by**:      A **string** for sortable field (**id**,**repo_id**,**repo_name**,**revision**,**code_lang**,**repo_url**,**status**)
 * **order**:        A **string** for ascending/descending orader (**asc**,**desc**)
 * **page**:         An **integer** for specifying the page of the paginated results
 * **per_page**:     An **integer** to override the default of 100 results per page
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/burn?service_name=codeburner</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/burn?repo_name=codeburner</code></pre>
 
 #### Sample response:
 
@@ -58,8 +58,8 @@ Gets the list of burns matching specified criteria.  With no parameters specifie
       "code_lang":"Ruby, CoffeeScript, HTML, JavaScript, CSS",
       "num_files":78,
       "num_lines":5542,
-      "service_id":5,
-      "service_portal":null,
+      "repo_id":5,
+      "repo_portal":null,
       "status_reason":"completed on 2016-03-02 13:44:19 -0600"}
     ]}
 }
@@ -69,18 +69,18 @@ Gets the list of burns matching specified criteria.  With no parameters specifie
 ### POST /api/burn
 Submit a new burn.  
 
-Since a burn is considered a scan of a single revision of a given service, this will return a 409 validation error if you submit a duplicate service/revision combo.  
+Since a burn is considered a scan of a single revision of a given repo, this will return a 409 validation error if you submit a duplicate repo/revision combo.  
 
 If you don't specify a revision it defaults to master-HEAD, and resolves that to a specific commit for you automatically.
 
 #### Parameters (<strong>*</strong> <small>required</small>):
-* <strong>*</strong>**service_name**: A **string** representing the service's identifying name
+* <strong>*</strong>**repo_name**: A **string** representing the repo's identifying name
 * <strong>*</strong>**repo_url**:     A **string** representing the full GitHub repository URL
 * **revision**:                       A **string** representing either a commit SHA or release tag
 * **notify**:                         A **string** representing the e-mail address to send a notification to on completion
 
 #### Sample request:
-<pre class="command-line" data-output="2-4"><code class="language-bash">curl -X POST -F service_name='codeburner' -F repo_url='https://github.com/groupon/codeburner'  http://localhost:8080/api/burn
+<pre class="command-line" data-output="2-4"><code class="language-bash">curl -X POST -F repo_name='codeburner' -F repo_url='https://github.com/groupon/codeburner'  http://localhost:8080/api/burn
 </code></pre>
 
 #### Sample response:
@@ -88,8 +88,8 @@ If you don't specify a revision it defaults to master-HEAD, and resolves that to
 ```json
 {
   "burn_id":27,
-  "service_id":5,
-  "service_name":"codeburner",
+  "repo_id":5,
+  "repo_name":"codeburner",
   "revision":"6f94fb9a4bc6bc6493428cfca243c7c844c8cc5e",
   "status":"created"
 }
@@ -114,8 +114,8 @@ Show information about an individual burn #**:id**
   "code_lang":"Ruby, CoffeeScript, HTML, JavaScript, CSS",
   "num_files":78,
   "num_lines":5542,
-  "service_id":5,
-  "service_portal":null,
+  "repo_id":5,
+  "repo_portal":null,
   "status_reason":"completed on 2016-03-02 13:44:19 -0600"
 }
 ```
@@ -136,7 +136,7 @@ The filter API allows you to list, create, and delete filters.
 Lists all existing filters.  Non-paginated list by default.
 
 #### Parameters (all optional)
-* **sort_by**:      A **string** for sortable field (**id**,**service_id**)
+* **sort_by**:      A **string** for sortable field (**id**,**repo_id**)
 * **order**:        A **string** for ascending/descending orader (**asc**,**desc**)
 * **page**:         An **integer** for specifying the page of the paginated results
 * **per_page**:     An **integer** to override the default of 100 results per page if requesting pagination
@@ -152,7 +152,7 @@ Lists all existing filters.  Non-paginated list by default.
   "results":
   [{
     "id":2,
-    "service_id":5,
+    "repo_id":5,
     "severity":null,
     "fingerprint":null,
     "scanner":"DawnScanner",
@@ -176,7 +176,7 @@ Create a new filter.  All findings (existing and future) matching the provided c
 This will return a 409 validation error on attempting to create a duplicate filter.
 
 #### Parameters (all optional):
-* **service_id**:   An **integer** representing a specific service ID
+* **repo_id**:   An **integer** representing a specific repo ID
 * **severity**:     An **integer** representing severity as reported by pipeline
 * **fingerprint**:  A **string** representing the SHA256 fingerprint calculated by pipeline
 * **scanner**:      A **string** representing an individual scanning tool
@@ -187,14 +187,14 @@ This will return a 409 validation error on attempting to create a duplicate filt
 * **code**:         A **string** representing a code snippet returned by a scanning tool
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -X POST -F service_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter</code></pre>
+<pre class="command-line"><code class="language-bash">curl -X POST -F repo_id='5' -F scanner='Brakeman' http://localhost:8080/api/filter</code></pre>
 
 #### Sample response:
 
 ```json
 {
   "id":4,
-  "service_id":5,
+  "repo_id":5,
   "severity":null,
   "fingerprint":null,
   "scanner":"Brakeman",
@@ -221,7 +221,7 @@ Show a specific filter #**:id**.
 ```json
 {
   "id":4,
-  "service_id":5,
+  "repo_id":5,
   "severity":null,
   "fingerprint":null,
   "scanner":"Brakeman",
@@ -265,20 +265,20 @@ The finding API allows you to view findings, publish them to your issue tracker 
 Gets the list of findings matching specified criteria.  With no parameters specified, it will provide a paginated list of all findings at a rate of 100 per page as well as a total count of the results found.
 
 #### Parameters (all optional):
-* **service_id**:   An **integer** representing the service ID
+* **repo_id**:   An **integer** representing the repo ID
 * **burn_id**:      An **integer** representing the burn ID
-* **service_name**: A **string** representing the service name associated with the burn
+* **repo_name**: A **string** representing the repo name associated with the burn
 * **severity**:     An **integer** representing the severity as reported by pipeline
 * **description**:  A **string** representing the finding description
 * **fingerprint**:  A **string** representing the SHA256 fingerprint calculated by pipeline
 * **status**:       An **integer** representing the status (**0**=created,**1**=hidden,**2**=published,**3**=filtered)
-* **sort_by**:      A **string** for sortable field (**id**,**service_id**,**service_name**,**severity**,**fingerprint**,**status**,**description**)
+* **sort_by**:      A **string** for sortable field (**id**,**repo_id**,**repo_name**,**severity**,**fingerprint**,**status**,**description**)
 * **order**:        A **string** for ascending/descending orader (**asc**,**desc**)
 * **page**:         An **integer** for specifying the page of the paginated results
 * **per_page**:     An **integer** to override the default of 100 results per page
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/findings?service_name=codeburner?per_page=1</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/findings?repo_name=codeburner?per_page=1</code></pre>
 
 #### Sample response:
 
@@ -296,7 +296,7 @@ Gets the list of findings matching specified criteria.  With no parameters speci
     "updated_at":"2016-03-02T19:44:19.000Z",
     "status":0,
     "burn_id":26,
-    "service_id":5,
+    "repo_id":5,
     "scanner":"Brakeman",
     "file":"app/controllers/api/finding_controller.rb",
     "line":225,
@@ -327,7 +327,7 @@ Show information about an individual finding #**:id**.
   "updated_at":"2016-03-02T19:44:19.000Z",
   "status":0,
   "burn_id":26,
-  "service_id":5,
+  "repo_id":5,
   "scanner":"Brakeman",
   "file":"app/controllers/api/finding_controller.rb",
   "line":225,
@@ -357,7 +357,7 @@ Update attributes (currently only **status**) for a specific finding #**:id**.
   "updated_at":"2016-03-03T21:14:35.827Z",
   "status":1,
   "burn_id":26,
-  "service_id":5,
+  "repo_id":5,
   "scanner":"Brakeman",
   "file":"app/controllers/api/finding_controller.rb",
   "line":225,
@@ -390,22 +390,22 @@ Publish a specific finding #**:id** to your issue tracker of choice.
 ***
 
 
-## /api/service
-The service API can be used to list services, find information about a specific service, and generate history/statistics.
+## /api/repo
+The repo API can be used to list repos, find information about a specific repo, and generate history/statistics.
 
-- [GET /api/service](#get-apiservice)
-- [GET /api/service/{:id}](#get-apiserviceid)
-- [GET /api/service/{:id}/stats](#get-apiserviceidstats)
-- [GET /api/service/{:id}/stats/burns](#get-apiserviceidstatsburns)
-- [GET /api/service/{:id}/stats/history](#get-apiserviceidstatshistory)
-- [GET /api/service/{:id}/stats/history/range](#get-apiserviceidstatshistoryrange)
-- [GET /api/service/{:id}/stats/history/resolution](#get-apiserviceidstatshistoryresolution)
+- [GET /api/repo](#get-apirepo)
+- [GET /api/repo/{:id}](#get-apirepoid)
+- [GET /api/repo/{:id}/stats](#get-apirepoidstats)
+- [GET /api/repo/{:id}/stats/burns](#get-apirepoidstatsburns)
+- [GET /api/repo/{:id}/stats/history](#get-apirepoidstatshistory)
+- [GET /api/repo/{:id}/stats/history/range](#get-apirepoidstatshistoryrange)
+- [GET /api/repo/{:id}/stats/history/resolution](#get-apirepoidstatshistoryresolution)
 
-### GET /api/service
-List all services.  Results are non-paginated.  This query result is cached in redis and should generally return very quickly even with a large number of services.
+### GET /api/repo
+List all repos.  Results are non-paginated.  This query result is cached in redis and should generally return very quickly even with a large number of repos.
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo</code></pre>
 
 #### Sample response:
 
@@ -415,43 +415,43 @@ List all services.  Results are non-paginated.  This query result is cached in r
   "results":
   [{
     "id":5,
-    "short_name":"codeburner",
-    "pretty_name":"codeburner",
+    "name":"codeburner",
+    "full_name":"codeburner",
     "created_at":"2016-03-01T17:54:07.000Z",
     "updated_at":"2016-03-01T17:54:07.000Z",
-    "service_portal":null
+    "repo_portal":null
   }]
 }
 ```
 
 ***
 
-### GET /api/service/{:id}
-Show information about a specific service #**:id**.
+### GET /api/repo/{:id}
+Show information about a specific repo #**:id**.
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5</code></pre>
 
 #### Sample response:
 
 ```json
 {
   "id":5,
-  "short_name":"codeburner",
-  "pretty_name":"codeburner",
+  "name":"codeburner",
+  "full_name":"codeburner",
   "created_at":"2016-03-01T17:54:07.000Z",
   "updated_at":"2016-03-01T17:54:07.000Z",
-  "service_portal":null
+  "repo_portal":null
 }
 ```
 
 ***
 
-### GET /api/service/{:id}/stats
-Get statistics about a specific service #**id**.  If you want statistics about all services, see [/api/stats](#apistats).
+### GET /api/repo/{:id}/stats
+Get statistics about a specific repo #**id**.  If you want statistics about all repos, see [/api/stats](#apistats).
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5/stats</code></pre>
 
 
 #### Sample response:
@@ -469,15 +469,15 @@ Get statistics about a specific service #**id**.  If you want statistics about a
 
 ***
 
-### GET /api/service/{:id}/stats/burns
-Get a list of [date, count] pairs where count is the number of burns performed against a specific service on date.
+### GET /api/repo/{:id}/stats/burns
+Get a list of [date, count] pairs where count is the number of burns performed against a specific repo on date.
 
 #### Parameters (all optional):
 * **start_date**: A **string** representing the start_date for the list, parsable by ruby Time.parse().
 * **end_date**:   A **string** representing the end_date for the list, parsable by ruby Time.parse().
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/burns</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5/stats/burns</code></pre>
 
 #### Sample response:
 
@@ -490,10 +490,10 @@ Get a list of [date, count] pairs where count is the number of burns performed a
 
 ***
 
-### GET /api/service/{:id}/stats/history
-Generate point-in-time statistics (comparable to the /api/service/{:id}/stats output) for a service from **start_date** to **end_date** with a timestep of **resolution**.
+### GET /api/repo/{:id}/stats/history
+Generate point-in-time statistics (comparable to the /api/repo/{:id}/stats output) for a repo from **start_date** to **end_date** with a timestep of **resolution**.
 
-The default **start_date** is the date of the first burn on the service, and the default **end_date** is ruby Time.now().  
+The default **start_date** is the date of the first burn on the repo, and the default **end_date** is ruby Time.now().  
 
 The default **resolution** is calculated automatically based on the length of time between the two dates to generate smooth trend lines when graphed.  It ranges from 1 hour to 1 week.
 
@@ -506,13 +506,13 @@ The default **resolution** is calculated automatically based on the length of ti
     Be careful with the resolution setting.  If you set this too low (say, every 5 minutes on multiple months of history) you can generate a **very** large number of database queries and cause considerable slowdown.
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution=259200</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5/stats/history/resolution=259200</code></pre>
 
 #### Sample response:
 
 ```json
 {
-  "services":[
+  "repos":[
     ["2016-03-01T17:54:08.000Z",0],
     ["2016-03-03T16:52:21.575-06:00",1]],
   "burns":[
@@ -544,11 +544,11 @@ The default **resolution** is calculated automatically based on the length of ti
 
 ***
 
-### GET /api/service/{:id}/stats/history/range
-Show the default **start_date**, **end_date** and **resolution** for history of a specific service #**:id**.
+### GET /api/repo/{:id}/stats/history/range
+Show the default **start_date**, **end_date** and **resolution** for history of a specific repo #**:id**.
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/range</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5/stats/history/range</code></pre>
 
 #### Sample response:
 
@@ -562,15 +562,15 @@ Show the default **start_date**, **end_date** and **resolution** for history of 
 
 ***
 
-### GET /api/service/{:id}/stats/history/resolution
-Show the default **resolution** for a given **start_date** and **end_date** for a specific service #**:id**.
+### GET /api/repo/{:id}/stats/history/resolution
+Show the default **resolution** for a given **start_date** and **end_date** for a specific repo #**:id**.
 
 #### Parameters (all required):
 * **start_date**: A **string** representing the start_date for the resolution, parsable by ruby Time.parse().
 * **end_date**:   A **string** representing the end_date for the resolution, parsable by ruby Time.parse().
 
 #### Sample request:
-<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/service/5/stats/history/resolution?start_date=2016-03-01T23:06:49.107Z&end_date=2016-03-03T17:07:05.428-06:00</code></pre>
+<pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/repo/5/stats/history/resolution?start_date=2016-03-01T23:06:49.107Z&end_date=2016-03-03T17:07:05.428-06:00</code></pre>
 
 #### Sample response:
 
@@ -581,7 +581,7 @@ Show the default **resolution** for a given **start_date** and **end_date** for 
 ***
 
 ## /api/stats
-The stats API provides overall statistics and history for everything done by Codeburner.  If you want to pull statistics for an individual service, see [/api/service/{:id}/stats](#get-apiserviceidstats).
+The stats API provides overall statistics and history for everything done by Codeburner.  If you want to pull statistics for an individual repo, see [/api/repo/{:id}/stats](#get-apirepoidstats).
 
 All times are passed as **JSON-encoded UTC**, and the data is generally structured to be easily mapped to a <a href="https://developers.google.com/chart/interactive/docs/reference#DataTable" target="_blank">Google Visualization DataTable</a> object.  
 
@@ -594,7 +594,7 @@ If you want to incorporate Codeburner data in your existing dashboards or otherw
 - [GET /api/stats/history/resolution](#get-apistatshistoryresolution)
 
 ### GET /api/stats
-Get statistics for number of findings in each category (**open**, **hidden**, **published**, **filtered**), total lines/files burned, number of services and number of burns.  This response is cached in redis and should respond very quickly.
+Get statistics for number of findings in each category (**open**, **hidden**, **published**, **filtered**), total lines/files burned, number of repos and number of burns.  This response is cached in redis and should respond very quickly.
 
 #### Sample request:
 <pre class="command-line"><code class="language-bash">curl -H 'Content-type: application/json' http://localhost:8080/api/stats</code></pre>
@@ -603,7 +603,7 @@ Get statistics for number of findings in each category (**open**, **hidden**, **
 
 ```json
 {
-  "services":1,
+  "repos":1,
   "burns":2,
   "total_findings":14,
   "open_findings":10,
@@ -641,7 +641,7 @@ Get a list of [date, count] pairs where count is the number of burns performed o
 ***
 
 ### GET /api/stats/history
-Generate point-in-time statistics (comparable to the /api/stats output) for a service from **start_date** to **end_date** with a timestep of **resolution**.
+Generate point-in-time statistics (comparable to the /api/stats output) for a repo from **start_date** to **end_date** with a timestep of **resolution**.
 
 The default **start_date** is the date of the first burn, and the default **end_date** is ruby Time.now().  
 
@@ -662,7 +662,7 @@ The default **resolution** is calculated automatically based on the length of ti
 
 ```json
 {
-  "services":[
+  "repos":[
     ["2016-02-25T21:18:22.000Z",1],
     ["2016-03-01T12:25:02.000Z",1],
     ["2016-03-04T09:36:45.985-06:00",1]],
