@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160601190842) do
+ActiveRecord::Schema.define(version: 20160603165144) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "repo_id",    limit: 4
@@ -48,6 +48,9 @@ ActiveRecord::Schema.define(version: 20160601190842) do
     t.integer "burn_id",    limit: 4, null: false
     t.integer "finding_id", limit: 4, null: false
   end
+
+  add_index "burns_findings", ["burn_id", "finding_id"], name: "index_burns_findings_on_burn_id_and_finding_id", using: :btree
+  add_index "burns_findings", ["finding_id", "burn_id"], name: "index_burns_findings_on_finding_id_and_burn_id", using: :btree
 
   create_table "filters", force: :cascade do |t|
     t.integer  "repo_id",     limit: 4
@@ -86,7 +89,7 @@ ActiveRecord::Schema.define(version: 20160601190842) do
 
   add_index "findings", ["branch_id"], name: "index_findings_on_branch_id", using: :btree
   add_index "findings", ["filter_id"], name: "index_findings_on_filter_id", using: :btree
-  add_index "findings", ["repo_id"], name: "index_findings_on_service_id", using: :btree
+  add_index "findings", ["repo_id"], name: "index_findings_on_repo_id", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.string   "burn",        limit: 255
@@ -108,11 +111,11 @@ ActiveRecord::Schema.define(version: 20160601190842) do
     t.boolean  "forked"
   end
 
-  add_index "repos", ["webhook_user_id"], name: "index_repositories_on_webhook_user_id", using: :btree
+  add_index "repos", ["webhook_user_id"], name: "index_repos_on_webhook_user_id", using: :btree
 
   create_table "repos_users", id: false, force: :cascade do |t|
-    t.integer "service_id", limit: 4
-    t.integer "user_id",    limit: 4
+    t.integer "repo_id", limit: 4
+    t.integer "user_id", limit: 4
   end
 
   create_table "service_stats", force: :cascade do |t|
@@ -127,7 +130,7 @@ ActiveRecord::Schema.define(version: 20160601190842) do
     t.datetime "updated_at",                   null: false
   end
 
-  add_index "service_stats", ["repo_id"], name: "index_service_stats_on_service_id", using: :btree
+  add_index "service_stats", ["repo_id"], name: "index_service_stats_on_repo_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255,   null: false

@@ -344,12 +344,12 @@ class Api::FindingController < ApplicationController
     description = render_to_string "jira"
 
     jira_options = {
-      :site => Setting.jira.host,
-      :username => Setting.jira.username,
-      :password => Setting.jira.password,
-      :context_path => Setting.jira.context_path,
+      :site => Setting.jira['host'],
+      :username => Setting.jira['username'],
+      :password => Setting.jira['password'],
+      :context_path => Setting.jira['context_path'],
       :auth_type => :basic,
-      :use_ssl => Setting.jira.use_ssl
+      :use_ssl => Setting.jira['use_ssl']
     }
 
     jira = JIRA::Client.new(jira_options)

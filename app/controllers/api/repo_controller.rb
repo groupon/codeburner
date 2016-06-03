@@ -157,6 +157,10 @@ class Api::RepoController < ApplicationController
     render(:json => {error: "Service or findings not found}"}, :status => 404)
   end
 
+  def branches
+    render(:json => Branch.where(:repo_id => params[:id]))
+  end
+
   def burns
     repo = Repo.find(params[:id])
     render(:json => CodeburnerUtil.get_burn_history(params[:start_date], params[:end_date], repo.id))

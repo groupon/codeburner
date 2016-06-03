@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :repo, :only => [:index, :show] do
       member do
         get 'stats'
+        get 'branches'
         match 'stats/history' => 'repo#history', :via => :get
         match 'stats/burns' => 'repo#burns', :via => :get
         match 'stats/history/range' => 'repo#history_range', :via => :get
