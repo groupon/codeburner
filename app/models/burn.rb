@@ -82,6 +82,7 @@ class Burn < ActiveRecord::Base
       :repo_url => self[:repo_url],
       :status => self.status,
       :pull_request => self.pull_request,
+      :created_at => self.created_at
     }.as_json
   end
 
@@ -272,7 +273,7 @@ Findings:
       Rails.logger.info e.backtrace
       self.send_failure_notification
     ensure
-      unless logfile.closed?
+      if logfile and not logfile.closed?
         self.update(:log => logfile.read)
         logfile.close
       end
