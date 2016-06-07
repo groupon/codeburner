@@ -24,12 +24,12 @@
 class Filter < ActiveRecord::Base
   include ActiveModel::Validations
 
-  belongs_to :service
+  belongs_to :repo
   has_many :findings
 
   validates_with FilterValidator
 
-  scope :service_id,  -> (service_id)   { where("filters.service_id = ? OR filters.service_id IS NULL", service_id ||= '') }
+  scope :repo_id,  -> (repo_id)   { where("filters.repo_id = ? OR filters.repo_id IS NULL", repo_id ||= '') }
   scope :severity,    -> (severity)     { where("filters.severity = ? OR filters.severity IS NULL", severity ||= '') }
   scope :fingerprint, -> (fingerprint)  { where("filters.fingerprint = ? OR filters.fingerprint IS NULL", fingerprint ||= '') }
   scope :scanner,     -> (scanner)      { where("filters.scanner = ? OR filters.scanner IS NULL", scanner ||= '') }
@@ -48,7 +48,7 @@ class Filter < ActiveRecord::Base
 
     Rails.logger.info 'FILTERING EXISTING: #{self.inspect}'
 
-    findings = Finding.service_id(self.service_id) \
+    findings = Finding.repo_id(self.repo_id) \
       .severity(self.severity) \
       .fingerprint(self.fingerprint) \
       .scanner(self.scanner) \
@@ -60,11 +60,11 @@ class Filter < ActiveRecord::Base
 
     findings.where('status NOT IN (?)', [1,2]).update_all(status: 3, filter_id: self[:id])
 
-    service_ids = []
-    findings.each {|finding| service_ids << finding.service_id}
+    repo_ids = []
+    findings.each {|finding| repo_ids << finding.repo_id}
 
-    service_ids.uniq.each do |service_id|
-      CodeburnerUtil.update_service_stats service_id
+    repo_ids.uniq.each do |repo_id|
+      CodeburnerUtil.update_repo_stats repo_id
     end
 
     CodeburnerUtil.update_system_stats

@@ -28,13 +28,13 @@ THE SOFTWARE.
         <div class="card-body">
           <div class="row form-control-wrapper">
             <div class="col-sm-2">
-              <select id="service-list" class="service-list" data-previous="-1">
+              <select id="repo-list" class="repo-list" data-previous="-1">
                 <optgroup label="System">
-                  <option value="-1" selected>All Services</option>
+                  <option value="-1" selected>All Repositories</option>
                 </optgroup>
-                <optgroup label="Services">
-                  <% services.forEach(function(service) { %>
-                    <option value="<%= service.get('id') %>"><%= service.get('pretty_name') %></option>
+                <optgroup label="Repositories">
+                  <% repos.forEach(function(repo) { %>
+                    <option value="<%= repo.get('id') %>"><%= repo.get('name') %></option>
                   <% }); %>
                 </optgroup>
               </select>

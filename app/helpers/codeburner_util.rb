@@ -67,8 +67,8 @@ module CodeburnerUtil
     FileUtils.remove_entry_secure(dir)
   end
 
-  def self.get_service_info service_name
-    url_string = "#{Setting.service_portal_host}/services/#{service_name}.json"
+  def self.get_repo_info repo_name
+    url_string = "#{Setting.repo_portal_host}/repos/#{repo_name}.json"
     response = RestClient.get(url_string)
     return JSON.parse(response.body)
   end
@@ -77,8 +77,21 @@ module CodeburnerUtil
     self.github.languages(strip_github_path(repo_url)).to_hash.stringify_keys
   end
 
-  def self.get_head_commit repo_url
-    self.github.commits(strip_github_path(repo_url)).first.sha
+  def self.get_head_commit repo_url, branch
+    branch ||= 'master'
+    self.github.commits(strip_github_path(repo_url), branch).first.sha
+  end
+
+  def self.user_github user
+    return nil unless user
+
+    Octokit.configure do |c|
+      if Setting.github['api_endpoint']
+        c.api_endpoint = Setting.github['api_endpoint']
+      end
+    end
+
+    return Octokit::Client.new(:access_token => user.access_token)
   end
 
   def self.tally_code dir, languages
@@ -116,33 +129,35 @@ module CodeburnerUtil
 
   def self.get_stats
     {
-      :services => Service.joins(:burns).where('burns.service_id = services.id').distinct.count,
+      :repos => Repo.joins(:burns).where('burns.repo_id = repos.id').distinct.count,
       :burns => Burn.count,
-      :total_findings => Finding.count,
-      :open_findings => Finding.status(Finding.status_code[:open]).count,
-      :hidden_findings => Finding.status(Finding.status_code[:hidden]).count,
-      :published_findings => Finding.status(Finding.status_code[:published]).count,
-      :filtered_findings => Finding.status(Finding.status_code[:filtered]).count,
+      :total_findings => Finding.only_current(true).count,
+      :open_findings => Finding.only_current(true).status(Finding.status_code[:open]).count,
+      :hidden_findings => Finding.only_current(true).status(Finding.status_code[:hidden]).count,
+      :published_findings => Finding.only_current(true).status(Finding.status_code[:published]).count,
+      :filtered_findings => Finding.only_current(true).status(Finding.status_code[:filtered]).count,
       :files => Burn.sum(:num_files),
       :lines => Burn.sum(:num_lines)
     }
   end
 
   def self.get_burn_list
-    burns = Burn.page(1).per(10).order('burns.id DESC')
-    return pack_service_name(burns)
+    burns = Burn.page(1).per(25).order('burns.id DESC')
+    return pack_repo_name(burns)
   end
 
-  def self.get_services
-    return Service.has_burns.order("services.pretty_name ASC").as_json
+  def self.get_repos
+    repos = Repo.has_burns.order("repos.name ASC").map{|s| s.to_json}
+    return repos
   end
 
-  def self.pack_service_name objects
+  def self.pack_repo_name objects
     results = []
 
     objects.each do |result|
       result_hash = result.attributes
-      result_hash[:service_name] = result.service.pretty_name
+      result_hash[:repo_name] = result.repo.name
+      result_hash[:branch] = result.branch.name
       results << result_hash
     end
     return results
@@ -159,11 +174,11 @@ module CodeburnerUtil
     return results
   end
 
-  def self.get_service_stats service_id
-    service = Service.find(service_id)
-    findings = Finding.service_id(service.id)
+  def self.get_repo_stats repo_id
+    repo = Repo.find(repo_id)
+    findings = Finding.repo_id(repo.id).only_current(true)
     return {
-      :burns => Burn.service_id(service.id).count,
+      :burns => Burn.repo_id(repo.id).count,
       :open_findings => findings.status(Finding.status_code[:open]).count,
       :total_findings => findings.count,
       :filtered_findings => findings.status(Finding.status_code[:filtered]).count,
@@ -172,20 +187,20 @@ module CodeburnerUtil
     }
   end
 
-  def self.update_service_stats id
-    service = Service.find(id)
-    stats = CodeburnerUtil.get_service_stats(service.id).merge({
-      :service_id => id
+  def self.update_repo_stats id
+    repo = Repo.find(id)
+    stats = CodeburnerUtil.get_repo_stats(repo.id).merge({
+      :repo_id => id
     })
 
-    service_stat = ServiceStat.where(:service_id => service.id).first
+    repo_stat = ServiceStat.where(:repo_id => repo.id).first
 
-    if service_stat.nil?
-      service_stat = ServiceStat.create(:service_id => service.id)
+    if repo_stat.nil?
+      repo_stat = ServiceStat.create(:repo_id => repo.id)
     end
 
-    service_stat.update(stats)
-    Rails.cache.write('services', CodeburnerUtil.get_services)
+    repo_stat.update(stats)
+    Rails.cache.write('repos', CodeburnerUtil.get_repos)
   end
 
   def self.update_system_stats
@@ -237,9 +252,9 @@ module CodeburnerUtil
     return results
   end
 
-  def self.get_burn_history start_date=nil, end_date=nil, service_id=nil
+  def self.get_burn_history start_date=nil, end_date=nil, repo_id=nil
     results = []
-    first_burn = Burn.service_id(service_id).first.created_at
+    first_burn = Burn.repo_id(repo_id).first.created_at
     if start_date.nil?
       start_date = Date.new(first_burn.year, first_burn.month, first_burn.day)
     else
@@ -252,7 +267,7 @@ module CodeburnerUtil
     end
 
     start_date.upto(end_date) do |date|
-      results << [date, Burn.service_id(service_id).where(created_at: date.beginning_of_day..date.end_of_day).count]
+      results << [date, Burn.repo_id(repo_id).where(created_at: date.beginning_of_day..date.end_of_day).count]
     end
 
     results
@@ -262,7 +277,7 @@ module CodeburnerUtil
     if id.nil?
       stat = SystemStat.first
     else
-      stat = Service.find(id).service_stat
+      stat = Repo.find(id).repo_stat
     end
     start_date = stat.versions.first.created_at
     end_date = Time.now()
@@ -270,13 +285,13 @@ module CodeburnerUtil
     return {:start_date => start_date, :end_date => end_date, :resolution => history_resolution(start_date, end_date)}
   end
 
-  def self.get_history start_date=nil, end_date=nil, resolution=nil, requested_stats=nil, service_id=nil
-    if service_id.nil?
+  def self.get_history start_date=nil, end_date=nil, resolution=nil, requested_stats=nil, repo_id=nil
+    if repo_id.nil?
       stat = SystemStat.first
     else
-      stat = ServiceStat.where(service_id: service_id).first
+      stat = ServiceStat.where(repo_id: repo_id).first
     end
-    requested_stats = [:services, :burns, :total_findings, :open_findings, :hidden_findings, :published_findings, :filtered_findings, :files, :lines] if requested_stats.nil?
+    requested_stats = [:repos, :burns, :total_findings, :open_findings, :hidden_findings, :published_findings, :filtered_findings, :files, :lines] if requested_stats.nil?
     if start_date.nil? or start_date < stat.versions.first.created_at
       start_date = stat.versions.first.created_at
     else

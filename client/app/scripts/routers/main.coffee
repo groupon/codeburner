@@ -24,19 +24,21 @@
 'use strict'
 
 class Codeburner.Routers.Main extends Backbone.Router
-  initialize: (serviceCollection) ->
+  initialize: (repoCollection) ->
     @findingCollection = new Codeburner.Collections.Finding
-    @findingListView = new Codeburner.Views.FindingList @findingCollection, serviceCollection
+    @findingListView = new Codeburner.Views.FindingList @findingCollection, repoCollection
 
     @burnCollection = new Codeburner.Collections.Burn
-    @burnListView = new Codeburner.Views.BurnList @burnCollection, serviceCollection
+    @burnListView = new Codeburner.Views.BurnList @burnCollection, repoCollection
 
     @filterCollection = new Codeburner.Collections.Filter
-    @filterListView = new Codeburner.Views.FilterList @filterCollection, serviceCollection
+    @filterListView = new Codeburner.Views.FilterList @filterCollection, repoCollection
 
-    @statsView = new Codeburner.Views.Stats serviceCollection
+    @statsView = new Codeburner.Views.Stats repoCollection
 
     @settingsView = new Codeburner.Views.Settings
+
+    @userView = new Codeburner.Views.User
 
     @defaultView = new Codeburner.Views.Default
 
@@ -47,6 +49,7 @@ class Codeburner.Routers.Main extends Backbone.Router
     'stats': 'statsAction'
     'settings': 'settingsAction'
     'burns': 'burnsAction'
+    'user': 'userAction'
     '*query': 'defaultAction'
 
   execute: (callback, args, name) ->
@@ -67,7 +70,7 @@ class Codeburner.Routers.Main extends Backbone.Router
       unless parsedQuery.authz == undefined
         localStorage.setItem "authz", parsedQuery.authz
 
-        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+        Codeburner.Utilities.getRequest "/api/user", ((data) =>
           Codeburner.User = data
           Codeburner.Utilities.authz()
 
@@ -106,7 +109,15 @@ class Codeburner.Routers.Main extends Backbone.Router
     do @settingsView.render
 
   burnsAction: (query) ->
+    if query?
+      do @burnCollection.resetFilter
+      @burnCollection.filters = _.extend @burnCollection.filters, Codeburner.Utilities.parseQueryString(query)
+      do @burnCollection.changeFilter
+
     do @burnListView.render
+
+  userAction: (query) ->
+    do @userView.render
 
   defaultAction: (action, query) ->
     do @defaultView.render
@@ -115,9 +126,10 @@ $ ->
   Codeburner.Utilities.checkAuthz window.location.hash
   Codeburner.Utilities.authz()
 
-  serviceCollection = new Codeburner.Collections.Service
+  repoCollection = new Codeburner.Collections.Repo
 
-  serviceCollection.fetch().done =>
-    window.router = new Codeburner.Routers.Main serviceCollection
+  repoCollection.fetch().done =>
+    window.router = new Codeburner.Routers.Main repoCollection
     do $.material.init
+    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
     do Backbone.history.start

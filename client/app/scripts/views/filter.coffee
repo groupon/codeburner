@@ -26,7 +26,7 @@
 Codeburner.Views.FilterList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
-  initialize: (@collection, @serviceCollection) ->
+  initialize: (@collection, @repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -68,7 +68,7 @@ Codeburner.Views.FilterList = Backbone.View.extend
     @collection.getPage(@currentPage).done =>
       $('#filter_list').html JST['app/scripts/templates/filter.ejs']
         models: @collection.models
-        services: @serviceCollection.models
+        repos: @repoCollection.models
 
       Codeburner.Utilities.renderPaginater @currentPage, @collection.state.totalPages, @collection.state.totalRecords, @collection.state.pageSize
 

@@ -23,9 +23,9 @@
 #
 'use strict'
 
-class Codeburner.Collections.Service extends Backbone.Collection
-  model: Codeburner.Models.Service
-  url: '/api/service'
+class Codeburner.Collections.Repo extends Backbone.Collection
+  model: Codeburner.Models.Repo
+  url: '/api/repo'
   mode: 'client'
 
   parse: (data) ->

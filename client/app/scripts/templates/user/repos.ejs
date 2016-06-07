@@ -1,0 +1,66 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2016, Groupon, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<div class="modal fade" id="add-repo-dialog" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <center><h4 class="modal-title" id="add-repo-title">Add repository webhooks</h4></center><br>
+      </div>
+      <form>
+        <div class="modal-body" id="add-repo-body">
+          <div class="form-group label-floating">
+            <select id="select-repo" class="repositories single validated" placeholder="Pick a repository..." tabindex="-1" style="display: none;"></select>
+          </div>
+          <br>
+          <center>
+            <button class="btn btn-default btn-flat" data-dismiss="modal" id="add-repo-cancel"><i class="octicon octicon-x"></i> Cancel</button>
+            <button class="btn btn-primary btn-flat" data-dismiss="modal" id="add-repo-confirm"><i class="octicon octicon-check"></i> Add</button>
+          </center>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">Repositories</div>
+  <div class="panel-body">
+    <legend>Web Hooks</legend>
+    <div class="container">
+      <ul class="list-unstyled">
+        <% repos.forEach(function(repo) { %>
+          <li>
+            <div class="row">
+              <div class="col-md-4">
+                <button class="delete-repo-btn btn btn-default btn-xs" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Remove repository" data-id="<%= repo.id %>" data-repo="<%= repo.id %>"><span class="octicon octicon-x"></span></button> &nbsp;<a href="<%= repo.html_url %>" target="_blank"><%= repo.name %></a><br>
+              </div>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+    <br>
+    <button class="btn btn-sm pull-right btn-primary" id="add-repo"><i class="octicon octicon-plus"></i> &nbsp;Add Repo</button>
+  </div>
+</div>

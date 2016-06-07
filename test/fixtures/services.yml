@@ -24,11 +24,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  short_name: test_service
-  pretty_name: Test Service
-  service_portal: true
+  name: test_repo
+  full_name: Test Service
+  repo_portal: true
 
 two:
-  short_name: test_service_2
-  pretty_name: Test Service 2
-  service_portal: false
+  name: test_repo_2
+  full_name: Test Service 2
+  repo_portal: false

@@ -26,4 +26,4 @@
 
 describe 'Service Collection', ->
   beforeEach ->
-    @ServiceCollection = new Codeburner.Collections.Service()
+    @ServiceCollection = new Codeburner.Collections.Repo()

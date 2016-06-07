@@ -22,6 +22,6 @@
 #THE SOFTWARE.
 #
 class ServiceStat < ActiveRecord::Base
-  belongs_to :service
+  belongs_to :repo
   has_paper_trail
 end

@@ -26,7 +26,8 @@
 Codeburner.Views.BurnList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
-  initialize: (@burnCollection, @serviceCollection) ->
+  logSources: {}
+  initialize: (@burnCollection, @repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -53,58 +54,47 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
     'click #submit-burn-btn': ->
       $('#burn-submit-body').html JST['app/scripts/templates/burn_submit.ejs']
-      $('#select-repo').selectize(
-        valueField: 'full_name'
-        labelField: 'full_name'
-        searchField: [ 'name', 'html_url', 'full_name' ]
-        create: false
-        render:
-          option: (item, escape) ->
-            html = '<div>' +
-              '<span class="title">' +
-                '<span class="name"><span class="octicon ' + if item.fork then 'oction-repo-forked' else 'octicon-repo' + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
-              '</span>' +
-              '<span class="description">' + escape(item.description) + '</span>' +
-              '<ul class="meta">' +
-                '<li class="language"><span class="octicon octicon-code"></span> ' + escape(item.language) + '</li>' +
-                '<li class="stargazers"><span class="octicon octicon-star"></span><span> ' + escape(item.stargazers_count) + '</span> </li>' +
-                '<li class="forks"><span class="octicon octicon-repo-forked"></span><span> ' + escape(item.forks) + '</span> </li>' +
-              '</ul>' +
-            '</div>'
 
-            return html
-
-        score: (search) ->
-          score = this.getScoreFunction search
-          return (item) ->
-            return score(item) * (1 + Math.min(item.stargazers_count / 100, 1))
-
-        load: (query, callback) ->
-          return callback() unless query.length
-          Codeburner.Utilities.getRequest "/api/github/search/repos?q=#{encodeURIComponent(query)}", ((data) ->
-            callback(data.items)
-          ), (data) ->
-            do callback
-      )
+      do Codeburner.Utilities.selectRepo
       do $('#submitDialog').show
       do $('#submitDialog').modal
 
     'click #submit-burn': ->
-      postData = {'service_name': $('#select-repo').val()}
-      if $('#revision').val()
-        postData['revision'] = $('#revision').val().trim()
+      postData =
+        'repo_name': $('#select-repo').val()
+        'branch': $('#select-branch').val()
+
       if $('#notify').val()
         postData['notify'] = $('#notify').val().trim()
+
       Codeburner.Utilities.postRequest '/api/burn', postData, ((data) =>
-        @serviceCollection.fetch().done =>
+        @repoCollection.fetch().done =>
           do @renderBurns
       ), (data) ->
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
     'click .burn-show-findings': (e) ->
-      burn_id = $(e.target).closest('.burn-show-findings').data 'id'
-      service_id = $(e.target).closest('.burn-show-findings').data 'service'
-      window.router.navigate "#findings?burn_id=#{burn_id}&service_id=#{service_id}", {trigger: true, replace: true}
+      burnDom = $(e.target).closest('.burn-show-findings')
+      burn_id = burnDom.data 'id'
+      repo_id = burnDom.data 'repo'
+      branch = burnDom.data 'branch'
+
+      window.router.navigate "#findings?repo_id=#{repo_id}&burn_id=#{burn_id}&branch=#{branch}&only_current=false", {trigger: true, replace: true}
+
+    'click .burn-reignite': (e) ->
+      burn_id = $(e.target).closest('.burn-reignite').data 'id'
+      repo_id = $(e.target).closest('.burn-reignite').data 'repo'
+
+      revision = @burnCollection.get(burn_id).get 'revision'
+      name = @repoCollection.get(repo_id).get 'name'
+
+      Codeburner.Utilities.confirm "Are you sure you want to rescan ``<strong>#{name}</strong> revision #{revision}?", ((data) ->
+        Codeburner.Utilities.getRequest "/api/burn/#{burn_id}/reignite", ((data) =>
+          do window.router.burnListView.renderBurns
+        ), (data) =>
+          Codeburner.Utilities.alert "#{data.responseJSON.error}"
+      ), (data) ->
+        do window.router.burnListView.renderBurns
 
     'keyup .validated': (e) ->
       $('.floating-label').removeClass 'invalid'
@@ -120,32 +110,88 @@ Codeburner.Views.BurnList = Backbone.View.extend
       else
         $(e.target).parent().find('.floating-label').addClass 'invalid'
 
-  renderStats: ->
-    url = '/api/stats'
-    Codeburner.Utilities.getRequest url, (data) ->
-      $('#burn_stats').html JST['app/scripts/templates/burn_stats.ejs']
-        stats: data
+    'click .burn-toggle-log': (e) ->
+      $('[data-toggle="tooltip"]').tooltip('hide')
+      target = $(e.target).closest('.burn-toggle-log')
+      burnId = target.data 'id'
+      logSpan = target.closest('.burn-list-item').find('.burn-log')
+      button = $("button.burn-toggle-log[data-id=#{burnId}]")
+
+      if logSpan.is(':visible')
+        $("button.burn-toggle-log").removeClass('btn-highlight')
+
+        if @logSources[burnId]
+          logSpan.slideUp(300)
+          logSpan.html ""
+
+          @logSources[burnId].close()
+          delete @logSources[burnId]
+          @logSources[burnId] = null
+
+          $('#burn-pause-alert').hide()
+          do @burnCollection.resetFilter
+          do @setRefreshInterval
+      else
+        $('#burn-pause-alert').show()
+        do @clearRefreshInterval
+
+        $("button.burn-toggle-log").removeClass('btn-highlight')
+        button.addClass('btn-highlight')
+
+
+        allLogSpans = target.closest('.container').find('.burn-log')
+        allLogSpans.slideUp(300)
+
+        logSource = new EventSource("api/burn/#{burnId}/log")
+
+        logSource.addEventListener('message', (e) ->
+          logSpan.append "#{e.data}\n"
+          logSpan.scrollTop logSpan[0].scrollHeight
+        , false)
+
+        logSource.addEventListener('error', (e) ->
+          e.srcElement.close()
+          window.router.burnListView.burnCollection.getPage(window.router.burnListView.currentPage).done =>
+            burn = window.router.burnListView.burnCollection.get(burnId).attributes
+            $(".burn-status[data-id=#{burn.id}]").html "&nbsp;#{burn.status}"
+            $(".burn-done-buttons[data-id=#{burn.id}]").fadeIn(500)
+        , false)
+
+        logSpan.slideDown(300)
+
+        @logSources[burnId] = logSource
+
+    'click #resume-burn-updates': (e) ->
+      $('#burn-pause-alert').slideUp(300)
+      do @burnCollection.resetFilter
+      do @setRefreshInterval
+
+      $(e.target).closest('.container').find('.burn-log').slideUp(300)
+
+      do @renderBurns
 
   renderBurns: ->
     @burnCollection.getPage(@currentPage).done =>
       $('#burn_list').html JST['app/scripts/templates/burn.ejs']
         burns: @burnCollection.models
-        services: @serviceCollection.models
+        tagIdentifiers: [ '-', '.', '_' ]
 
       Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize
+
+      if @burnCollection.filters.id
+        button = $("button.burn-toggle-log[data-id=#{@burnCollection.filters.id}]")
+        button.click()
 
   clearRefreshInterval: ->
     clearInterval @burnRefreshInterval
 
+  setRefreshInterval: ->
+    @burnRefreshInterval = setInterval =>
+      do @renderBurns
+    , window.constants.refresh_interval
+
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/burn_page.ejs']
-    do @renderStats
     do @renderBurns
-
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
-
-    @burnRefreshInterval = setInterval =>
-      do @renderStats
-      do @renderBurns
-    , window.constants.refresh_interval
+    do @setRefreshInterval

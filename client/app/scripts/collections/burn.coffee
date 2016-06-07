@@ -31,9 +31,34 @@ class Codeburner.Collections.Burn extends Backbone.PageableCollection
     pageSize: 25
     sortKey: 'count'
     order: 1
+  queryParams:
+    id: null
+  filters:
+    id: null
+
 
   parseState: (data) ->
     totalRecords: data.count
 
   parseRecords: (data) ->
     data.results
+
+  resetFilter: ->
+    @filters =
+      id: null
+    do @changeFilter
+
+  changeFilter: ->
+    query = []
+    for key, value of @filters
+      if $.isArray value
+        data = value.join ','
+      else
+        data = value
+
+      if data
+        query.push "#{key}=#{data}"
+        @queryParams[key] = data
+      else
+        @queryParams[key] = null
+    Backbone.history.navigate "burns?#{query.join '&'}"

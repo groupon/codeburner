@@ -27,7 +27,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
   lastFindingHighlighted: null
-  initialize: (@collection, @serviceCollection) ->
+  initialize: (@collection, @repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -37,7 +37,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
       checkBox.prop 'checked', !checkBox.prop('checked')
 
     'click .show-detail': (e) ->
-      target = $(e.target).parent()
+      target = $(e.target).closest('.finding-row')
       id = target.data 'id'
 
       if @lastFindingHighlighted?
@@ -50,8 +50,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
       $('#detail').html JST['app/scripts/templates/detail.ejs']
         id: id
-        model: @collection.get id
-        services: @serviceCollection.models
+        finding: @collection.get(id).attributes
         burnList: @collection.burnList
 
       if $('#fingerprint-span').height() > 20
@@ -146,36 +145,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
       do @collection.changeFilter
       do @renderFindings
 
-    'keyup #filter': ->
-      $('.service-list').removeClass 'highlight-service-row'
-      $('.service-list').prop 'selected', false
-      @renderServiceList $('#filter').val()
-
-    'click .service-list': (e) ->
-      target = $(e.target).parent()
-      id = target.data 'id'
-      selected = target.prop 'selected'
-
-      if selected
-        target.removeClass 'highlight-service-row'
-        target.prop 'selected', false
-      else
-        $('.service-list').removeClass 'highlight-service-row'
-        $('.service-list').prop 'selected', false
-        target.addClass 'highlight-service-row'
-        target.prop 'selected', true
-
-      do @collection.resetFilter
-      unless selected
-        @collection.filters.service_id = id
-        Backbone.history.navigate "findings?service_id=#{id}"
-      else
-        @collection.filters.service_id = null
-        Backbone.history.navigate "finding"
-
-      do @collection.changeFilter
-      do @renderFindings
-
     'click #filter-btn': ->
       id = $('#filter-btn').data 'finding-id'
       model = @collection.get id
@@ -188,7 +157,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
         id: id
         model: model
         code: code
-        service_name: @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: model.get('service_id')})].get('pretty_name')
+        repo_name: @repoCollection.models[_.findIndex(@repoCollection.models, {id: model.get('repo_id')})].get('name')
         display_severity: window.constants.display_severity[model.get('severity')]
 
       do $('#filterModal').modal
@@ -209,7 +178,7 @@ Codeburner.Views.FindingList = Backbone.View.extend
 
           name = input.attr 'name'
           data[name] = value
-          for field in ['service_id', 'severity', 'detail', 'code']
+          for field in ['repo_id', 'severity', 'detail', 'code']
             if name is field
               checked.push field
 
@@ -248,25 +217,13 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#publish-dialog-body-jira').hide()
       $('#publish-submit').prop 'disabled', false
 
-  filterServiceList: (services, filter) ->
+  filterRepoList: (repos, filter) ->
     if filter
       regex = new RegExp "^#{filter.replace('*','.*').toLowerCase()}.*"
-      _.filter services, (element) ->
-        element.get('pretty_name').toLowerCase().match(regex)
+      _.filter repos, (element) ->
+        element.get('name').toLowerCase().match(regex)
     else
-      services
-
-  renderServiceList: (query) ->
-    $('.service-list').removeClass 'highlight-service-row'
-    $('.service-list').prop 'selected', false
-
-    $('#service-list').html JST['app/scripts/templates/service_list.ejs']
-      services: @filterServiceList @serviceCollection.models, query
-
-    if @collection.filters.service_id
-      selectedRow = $(".service-list[data-id='#{@collection.filters.service_id}']")
-      selectedRow.addClass 'highlight-service-row'
-      selectedRow.prop 'selected', true
+      repos
 
   updateBurnList: ->
       burns = []
@@ -282,10 +239,10 @@ Codeburner.Views.FindingList = Backbone.View.extend
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
   renderFindings: ->
-    if @collection.filters.service_id
-      @service_name = @serviceCollection.models[_.findIndex(@serviceCollection.models, {id: parseInt(@collection.filters.service_id)})].get('pretty_name')
+    if @collection.filters.repo_id
+      @repo_name = @repoCollection.models[_.findIndex(@repoCollection.models, {id: parseInt(@collection.filters.repo_id)})].get('name')
     else
-      @service_name = null
+      @repo_name = null
 
     @collection.getPage(@currentPage).done =>
       @lastHighlighted = null
@@ -293,8 +250,8 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#finding-list').html JST['app/scripts/templates/finding.ejs']
         models: @collection.models
         burn_id: @collection.filters.burn_id
-        service_name: @service_name
-        service_id: @collection.filters.service_id
+        repo_name: @repo_name
+        repo_id: @collection.filters.repo_id
         filtered_by: @collection.filters.filtered_by
 
       sortBy = $("[data-id='#{@collection.state.sortKey}']").find('span')
@@ -305,12 +262,61 @@ Codeburner.Views.FindingList = Backbone.View.extend
       Codeburner.Utilities.renderPaginater @currentPage, @collection.state.totalPages, @collection.state.totalRecords, @collection.state.pageSize
       do @updateBurnList
 
+  filterFindings: (repo, branch) ->
+    if repo?
+      @collection.filters.repo_id = @repoCollection.findWhere(
+        name: repo
+      ).get 'id'
+    else
+      @collection.filters.repo_id = null
+    @collection.filters.branch = branch
+    do @collection.changeFilter
+    do @renderFindings
+
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/finding_page.ejs']
       filtered: '3' in @collection.filters.status
       publish: '2' in @collection.filters.status
       hidden: '1' in @collection.filters.status
-    do @renderServiceList
+
+    if @collection.filters.repo_id?[0]?
+      repo_id = parseInt @collection.filters.repo_id[0], 10
+      repo = @repoCollection.get(repo_id).get 'name'
+    else
+      repo = null
+    branch = @collection.filters.branch
+
+    $('#select-repo').selectize
+      valueField: 'name'
+      labelField: 'name'
+      searchField: ['name']
+      options: @repoCollection.models.map (item) ->
+        name: item.get 'name'
+        forked: item.get 'forked'
+      create: false
+      render:
+        option: (option, escape) =>
+          if option.forked
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{option.name}</div>"
+        item: (item, escape) =>
+          if item.forked
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{item.name}</div>"
+      onInitialize: =>
+        if repo?
+          $('#select-repo').selectize()[0].selectize.setValue repo
+          Codeburner.Utilities.renderBranchSelector repo, branch, (repo, branch) =>
+            @filterFindings repo, branch
+      onChange: (value) =>
+        Codeburner.Utilities.renderBranchSelector value, null, (repo, branch) =>
+          @filterFindings repo, branch
+
     do @renderFindings
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' })

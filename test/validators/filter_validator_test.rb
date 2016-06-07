@@ -26,7 +26,7 @@ require 'test_helper'
 class FilterValidatorTest < ActiveSupport::TestCase
   test "drops duplicate filters" do
     filter = Filter.new({
-      :service => filters(:one).service,
+      :repo => filters(:one).repo,
       :severity => filters(:one).severity,
       :fingerprint => filters(:one).fingerprint,
       :scanner => filters(:one).scanner,

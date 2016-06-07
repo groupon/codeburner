@@ -28,7 +28,7 @@ Codeburner.Views.Stats = Backbone.View.extend
   availableRange: {}
   baseUrl: "/api"
   resolutionSlider: document.getElementById('resolution')
-  initialize: (@serviceCollection) ->
+  initialize: (@repoCollection) ->
     do @undelegateEvents
 
   events:
@@ -49,16 +49,16 @@ Codeburner.Views.Stats = Backbone.View.extend
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
     'click .selectize-control': (e) ->
-      $('#service-list')[0].selectize.clear()
+      $('#repo-list')[0].selectize.clear()
 
-    'change #service-list': (e) ->
-      service = $('#service-list').val()
-      if service == '-1'
+    'change #repo-list': (e) ->
+      repo = $('#repo-list').val()
+      if repo == '-1'
         @baseUrl = "/api"
       else
-        @baseUrl = "/api/service/#{service}"
+        @baseUrl = "/api/repo/#{repo}"
 
-      unless service == ''
+      unless repo == ''
         Codeburner.Utilities.getRequest @baseUrl+"/stats/history/range", ((data) =>
           startDatePicker = $('#start-date')
           endDatePicker = $('#end-date')
@@ -226,6 +226,6 @@ Codeburner.Views.Stats = Backbone.View.extend
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/stats_page.ejs']
-      services: @serviceCollection.models
-    @serviceSelect = $('#service-list').selectize({lockOptgroupOrder: true})
+      repos: @repoCollection.models
+    @repoSelect = $('#repo-list').selectize({lockOptgroupOrder: true})
     do @renderCharts

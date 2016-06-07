@@ -23,7 +23,7 @@
 #
 ARRAY_COLUMN = [
   'burn_id'
-  'service_id'
+  'repo_id'
   'status'
 ]
 PAGINATION_RANGE = 6
@@ -164,7 +164,7 @@ Codeburner.Utilities =
       parsedQuery = Codeburner.Utilities.parseQueryString(query)
       unless parsedQuery.authz == undefined
         localStorage.setItem "authz", parsedQuery.authz
-        Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+        Codeburner.Utilities.getRequest "/api/user", ((data) =>
           Codeburner.User = data
           Codeburner.Utilities.authz()
           redirectTo = localStorage.getItem "authRedirect"
@@ -177,7 +177,7 @@ Codeburner.Utilities =
 
   authz: ->
     if localStorage.getItem "authz"
-      Codeburner.Utilities.getRequest "/api/oauth/user", ((data) =>
+      Codeburner.Utilities.getRequest "/api/user", ((data) =>
         Codeburner.User = data
         $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
           name: Codeburner.User.name
@@ -186,6 +186,88 @@ Codeburner.Utilities =
         $('#user-signout').on 'click', ->
           localStorage.removeItem "authz"
           window.location = "/"
+        $('#user-preferences').on 'click', ->
+          window.location ="/#user"
       ), (data) ->
         Codeburner.User = null
         console.log "invalid authz token"
+
+  selectRepo: ->
+    $('#select-repo').selectize
+      valueField: 'full_name'
+      labelField: 'full_name'
+      searchField: [ 'name', 'html_url', 'full_name' ]
+      create: false
+      render:
+        option: (item, escape) ->
+          if item.fork
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          html = '<div>' +
+            '<span class="title">' +
+              '<span class="name"><span class="octicon ' + repoIcon + '"></span> ' + escape(item.name) + '</span>' +              '<span class="by">' + escape(item.owner.login) + '</span>' +
+            '</span>' +
+            '<span class="description">' + escape(item.description) + '</span>' +
+            '<ul class="meta">' +
+              '<li class="language"><span class="octicon octicon-code"></span> ' + escape(item.language) + '</li>' +
+              '<li class="stargazers"><span class="octicon octicon-star"></span><span> ' + escape(item.stargazers_count) + '</span> </li>' +
+              '<li class="forks"><span class="octicon octicon-repo-forked"></span><span> ' + escape(item.forks) + '</span> </li>' +
+            '</ul>' +
+          '</div>'
+
+          return html
+        item: (item, escape) =>
+          if item.fork
+            repoIcon = 'octicon-repo-forked'
+          else
+            repoIcon = 'octicon-repo'
+
+          return "<div><span class='octicon #{repoIcon}'></span>&nbsp;#{item.full_name}</div>"
+
+      score: (search) ->
+        score = this.getScoreFunction search
+        return (item) ->
+          return score(item) * (1 + Math.min(item.stargazers_count / 100, 1))
+
+      load: (query, callback) ->
+        return callback() unless query.length
+        Codeburner.Utilities.getRequest "/api/github/search/repos?q=#{encodeURIComponent(query)}", ((data) ->
+          callback(data.items)
+        ), (data) ->
+          do callback
+
+      onChange: (value) ->
+        Codeburner.Utilities.renderBranchSelector value
+
+  renderBranchSelector: (repo, selectedRepo, cb) ->
+    do $('#branch-div').show
+    if $('#select-branch')[0].selectize
+      do $('#select-branch')[0].selectize.destroy
+    branchSelector = $('#select-branch').selectize
+      valueField: 'name'
+      labelField: 'name'
+      searchField: ['name']
+      create: false
+      preload: true
+      render:
+        option: (option, escape) ->
+          return "<div><span class='octicon octicon-git-branch'></span>&nbsp;#{option.name}</div>"
+        item: (item, escape) ->
+          return "<div><span class='octicon octicon-git-branch'></span>&nbsp;#{item.name}</div>"
+      load: (query, callback) ->
+        Codeburner.Utilities.getRequest "/api/github/branches?repo=#{encodeURIComponent(repo)}", ((data) ->
+          callback data
+        ), (data) ->
+          do callback
+      onLoad: (data) ->
+        if selectedRepo?
+            branchSelector[0].selectize.setValue selectedRepo
+        else
+          if _.where(data, {name: 'master'}).length > 0
+            branchSelector[0].selectize.setValue 'master'
+          else
+            branchSelector[0].selectize.setValue data[0].name
+      onChange: (value) ->
+        cb repo, value if cb?

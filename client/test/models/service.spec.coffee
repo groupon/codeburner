@@ -26,4 +26,4 @@
 
 describe 'Service Model', ->
   beforeEach ->
-    @ServiceModel = new Codeburner.Models.Service();
+    @ServiceModel = new Codeburner.Models.Repo();

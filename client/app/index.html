@@ -86,15 +86,15 @@
         <a onclick="$('.nav-item').removeClass('active')" class="navbar-brand" href="#"><img src="images/fire.png"></a>
         <ul class="nav navbar-nav navbar-left">
           <li id="nav-burns" class="nav-item"><a href="#burns"><span class="octicon octicon-flame"></span> Burns</a></li>
-          <li id="nav-findings" class="nav-item"><a href="#findings"><span class="octicon octicon-bug"></span> Findings</a></li>
+          <li id="nav-findings" class="nav-item"><a href="#findings"><span class="octicon octicon-search"></span> Findings</a></li>
           <li id="nav-filters" class="nav-item"><a href="#filters"><span class="octicon octicon-diff"></span> Filters</a></li>
           <li id="nav-stats" class="nav-item"><a href="#stats"><span class="octicon octicon-graph"></span> Statistics</a></li>
         </ul>
         <ul id="login-menu" class="nav navbar-nav navbar-right nav-dropdown">
           <li class="nav-item" onclick="$('.nav-item').removeClass('active');$(this).addClass('active')"><a onclick="localStorage.setItem('authRedirect',Backbone.history.location.hash)" href="/api/oauth/authorize">Sign In</a></li>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li class="nav-item" id="nav-settings"><a href="#settings"><span class="octicon octicon-settings"></span> System Settings</a></li>
+        <ul id="navbar-settings" class="nav navbar-nav">
+          <li class="nav-item" id="nav-settings"><a href="#settings"><span class="octicon octicon-settings"></span> Settings</a></li>
         </ul>
       </div>
     </nav>
@@ -139,11 +139,11 @@
     <script src="scripts/models/burn.js"></script>
     <script src="scripts/models/filter.js"></script>
     <script src="scripts/models/finding.js"></script>
-    <script src="scripts/models/service.js"></script>
+    <script src="scripts/models/repo.js"></script>
     <script src="scripts/collections/burn.js"></script>
     <script src="scripts/collections/filter.js"></script>
     <script src="scripts/collections/finding.js"></script>
-    <script src="scripts/collections/service.js"></script>
+    <script src="scripts/collections/repo.js"></script>
     <script src="scripts/templates.js"></script>
     <script src="scripts/views/burn.js"></script>
     <script src="scripts/views/filter.js"></script>
@@ -151,6 +151,7 @@
     <script src="scripts/views/stats.js"></script>
     <script src="scripts/views/settings.js"></script>
     <script src="scripts/views/default.js"></script>
+    <script src="scripts/views/user.js"></script>
     <script src="scripts/routers/main.js"></script>
     <script src="scripts/highlight.pack.js"></script>
     <!-- endbuild -->

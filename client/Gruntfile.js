@@ -61,13 +61,15 @@ module.exports = function (grunt) {
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
           '<%= yeoman.app %>/scripts/templates/*.{ejs,mustache,hbs}',
           '<%= yeoman.app %>/scripts/templates/settings/*.ejs',
+          '<%= yeoman.app %>/scripts/templates/user/*.ejs',
           'test/spec/**/*.js'
         ]
       },
       jst: {
         files: [
           '<%= yeoman.app %>/scripts/templates/*.ejs',
-          '<%= yeoman.app %>/scripts/templates/settings/*.ejs'
+          '<%= yeoman.app %>/scripts/templates/settings/*.ejs',
+          '<%= yeoman.app %>/scripts/templates/user/*.ejs',
         ],
         tasks: ['jst']
       },
@@ -290,7 +292,7 @@ module.exports = function (grunt) {
     jst: {
       compile: {
         files: {
-          '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs', '<%= yeoman.app %>/scripts/templates/settings/*.ejs']
+          '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs', '<%= yeoman.app %>/scripts/templates/settings/*.ejs', '<%= yeoman.app %>/scripts/templates/user/*.ejs']
         }
       }
     },

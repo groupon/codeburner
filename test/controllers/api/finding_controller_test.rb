@@ -48,7 +48,7 @@ class Api::FindingControllerTest < ActionController::TestCase
   end
 
   test "sorts by pretty name and orders" do
-    get(:index, {:sort_by => 'service_name', :order => 'asc'})
+    get(:index, {:sort_by => 'repo_name', :order => 'asc'})
 
     assert_response :success
     assert_equal findings(:one).as_json, JSON.parse(@response.body)['results'][0], "wrong finding is first"

@@ -38,21 +38,21 @@ class Api::FindingController < ApplicationController
   #       required: false
   #       location: query
   #       description: A comma-separated list of finding IDs
-  #     service_id:
+  #     repo_id:
   #       type: integer
   #       required: false
   #       location: query
-  #       description: A comma-separated list of service IDs
+  #       description: A comma-separated list of repo IDs
   #     burn_id:
   #       type: integer
   #       required: false
   #       location: query
   #       description: A comma-separated list of burn IDs
-  #     service_name:
+  #     repo_name:
   #       type: string
   #       required: false
   #       location: query
-  #       description: A case-insensitve search for a specific service name (short or long form)
+  #       description: A case-insensitve search for a specific repo name (short or long form)
   #     severity:
   #       type: integer
   #       required: false
@@ -77,7 +77,7 @@ class Api::FindingController < ApplicationController
   #       type: string
   #       required: false
   #       location: query
-  #       description: The field to sort by, supported fields are id, service_id, service_name, revision, code_lang, repo_url, status
+  #       description: The field to sort by, supported fields are id, repo_id, repo_name, revision, code_lang, repo_url, status
   #     per_page:
   #       type: integer
   #       required: false
@@ -104,12 +104,12 @@ class Api::FindingController < ApplicationController
   #         $ref: findings.show.response
   # END ServiceDiscovery
   def index
-    safe_sorts = ['id', 'service_id', 'service_name', 'severity', 'fingerprint', 'status', 'description']
+    safe_sorts = ['id', 'repo_id', 'repo_name', 'severity', 'fingerprint', 'status', 'description']
     sort_by = 'findings.id'
     order = nil
 
-    if params[:sort_by] == 'service_name'
-      sort_by = "services.pretty_name"
+    if params[:sort_by] == 'repo_name'
+      sort_by = "repos.name"
     else
       sort_by = "#{params[:sort_by]}" if safe_sorts.include? params[:sort_by]
     end
@@ -118,23 +118,36 @@ class Api::FindingController < ApplicationController
       order = params[:order].upcase if ['ASC','DESC'].include? params[:order].upcase
     end
 
-    results = Finding.id(params[:id]) \
-      .service_id(params[:service_id]) \
-      .burn_id(params[:burn_id]) \
-      .service_name(params[:service_name]) \
+    if params.has_key?(:only_current) and ["false", "no", "n"].include? params[:only_current].downcase
+      only_current = false
+    else
+      only_current = true
+    end
+
+
+
+    results = Finding.only_current(only_current) \
+      .id(params[:id]) \
+      .repo_id(params[:repo_id]) \
+      .branch_name(params[:branch]) \
+      .repo_name(params[:repo_name]) \
       .severity(params[:severity]) \
       .description(params[:description]) \
       .fingerprint(params[:fingerprint]) \
       .status(params[:status]) \
       .order("#{sort_by} #{order}") \
       .page(params[:page]) \
-      .per(params[:per_page])
+      .per(params[:per_page]) \
+
+    if params.has_key?(:burn_id)
+      results = results.burn_id(params[:burn_id])
+    end
 
     if params.has_key?(:filtered_by)
       results = results.filtered_by(params[:filtered_by])
     end
 
-    render(:json => { "count": results.total_count, "results": results })
+    render(:json => { "count": results.total_count, "results": results.map{|r| r.to_json} })
   end
 
   # START ServiceDiscovery
@@ -162,9 +175,9 @@ class Api::FindingController < ApplicationController
   #     burn_id:
   #       type: integer
   #       description: ID of the burn associated with this finding
-  #     service_id:
+  #     repo_id:
   #       type: integer
-  #       descritpion: the service ID
+  #       descritpion: the repo ID
   #     severity:
   #       type: integer
   #       description: severity code (0 - 3)
@@ -191,7 +204,7 @@ class Api::FindingController < ApplicationController
   #       description: code snippet
   # END ServiceDiscovery
   def show
-    render(:json => Finding.find(params[:id]).as_json)
+    render(:json => Finding.find(params[:id]).to_json)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no finding with that id found}"}, :status => 404)
   end
@@ -331,12 +344,12 @@ class Api::FindingController < ApplicationController
     description = render_to_string "jira"
 
     jira_options = {
-      :site => Setting.jira.host,
-      :username => Setting.jira.username,
-      :password => Setting.jira.password,
-      :context_path => Setting.jira.context_path,
+      :site => Setting.jira['host'],
+      :username => Setting.jira['username'],
+      :password => Setting.jira['password'],
+      :context_path => Setting.jira['context_path'],
       :auth_type => :basic,
-      :use_ssl => Setting.jira.use_ssl
+      :use_ssl => Setting.jira['use_ssl']
     }
 
     jira = JIRA::Client.new(jira_options)
@@ -350,9 +363,9 @@ class Api::FindingController < ApplicationController
         "issuetype" => {
           "name" => "Task"
         },
-        "summary" => "#{@finding.service.pretty_name} - #{@finding.description}",
+        "summary" => "#{@finding.repo.full_name} - #{@finding.description}",
         "description" => description,
-        "labels" => [ "security-issue", @finding.service.short_name.downcase.gsub(' ','-').gsub(/\p{^Alnum}-/, '') ]
+        "labels" => [ "security-issue", @finding.repo.name.downcase.gsub(' ','-').gsub(/\p{^Alnum}-/, '') ]
       }
     })
 

@@ -27,7 +27,7 @@ class FindingTest < ActiveSupport::TestCase
 
   test "is filtered by filters" do
     filtered_finding = Finding.create({
-      :service => filters(:one).service,
+      :repo => filters(:one).repo,
       :severity => filters(:one).severity,
       :fingerprint => filters(:one).fingerprint,
       :scanner => filters(:one).scanner,
@@ -43,20 +43,20 @@ class FindingTest < ActiveSupport::TestCase
     assert_equal filters(:one).inspect, filtered_finding.filter.inspect, "not filtered_by correctly"
   end
 
-  test "only valid with service, burn, and fingerprint set" do
+  test "only valid with repo, burn, and fingerprint set" do
     finding = Finding.new
-    refute finding.valid?, "Valid without service or fingerprint"
-    finding.service = services(:one)
+    refute finding.valid?, "Valid without repo or fingerprint"
+    finding.repo = repos(:one)
     refute finding.valid?, "Valid without fingerprint or burn"
     finding.fingerprint = 'abcdefg1234567890'
     refute finding.valid?, "Valid without burn"
     finding.burn = burns(:one)
-    assert finding.valid?, "Ivalid with all of service,burn,fingerprint"
+    assert finding.valid?, "Ivalid with all of repo,burn,fingerprint"
   end
 
-  test "only allows a unique combination of service and fingerprint" do
-    finding = Finding.new({:service => services(:one), :fingerprint => 'abcdefg123456789'})
-    refute finding.valid?, "Duplicate service/fingerprint combo valid"
+  test "only allows a unique combination of repo and fingerprint" do
+    finding = Finding.new({:repo => repos(:one), :fingerprint => 'abcdefg123456789'})
+    refute finding.valid?, "Duplicate repo/fingerprint combo valid"
   end
 
   test "searchable named scopes work as expected" do
@@ -64,14 +64,14 @@ class FindingTest < ActiveSupport::TestCase
       Finding.id(nil) \
         .burn_id(nil) \
         .description(nil) \
-        .service_id(nil) \
-        .service_name(nil) \
+        .repo_id(nil) \
+        .repo_name(nil) \
         .severity(nil) \
         .fingerprint(nil) \
         .status(nil) \
         .sort.inspect, "all named scopes nil is not Finding.all"
     assert_equal Finding.all.inspect, Finding.id("#{findings(:one).id},#{findings(:two).id}").inspect, "finding multiselect is not correct for multiple values"
     assert_equal findings(:one).inspect, Finding.id(findings(:one).id).first.inspect, "finding multiselect not correct for single value"
-    assert_equal findings(:one).inspect, Finding.service_name('test_service').first.inspect, "finding by service_name invalid"
+    assert_equal findings(:one).inspect, Finding.repo_name('test_repo').first.inspect, "finding by repo_name invalid"
   end
 end

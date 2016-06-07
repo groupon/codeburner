@@ -14,12 +14,12 @@ The default behavior selects every field **except** line number, meaning it will
 
 ![filter_default](images/filter_default.png)
 
-As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your service.  If you select just the fields "Service Name" and "Scanner" you'll do just that:
+As a more advanced example, let's say you wanted to filter every finding from a specific scanner (in this example Brakeman) for your repo.  If you select just the fields "Service Name" and "Scanner" you'll do just that:
 
 ![filter_more](images/filter_more.png)
 
 !!! Note
-    The filtering interface is flexible enough that you can in fact filter every result for every service (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.
+    The filtering interface is flexible enough that you can in fact filter every result for every repo (by creating a filter with everything unchecked).  While this is easily undone by simply deleting the offending filter, it's worth noting and is one of many possibilities afforded by the flexibility of the system.
 
 ***
 

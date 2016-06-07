@@ -31,18 +31,25 @@ Rails.application.routes.draw do
     match 'oauth/authorize' => 'oauth#authorize', :via => :get
     match 'oauth/user' => 'oauth#user', :via => :get
 
-    resources :service, :only => [:index, :show] do
+    resources :repo, :only => [:index, :show] do
       member do
         get 'stats'
-        match 'stats/history' => 'service#history', :via => :get
-        match 'stats/burns' => 'service#burns', :via => :get
-        match 'stats/history/range' => 'service#history_range', :via => :get
-        match 'stats/history/resolution' => 'service#history_resolution', :via => :get
+        get 'branches'
+        match 'stats/history' => 'repo#history', :via => :get
+        match 'stats/burns' => 'repo#burns', :via => :get
+        match 'stats/history/range' => 'repo#history_range', :via => :get
+        match 'stats/history/resolution' => 'repo#history_resolution', :via => :get
       end
     end
 
     resources :filter, :only => [:index, :show, :create, :destroy]
-    resources :burn, :only => [:index, :show, :create]
+
+    resources :burn, :only => [:index, :show, :create ] do
+      member do
+        get 'reignite'
+        get 'log'
+      end
+    end
 
     resources :finding, :only => [:index, :show, :update] do
       put 'publish', on: :member
@@ -57,11 +64,23 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :user, :only => [ :index, :show ] do
+      member do
+        get 'webhooks'
+        match 'repos' => 'user#add_repo_hook', :via => :post
+        match 'repos/:repo' => 'user#remove_repo_hook', :via => :delete
+      end
+    end
+
+    resources :token, :only => [ :index, :show, :create, :destroy ]
+
     match 'settings' => 'settings#index', :via => :get
     match 'settings' => 'settings#update', :via => :post
     match 'settings/admin' => 'settings#admin_list', :via => :get
     match 'settings/admin' => 'settings#admin_update', :via => :post
 
     match 'github/search/:type' => 'github#search', :via => :get
+    match 'github/branches' => 'github#branches', :via => :get
+    match 'github/webhook' => 'github#webhook', :via => :post
   end
 end

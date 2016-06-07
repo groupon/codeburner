@@ -23,6 +23,7 @@
 #
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
+  rescue_from Octokit::Unauthorized, :with => :github_auth_error
 
   def admin_only
     if User.admin.count > 0
@@ -33,6 +34,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+    def fake_authz
+      @current_user = User.first
+    end
+
     def authz
       begin
         uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
@@ -49,6 +54,10 @@ class ApplicationController < ActionController::Base
       rescue JWT::DecodeError
         @current_user = nil
       end
+    end
+
+    def github_auth_error
+      render(:json => {error: 'GitHub authorization failure.  Try logging in again.'}, :status => 401)
     end
 
 end

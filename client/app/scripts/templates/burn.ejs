@@ -21,27 +21,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -->
-<div class="container col-md-10">
+<div class="container row">
   <ul class="list-unstyled">
-    <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button></li>
+    <li><button class="btn btn-sm" data-toggle="tooltip" data-placement="right" title="" data-original-title="Submit a new burn" id="submit-burn-btn"><i class="octicon octicon-plus"></i></button>
+      <div id="burn-pause-alert" class="alert alert-info alert-dismissible" role="alert" hidden>
+        Automatic updates to the burn list are disabled while viewing logs, close any open logs or <a id="resume-burn-updates" href="javascript:void(0)" class="alert-link">click here</a> to close/resume.
+      </div>
+    </li>
     <% burns.forEach(function(item) { %>
-      <% var burn = item.attributes; %>
-      <% var service = services[_.findIndex(services, {id: burn.service_id})].attributes; %>
+      <% var burn = item.attributes %>
       <li>
-        <div class="row burn-list-item" style="padding:1em;margin:1em;">
+        <div class="row burn-list-item" style="padding:1em;margin:1em;" data-id="<%= burn.id %>">
           <div class="col-md-4">
-            <span class="octicon octicon-repo"></span> &nbsp;<a href="<%= burn.repo_url %>" target="_blank"><%= service.pretty_name %></a><br>
-            <span class="octicon octicon-git-commit" style="margin-left:1em;"></span> &nbsp;<%= burn.revision.slice(0,8) %>
+            <span class="octicon <% if (burn.repo.forked) { %>octicon-repo-forked<% } else { %>octicon-repo<% } %>"></span> &nbsp;<%= burn.repo.name %><br>
+            <span class="octicon octicon-git-branch" style="margin-left:1em;"></span>&nbsp;<%= burn.branch.name %>
+            <span class="octicon octicon-git-commit" style="margin-left:1em;"></span>&nbsp;
+            <% if (tagIdentifiers.some(function(i) { return burn.revision.indexOf(i) != -1; })) { %>
+              <%= burn.revision %>
+            <% } else { %>
+              <%= burn.revision.slice(0,7) %>
+            <% }; %>
+            <% if (burn.pull_request) { %>
+              <span class="octicon octicon-git-pull-request" style="margin-left:1em;"></span>&nbsp;<a href="<%= burn.repo_url %>/pull/<%= burn.pull_request %>" target="_blank">#<%= burn.pull_request %></a>
+            <% }; %>
           </div>
-          <div class="col-md-5"><span class="octicon octicon-code"></span> &nbsp;<%= burn.code_lang %></div>
+          <div class="col-md-4"><span class="octicon octicon-code"></span> <span class="burn-lang">&nbsp;<%= burn.code_lang %></span></div>
           <div class="col-md-2">
             <span class="octicon octicon-clock"></span> &nbsp;<%= moment(burn.created_at).fromNow() %><br>
-            <span class="octicon octicon-question"></span> &nbsp;<%= burn.status %>
+            <span class="octicon octicon-question"></span> <span class="burn-status" data-id="<%= burn.id %>">&nbsp;<%= burn.status %></span>
           </div>
-          <div class="col-md-1">
-            <% if (burn.status == "done") { %>
-              <a href="javascript:void(0)" class="btn btn-default btn-xs burn-show-findings" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Show findings for this burn" data-id="<%= burn.id %>" data-service="<%= service.id %>"><i class="octicon octicon-bug"></i></a>
-            <% }; %>
+          <div class="col-md-2">
+            <div class="pull-left">
+              <button class="burn-toggle-log btn btn-default btn-xs btn-link" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Show/hide logs for this burn" data-id="<%= burn.id %>" data-repo="<%= burn.repo.id %>"><span class="octicon octicon-three-bars"></span></button>
+            </div>
+            <div data-id="<%= burn.id %>" class="burn-done-buttons pull-right" <% if (burn.status == "created" || burn.status =="burning") { %>hidden<% } %>>
+              <a href="javascript:void(0)" class="btn btn-default btn-xs burn-show-findings" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Show findings for this burn" data-id="<%= burn.id %>" data-branch="<%= burn.branch.name %>" data-repo="<%= burn.repo.id %>"><i class="octicon octicon-search"></i></a>
+              <a href="javascript:void(0)" class="btn btn-default btn-xs burn-reignite" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Re-ignite this burn" data-id="<%= burn.id %>" data-repo="<%= burn.repo.id %>"><i class="octicon octicon-sync"></i></a>
+            </div>
+          </div>
+          <div class="row">&nbsp;</div>
+          <div class="row">
+            <pre class="burn-log" hidden></pre>
           </div>
         </div>
       </li>

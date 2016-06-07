@@ -24,32 +24,32 @@
 require 'test_helper'
 
 class ServiceTest < ActiveSupport::TestCase
-  def service
-    @service ||= Service.new
+  def repo
+    @repo ||= Repo.new
   end
 
-  test "only valid with short_name set" do
-    refute service.valid?, "Service saved without short_name"
-    service.short_name = 'test'
-    assert service.valid?, "Failed to save with short name"
+  test "only valid with name set" do
+    refute repo.valid?, "Service saved without name"
+    repo.name = 'test'
+    assert repo.valid?, "Failed to save with short name"
   end
 
-  test "duplicate short_name is invalid" do
-    duplicate_service = Service.new({:short_name => services(:one).short_name})
-    refute duplicate_service.valid?, "Service valid with duplicate short_name"
+  test "duplicate name is invalid" do
+    duplicate_repo = Repo.new({:name => repos(:one).name})
+    refute duplicate_repo.valid?, "Service valid with duplicate name"
   end
 
-  test "calls CodeburnerUtil.get_service_info and returns valid pretty_name" do
-    blank_service = Service.new
-    blank_service.short_name = 'one'
-    blank_service.service_portal = true
-    CodeburnerUtil.expects(:get_service_info).returns({ 'title' => 'Test Service' }).once
-    assert blank_service.pretty_name(true) == 'Test Service', 'pretty_name is not Test Service'
+  test "calls CodeburnerUtil.get_repo_info and returns valid full_name" do
+    blank_repo = Repo.new
+    blank_repo.name = 'one'
+    blank_repo.repo_portal = true
+    CodeburnerUtil.expects(:get_repo_info).returns({ 'title' => 'Test Service' }).once
+    assert blank_repo.full_name(true) == 'Test Service', 'full_name is not Test Service'
   end
 
   test "searchable named scopes work as expected" do
-    assert_equal Service.all.sort.inspect, Service.id(nil).short_name(nil).pretty_name(nil).has_findings.has_burns.sort.inspect, "chained scopes don't equal Service.all"
-    assert_equal services(:one), Service.pretty_name('Test Service').first, "Service.pretty_name('Test Service') is not services(:one)"
-    assert_equal services(:one), Service.id(services(:one).id).first, "single select service doesn't work"
+    assert_equal Repo.all.sort.inspect, Repo.id(nil).name(nil).full_name(nil).has_findings.has_burns.sort.inspect, "chained scopes don't equal Repo.all"
+    assert_equal repos(:one), Repo.full_name('Test Service').first, "Repo.full_name('Test Service') is not repos(:one)"
+    assert_equal repos(:one), Repo.id(repos(:one).id).first, "single select repo doesn't work"
   end
 end

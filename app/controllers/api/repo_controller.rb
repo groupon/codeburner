@@ -21,18 +21,18 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-class Api::ServiceController < ApplicationController
+class Api::RepoController < ApplicationController
   respond_to :json
 
   # START ServiceDiscovery
-  # resource: services.index
-  # description: Show all services with associated burns
+  # resource: repos.index
+  # description: Show all repos with associated burns
   # method: GET
-  # path: /service
+  # path: /repo
   #
   # response:
-  #   name: services
-  #   description: a hash containing a result count and list of services
+  #   name: repos
+  #   description: a hash containing a result count and list of repos
   #   type: object
   #   properties:
   #     count:
@@ -40,66 +40,66 @@ class Api::ServiceController < ApplicationController
   #       description: number of results
   #     results:
   #       type: array
-  #       descritpion: the list of services
+  #       descritpion: the list of repos
   #       items:
-  #         $ref: services.show.response
+  #         $ref: repos.show.response
   # END ServiceDiscovery
   def index
-    services = Rails.cache.fetch('services') { CodeburnerUtil.get_services }
+    repos = Rails.cache.fetch('repos') { CodeburnerUtil.get_repos }
 
-    render(:json => { "count": services.length, "results": services })
+    render(:json => { "count": repos.length, "results": repos })
   end
 
   # START ServiceDiscovery
-  # resource: services.show
-  # description: show a service
+  # resource: repos.show
+  # description: show a repo
   # method: GET
-  # path: /service/:id
+  # path: /repo/:id
   #
   # request:
   #   parameters:
   #     id:
   #       type: integer
-  #       descritpion: service ID
+  #       descritpion: repo ID
   #       location: url
   #       required: true
   #
   # response:
-  #   name: service
-  #   description: a service object
+  #   name: repo
+  #   description: a repo object
   #   type: object
   #   properties:
   #     id:
   #       type: integer
-  #       description: service ID
-  #     short_name:
+  #       description: repo ID
+  #     name:
   #       type: string
-  #       description: the unique identifying name of the service
-  #     pretty_name:
+  #       description: the unique identifying name of the repo
+  #     full_name:
   #       type: string
-  #       description: the long-form display name of the service
-  #     service_portal:
+  #       description: the long-form display name of the repo
+  #     repo_portal:
   #       type: boolean
-  #       description: service is from service-portal?
+  #       description: repo is from repo-portal?
   #
   # END ServiceDiscovery
   def show
-    render(:json => Service.find(params[:id]))
+    render(:json => Repo.find(params[:id]).to_json)
   rescue ActiveRecord::RecordNotFound
-    render(:json => {error: "no service with that id found}"}, :status => 404)
+    render(:json => {error: "no repo with that id found}"}, :status => 404)
   end
 
   # START ServiceDiscovery
-  # resource: services.stats
-  # description: show statistics on a service
+  # resource: repos.stats
+  # description: show statistics on a repo
   # method: GET
-  # path: /service/:ids/stats
+  # path: /repo/:ids/stats
   #
   # request:
   #   parameters:
   #     id:
   #       type: integer
-  #       descritpion: service ID
+  #       descritpion: repo ID
   #       location: url
   #       required: true
   #
@@ -110,33 +110,33 @@ class Api::ServiceController < ApplicationController
   #   properties:
   #     burn_count:
   #       type: integer
-  #       description: number of burns run against the service
+  #       description: number of burns run against the repo
   #     total_findings:
   #       type: integer
-  #       description: the total number of findings for the service
+  #       description: the total number of findings for the repo
   #     open_findings:
   #       type: integer
   #       description: the number of findings that aren't hidden/published/filtered
   #     hidden_findings:
   #       type: integer
-  #       description: the number of hidden findings for a service
+  #       description: the number of hidden findings for a repo
   #     published_findings:
   #       type: integer
-  #       description: the number of published findings for a service
+  #       description: the number of published findings for a repo
   #     filtered_findings:
   #       type: integer
-  #       description: the number of filtered findings for a service
+  #       description: the number of filtered findings for a repo
   #     last_burn:
   #       type: object
-  #       description: the last burn performed against a service
+  #       description: the last burn performed against a repo
   #       properties:
   #         $ref: burns.show.response
   #
   # END ServiceDiscovery
   def stats
-    service = Service.find(params[:id])
+    repo = Repo.find(params[:id])
 
-    render(:json => CodeburnerUtil.get_service_stats(service.id))
+    render(:json => CodeburnerUtil.get_repo_stats(repo.id))
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "Service or findings not found}"}, :status => 404)
   end
@@ -150,16 +150,20 @@ class Api::ServiceController < ApplicationController
   end
 
   def history
-    service = Service.find(params[:id])
+    repo = Repo.find(params[:id])
 
-    render(:json => CodeburnerUtil.get_history(params[:start_date], params[:end_date], params[:resolution], nil, service.id))
+    render(:json => CodeburnerUtil.get_history(params[:start_date], params[:end_date], params[:resolution], nil, repo.id))
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "Service or findings not found}"}, :status => 404)
   end
 
+  def branches
+    render(:json => Branch.where(:repo_id => params[:id]))
+  end
+
   def burns
-    service = Service.find(params[:id])
-    render(:json => CodeburnerUtil.get_burn_history(params[:start_date], params[:end_date], service.id))
+    repo = Repo.find(params[:id])
+    render(:json => CodeburnerUtil.get_burn_history(params[:start_date], params[:end_date], repo.id))
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "Service or findings not found}"}, :status => 404)
   end

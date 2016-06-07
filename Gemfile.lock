@@ -44,16 +44,7 @@ GEM
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
-    brakeman (3.2.1)
-      erubis (~> 2.6)
-      haml (>= 3.0, < 5.0)
-      highline (>= 1.6.20, < 2.0)
-      ruby2ruby (~> 2.3.0)
-      ruby_parser (~> 3.8.1)
-      safe_yaml (>= 1.0)
-      sass (~> 3.0)
-      slim (>= 1.3.6, < 4.0)
-      terminal-table (~> 1.4)
+    brakeman (3.3.1)
     builder (3.2.2)
     bundler-audit (0.5.0)
       bundler (~> 1.2)
@@ -186,7 +177,7 @@ GEM
       ruby-progressbar
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    multi_json (1.11.2)
+    multi_json (1.12.1)
     multipart-post (2.0.0)
     mysql2 (0.3.20)
     net-scp (1.2.1)
@@ -198,7 +189,7 @@ GEM
     oauth (0.4.7)
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
-    owasp-pipeline (0.8.6)
+    owasp-pipeline (0.8.7)
       brakeman (>= 3.0.5)
       bundler-audit (>= 0.3.1)
       curb (>= 0.8.8)
@@ -225,6 +216,7 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     ptools (1.3.3)
+    puma (3.4.0)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -283,13 +275,8 @@ GEM
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     ruby-progressbar (1.7.5)
-    ruby2ruby (2.3.0)
-      ruby_parser (~> 3.1)
-      sexp_processor (~> 4.0)
-    ruby_parser (3.8.1)
+    ruby_parser (3.8.2)
       sexp_processor (~> 4.1)
-    safe_yaml (1.0.4)
-    sass (3.4.22)
     sawyer (0.7.0)
       addressable (>= 2.3.5, < 2.5)
       faraday (~> 0.8, < 0.10)
@@ -360,10 +347,11 @@ DEPENDENCIES
   mocha
   mysql2 (~> 0.3.20, >= 0.3.20)
   octokit
-  owasp-pipeline (>= 0.8.6)
+  owasp-pipeline (>= 0.8.7)
   paper_trail (>= 4.0.0)
   pry-byebug
   pry-rails
+  puma
   rails (= 4.2.5.1)
   rails-settings-cached
   redis-rails

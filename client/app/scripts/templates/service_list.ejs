@@ -23,8 +23,8 @@ THE SOFTWARE.
 -->
 <table class="table borderless">
   <tbody>
-  <% services.forEach(function(service){ %>
-    <tr class="service-list" data-id="<%= service.get('id') %>"><td><%= service.get('pretty_name') %></td></tr>
+  <% repos.forEach(function(repo){ %>
+    <tr class="repo-list" data-id="<%= repo.get('id') %>"><td><%= repo.get('name') %></td></tr>
   <% }) %>
   </tbody>
 </table>

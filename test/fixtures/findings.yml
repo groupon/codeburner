@@ -24,7 +24,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  service: one
+  repo: one
   burn: one
   filter: one
   description: test_description
@@ -38,7 +38,7 @@ one:
   code: some_test_code()
 
 two:
-  service: two
+  repo: two
   burn: two
   filter:
   description: Finding Two

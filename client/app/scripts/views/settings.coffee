@@ -26,7 +26,6 @@
 Codeburner.Views.Settings = Backbone.View.extend
   el: $('#content')
   currentPage: 1
-  settigs: {}
   initialize: (@settings) ->
     do @undelegateEvents
 
@@ -107,20 +106,22 @@ Codeburner.Views.Settings = Backbone.View.extend
       load: (query, callback) ->
         return callback() unless query.length
         $.ajax(
-          url: "https://api.github.com/search/users?q=\"#{encodeURIComponent(query)}\"+in:fullname"
+          url: "/api/github/search/users?q=\"#{encodeURIComponent(query)}\"+in:fullname"
           type: 'GET'
           headers:
             'Accept': 'application/vnd.github.v3.text-match+json'
+            'Authorization': localStorage.getItem('authz')
           error: () ->
             callback()
 
           success: (res) ->
             for user in res.items
-              name = user.text_matches.filter((match) =>
-                match.property == 'name'
-              )
-              if name.length > 0
-                user.fullname = name[0].fragment
+              if user.text_matches
+                name = user.text_matches.filter((match) =>
+                  match.property == 'name'
+                )
+                if name.length > 0
+                  user.fullname = name[0].fragment
             callback(res.items)
         )
     )

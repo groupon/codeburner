@@ -27,20 +27,16 @@ THE SOFTWARE.
     Currently showing only findings filtered by filter #<%= filtered_by %>.  <a href="#findings?status=0" class="alert-link">Show all findings.</a>
   </div>
 <% } %>
-<% if (burn_id && service_id && models.length > 0) { %>
+<% if (burn_id && repo_id && models.length > 0) { %>
   <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Currently showing only findings for burn #<%= burn_id %>.  <a href="#findings?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %>.</a>
+    Currently showing only findings for burn #<%= burn_id %>.  <a href="#findings?repo_id=<%= repo_id %>&status=0" class="alert-link">Show all findings for <%= repo_name %>.</a>
   </div>
 <% } %>
 <% if (models.length > 0) { %>
   <table class="table">
     <thead class="table-bordered" bgcolor="#F6F6F6">
       <tr>
-        <th class="header" data-id="burn_id" width="10%">
-          Burn
-          <span class="sorting hidden" data-id="burn_id"><span class="caret" data-id="burn_id"></span></span>
-        </th>
         <th class="header" data-id="description" width="62%">
           Description
           <span class="sorting hidden" data-id="description"><span class="caret" data-id="description"></span></span>
@@ -73,7 +69,6 @@ THE SOFTWARE.
       %>
 
       <tr class="<%= color_class %> finding-row" id="finding-row" selected="false" data-id="<%= model.get('id') %>">
-        <td class="show-detail"><%= model.get('burn_id') %></td>
         <td class="show-detail"><%= model.get('description') %></td>
         <td class="show-detail"><%= display_severity %></td>
         <td class="show-detail"><%= display_status %></td>
@@ -84,6 +79,6 @@ THE SOFTWARE.
 <% } else { %>
   <div class="alert alert-info alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    No findings match the current criteria. <% if (burn_id != null) { %>Currently showing findings only for burn #<%= burn_id %>.  <a href="#findings?service_id=<%= service_id %>&status=0" class="alert-link">Show all findings for <%= service_name %></a><% } %>
+    No findings match the current criteria. <% if (burn_id != null) { %>Currently showing findings only for burn #<%= burn_id %>.  <a href="#findings?repo_id=<%= repo_id %>&status=0" class="alert-link">Show all findings for <%= repo_name %></a><% } %>
   </div>
 <% } %>

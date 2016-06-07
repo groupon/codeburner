@@ -41,7 +41,7 @@ textarea {
   margin-left: 120px;
 }
 
-.service-sidebar {
+.repo-sidebar {
   height: 1000px !important;
   overflow-y: scroll !important;
 }
@@ -124,11 +124,11 @@ a:hover {
   color: $groupon_green;
 }
 
-tr.service-list:hover {
+tr.repo-list:hover {
   background-color: rgba(83, 163, 24, 0.2) !important;
 }
 
-tr.service-list.highlight-service-row {
+tr.repo-list.highlight-repo-row {
   background-color: $groupon_green !important;
   color: #fff !important;
 }
@@ -355,7 +355,8 @@ ul.dropdown-menu {
   min-height:28px !important;
 }
 
-.burn-list-item {
+.burn-list-item,
+.repo-list-item {
   border: 1px solid #EFF0EC;
   line-height: 150%;
 }
@@ -374,4 +375,26 @@ a.dropdown-toggle span.caret {
 
 .selectized.select-border {
   border-bottom: 1px solid $black;
+}
+
+.burn-log {
+  font-size: 0.8em;
+  color: #f1f1f1;
+  background-color: #444;
+  overflow: scroll;
+  height: 40em;
+  margin: 1em;
+}
+
+.btn-highlight {
+  background-color: rgba(153, 153, 153, 0.2) !important;
+}
+
+.btn-link.btn-hightlight {
+  background-color: rgba(153, 153, 153, 0.2) !important;
+}
+
+.btn-link:focus,.btn-link:active,.btn-link:hover :not(.btn-hightlight) {
+  background-color: transparent;
+  outline: transparent;
 }

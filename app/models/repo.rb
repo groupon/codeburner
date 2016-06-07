@@ -21,36 +21,38 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
-class Service < ActiveRecord::Base
-  validates :short_name, presence: true
-  validates :short_name, uniqueness: true
+class Repo < ActiveRecord::Base
+  validates :name, presence: true
+  validates :name, uniqueness: true
   has_many :burns
   has_many :findings
-  has_one  :service_stat
+  has_many :branches
+  has_one  :repo_stat
+  has_and_belongs_to_many :users, join_table: 'repos_users'
+  belongs_to :webhook_user, class_name: 'User'
 
   after_save :update_caches
 
-  scope :id,            -> (service_id)   { scope_multiselect("services.id", service_id) }
-  scope :short_name,    -> (short_name)   { where("short_name LIKE ?",  short_name ||= "%") }
-  scope :pretty_name,   -> (pretty_name)  { scope_pretty_name(pretty_name) }
-  scope :service_portal,-> (select)       { where("service_portal = ?", select) }
+  scope :id,            -> (repo_id)   { scope_multiselect("repos.id", repo_id) }
+  scope :full_name,   -> (full_name)  { scope_full_name(full_name) }
+  scope :repo_portal,-> (select)       { where("repo_portal = ?", select) }
   scope :has_burns,     ->                { scope_has_burns }
   scope :has_findings,  ->                { scope_has_findings }
 
   def update_caches
     CodeburnerUtil.update_system_stats
-    CodeburnerUtil.update_service_stats(self.id)
+    CodeburnerUtil.update_repo_stats(self.id)
   end
 
-  def pretty_name reset=false
-    return self[:pretty_name] unless reset == true
+  def full_name reset=false
+    return self[:full_name] unless reset == true
 
-    if self[:service_portal] == true
-      name = CodeburnerUtil.get_service_info(self[:short_name])['title']
-      self.update(pretty_name: name) unless name.nil?
+    if self[:repo_portal] == true
+      name = CodeburnerUtil.get_repo_info(self[:name])['title']
+      self.update(full_name: name) unless name.nil?
     end
 
-    return self[:pretty_name]
+    return self[:full_name]
   end
 
   def self.scope_multiselect attribute, value
@@ -66,21 +68,33 @@ class Service < ActiveRecord::Base
     end
   end
 
-  def self.scope_pretty_name name
+  def to_json
+    {
+    :id => self[:id],
+    :name => self[:name],
+    :full_name => self[:full_name],
+    :repo_url => "#{Setting.github['link_host']}/#{self[:name]}",
+    :html_url => self[:html_url],
+    :languages => self[:languages],
+    :forked => self[:forked]
+    }.as_json
+  end
+
+  def self.scope_full_name name
     if name.nil?
-      Service.where("pretty_name LIKE '%'")
+      Repo.where("full_name LIKE '%'")
     else
-      Service.where("lower(pretty_name) LIKE ?", "#{name.downcase.gsub('*','%')}")
+      Repo.where("lower(full_name) LIKE ?", "#{name.downcase.gsub('*','%')}")
     end
   end
 
   def self.scope_has_burns
-    id_string = Burn.uniq.pluck(:service_id).join(",")
-    Service.id(id_string)
+    id_string = Burn.uniq.pluck(:repo_id).join(",")
+    Repo.id(id_string)
   end
 
   def self.scope_has_findings
-    id_string = Finding.uniq.pluck(:service_id).join(",")
-    Service.id(id_string)
+    id_string = Finding.uniq.pluck(:repo_id).join(",")
+    Repo.id(id_string)
   end
 end
