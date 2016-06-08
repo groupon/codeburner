@@ -103,8 +103,6 @@ class Api::GithubController < ApplicationController
 
     burn = Burn.create({:user => repo.webhook_user, :repo => repo, :branch => branch, :revision => revision, :repo_url => repo_url, :status_reason => "created via github webhook on #{Time.now}", :report_status => true, :pull_request => pull_request})
 
-    BurnWorker.perform_async burn.id
-
     render(:json => {burn_id: burn.id, repository: repo, branch: branch.name, revision: burn.revision, status: burn.status})
   end
 

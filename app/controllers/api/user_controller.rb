@@ -27,7 +27,7 @@ class Api::UserController < ApplicationController
   #before_filter :fake_authz
 
   VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url, :role ]
-  WEBHOOK_URL = "http://appsec-codeburner1.snc1:8081/api/github/webhook"
+  WEBHOOK_URL = "http:///api/github/webhook"
 
   def index
     render(:json => @current_user, :only => VALID_ATTRS)
@@ -50,14 +50,14 @@ class Api::UserController < ApplicationController
 
   def add_repo_hook
     github = CodeburnerUtil.user_github(@current_user)
-    github_repo = github.repo(repo.name)
-    repo = Repo.create_with(:forked => github_repo.fork, :full_name => github_repo.full_name, :html_url => github_repo.html_url).find_or_create_by(:name => github_repo.name)
+    github_repo = github.repo(params[:repo])
+    repo = Repo.create_with(:forked => github_repo.fork, :full_name => github_repo.full_name, :html_url => github_repo.html_url).find_or_create_by(:name => github_repo.full_name)
 
     result = github.create_hook(
       repo.name,
       'web',
       {
-        :url => WEBHOOK_URL,
+        :url => Setting.github['webhook_url'],
         :content_type => 'json'
       },
       {

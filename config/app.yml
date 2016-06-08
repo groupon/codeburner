@@ -29,6 +29,7 @@ defaults: &defaults
     api_endpoint: https://api.github.com/
     api_access_token:
     link_host: https://github.com
+    webhook_url: http://localhost:3000/api/github/webhook
     oauth:
       client_id:
       client_secret:

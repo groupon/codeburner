@@ -77,20 +77,20 @@ end
 
 namespace :retire do
   task :install do
-    run "if [ `retire -V` ]; then echo RetireJS already installed; else sudo npm install -g retire; fi"
-    run "sudo npm update -g retire"
+    execute "if [ `retire -V` ]; then echo RetireJS already installed; else sudo npm install -g retire; fi"
+    execute :sudo, "npm update -g retire"
   end
 end
 
 namespace :nsp do
   task :install do
-    run "if [ `nsp --version` ]; then echo NodeSecurityProject already installed; else sudo npm install -g nsp; fi"
-    run "sudo npm update -g nsp"
+    execute "if [ `nsp --version` ]; then echo NodeSecurityProject already installed; else sudo npm install -g nsp; fi"
+    execute :sudo, "sudo npm update -g nsp"
   end
 end
 
 before "deploy", "loadbalancer:remove"
 after 'deploy', 'loadbalancer:add'
 after 'deploy', 'puma:restart'
-after 'deploy', 'retire:install'
-after 'deploy', 'nsp:install'
+# after 'deploy', 'retire:install'
+# after 'deploy', 'nsp:install'
