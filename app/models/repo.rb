@@ -23,7 +23,7 @@
 #
 class Repo < ActiveRecord::Base
   validates :name, presence: true
-  validates :name, uniqueness: true
+  validates :full_name, uniqueness: true
   has_many :burns
   has_many :findings
   has_many :branches

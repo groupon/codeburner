@@ -31,6 +31,7 @@ class Burn < ActiveRecord::Base
   belongs_to :user
 
   after_save :update_caches
+  after_commit :run_worker, on: :create
 
   scope :id,                  -> (burn_id)      { scope_multiselect('burns.id', burn_id) }
   scope :repo_id,          -> (repo_id)   { scope_multiselect('burns.repo_id', repo_id) }
@@ -48,6 +49,10 @@ class Burn < ActiveRecord::Base
     Rails.cache.write('burn_list', CodeburnerUtil.get_burn_list)
     CodeburnerUtil.update_repo_stats(self.repo_id)
     CodeburnerUtil.update_system_stats
+  end
+
+  def run_worker
+    BurnWorker.perform_async(self.id)
   end
 
   def self.scope_multiselect attribute, value

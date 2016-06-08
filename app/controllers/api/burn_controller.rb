@@ -238,7 +238,7 @@ class Api::BurnController < ApplicationController
     github_repo = github.repo(params[:repo_name])
 
     repo = Repo.find_by_name(params[:repo_name])
-    repo = Repo.create({:name => github_repo.name, :full_name => github_repo.full_name, :forked => github_repo.fork, :html_url => github_repo.html_url}) if repo.nil?
+    repo = Repo.create({:name => github_repo.full_name, :full_name => github_repo.full_name, :forked => github_repo.fork, :html_url => github_repo.html_url}) if repo.nil?
 
     repo_url = "#{Setting.github['link_host']}/#{params[:repo_name]}"
 
@@ -264,8 +264,6 @@ class Api::BurnController < ApplicationController
     end
 
     render(:json => {burn_id: burn.id, repo_id: repo.id, repo_name: params[:repo_name], revision: burn.revision, status: burn.status})
-
-    BurnWorker.perform_async(burn.id)
   end
 
   def reignite
@@ -282,8 +280,6 @@ class Api::BurnController < ApplicationController
     github.create_status new_burn.repo.name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
 
     render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
-
-    BurnWorker.perform_async(new_burn.id)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
