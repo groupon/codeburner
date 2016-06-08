@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603165144) do
+ActiveRecord::Schema.define(version: 20160607153518) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "repo_id",    limit: 4

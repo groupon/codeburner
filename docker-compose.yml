@@ -21,7 +21,7 @@ web: &app_base
   links:
     - db
     - redis
-  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"
+  command: bash -c "rm -f /codeburner/tmp/pids/server.pid && rake db:migrate && bundle exec rails server -b 0.0.0.0"
 worker:
   <<: *app_base
   ports: []
