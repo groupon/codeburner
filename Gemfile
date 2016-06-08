@@ -73,3 +73,5 @@ gem 'rails-settings-cached'
 
 # for eventsource
 gem 'puma'
+
+gem 'capistrano-sidekiq', group: :development

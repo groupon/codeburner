@@ -8,7 +8,7 @@ Codeburner identified the following vulnerability in <%= @finding.repo.full_name
 <% unless @finding.code.nil? %>
 **Code:**
 
-```<%= @finding.burn.code_lang.split(',').first.downcase %>
+```<%= @finding.burns.last.code_lang.split(',').first.downcase %>
 <%= raw(@finding.code) %>
 ```
 <% end %>
