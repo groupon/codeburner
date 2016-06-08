@@ -1,8 +1,8 @@
-Codeburner identified the following vulnerability in <%= @finding.repo.full_name %> release {html}<a href="<%= @finding.burn.repo_url %>/tree/<%= @finding.burn.revision %>" target="_blank"><%= @finding.burn.revision %></a>{html}:
+Codeburner identified the following vulnerability in <%= @finding.repo.full_name %> release {html}<a href="<%= @finding.repo.html_url %>/tree/<%= @finding.burns.last.revision %>" target="_blank"><%= @finding.burns.last.revision %></a>{html}:
 
       *Description:*  <%= @finding.description %>
       *Severity:*     <%= @severity %>
       *Details:*      <%= raw(@details) %>
       *Scanner:*      <%= @finding.scanner %>
-      *File:*         {html}<a href="<%= @finding.burn.repo_url %>/blob/<%= @finding.burn.revision %>/<%= @finding.file %>#L<%= @finding.line %>" target="_blank"><%= @finding.file %></a>{html}
-      {code:<%= @finding.burn.code_lang %>|title=Line: <%= @finding.line %>|borderStyle=solid}<%= raw(@finding.code) %>{code}
+      *File:*         {html}<a href="<%= @finding.repo.html_url %>/blob/<%= @finding.burns.last.revision %>/<%= @finding.file %>#L<%= @finding.line %>" target="_blank"><%= @finding.file %></a>{html}
+      {code:<%= @finding.burns.last.code_lang %>|title=Line: <%= @finding.line %>|borderStyle=solid}<%= raw(@finding.code) %>{code}

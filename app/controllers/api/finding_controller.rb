@@ -300,14 +300,13 @@ class Api::FindingController < ApplicationController
     when "jira"
       result = publish_to_jira(finding.id, params[:project])
       ticket = result['key'] if result.has_key?('key')
-      link = "#{Setting.jira.link_host}/browse/#{ticket}"
+      link = "#{Setting.jira['link_host']}/browse/#{ticket}"
     when "github"
       return render(:json => {:error => "GitHub Authentication Required"}, :status => 403) if @current_user == nil
 
-      repo = CodeburnerUtil.strip_github_path(finding.burn.repo_url)
-      result = publish_to_github(@current_user, finding.id, repo)
+      result = publish_to_github(@current_user, finding.id, finding.repo.name)
 
-      ticket = "#{repo} - Issue ##{result.number}"
+      ticket = "#{finding.repo.full_name} - Issue ##{result.number}"
       link = result.html_url
     else
       return render(:json => {error: "unsupported publishing method"}, :status => 400)
@@ -349,7 +348,7 @@ class Api::FindingController < ApplicationController
       :password => Setting.jira['password'],
       :context_path => Setting.jira['context_path'],
       :auth_type => :basic,
-      :use_ssl => Setting.jira['use_ssl']
+      :use_ssl => YAML.load(Setting.jira['use_ssl'])
     }
 
     jira = JIRA::Client.new(jira_options)

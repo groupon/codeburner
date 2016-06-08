@@ -1,10 +1,10 @@
-Codeburner identified the following vulnerability in <%= @finding.repo.full_name %> release [<%= @finding.burn.revision %>](<%= "#{@finding.burn.repo_url}/tree/#{@finding.burn.revision}" %>):
+Codeburner identified the following vulnerability in <%= @finding.repo.full_name %> release <%= @finding.burns.last.revision %> :
 
 **Description:** <%= @finding.description %>
 **Severity:** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= @severity %>
 **Details:** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= raw(@details) %>
 **Scanner:** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= @finding.scanner %>
-**File:** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<%= @finding.file %>](<%= "#{@finding.burn.repo_url}/blob/#{@finding.burn.revision}/#{@finding.file}#L#{@finding.line}" %>)<% unless @finding.line.nil? %>, **Line:** <%= @finding.line %><% end %>
+**File:** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<%= @finding.file %>](<%= "#{@finding.repo.html_url}/blob/#{@finding.burns.last.revision}/#{@finding.file}#L#{@finding.line}" %>)<% unless @finding.line.nil? %>, **Line:** <%= @finding.line %><% end %>
 <% unless @finding.code.nil? %>
 **Code:**
 
