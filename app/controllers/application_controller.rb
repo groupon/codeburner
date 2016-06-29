@@ -44,9 +44,11 @@ class ApplicationController < ActionController::Base
       begin
         type, token = request.headers['Authorization'].split(' ')
 
-        if type == 'JWT'
+        type.downcase!
+
+        if type == 'jwt'
           uid = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]['uid']
-        elsif type == 'Bearer'
+        elsif type == 'bearer'
           uid = Token.find_by(token: token).user.github_uid
         else
            return render(:json => {:error => 'Authentication via GitHub OAuth or API token required'}, :status => 403)
