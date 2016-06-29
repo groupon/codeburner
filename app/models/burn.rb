@@ -282,6 +282,7 @@ Findings:
         self.update(:log => logfile.read)
         logfile.close
       end
+      File.delete(Rails.root.join("log/burns/#{self.id}.log"))
     end
   end
 

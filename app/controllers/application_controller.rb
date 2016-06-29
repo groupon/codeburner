@@ -39,17 +39,37 @@ class ApplicationController < ActionController::Base
     end
 
     def authz
+      return render(:json => {:error => 'Authentication via GitHub OAuth or API token required'}, :status => 403) if request.headers['Authorization'].nil?
+
       begin
-        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        type, token = request.headers['Authorization'].split(' ')
+
+        if type == 'JWT'
+          uid = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]['uid']
+        elsif type == 'Bearer'
+          uid = Token.find_by(token: token).user.github_uid
+        else
+           return render(:json => {:error => 'Authentication via GitHub OAuth or API token required'}, :status => 403)
+        end
+
         @current_user = User.find_by(github_uid: uid)
-      rescue JWT::DecodeError
-        render(:json => {:error => 'GitHub OAuth Required'}, :status => 403)
+      rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+        render(:json => {:error => 'Authentication via GitHub OAuth or API token required'}, :status => 403)
       end
     end
 
     def authz_no_fail
       begin
-        uid = JWT.decode(request.headers['Authorization'], Rails.application.secrets.secret_key_base)[0]['uid']
+        type, token = request.headers['Authorization'].split(' ')
+
+        if type == 'JWT'
+          uid = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]['uid']
+        elsif type == 'Bearer'
+          uid = Token.find_by(token: token).user.github_uid
+        else
+           return render(:json => {:error => 'Authentication via GitHub OAuth or API token required'}, :status => 403)
+        end
+
         @current_user = User.find_by(github_uid: uid)
       rescue JWT::DecodeError
         @current_user = nil
