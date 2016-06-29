@@ -258,6 +258,7 @@ Findings:
         logfile.close unless logfile.closed?
 
         self.update(status: 'done', status_reason: "completed on #{Time.now}", :log => File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rb').read)
+        File.delete(Rails.root.join("log/burns/#{self.id}.log"))
 
         if self.report_status
           if self.findings.status(0).count == 0
@@ -270,8 +271,10 @@ Findings:
         self.send_notifications(previous_stats)
       end
     rescue StandardError => e
-      self.update(status: 'failed', status_reason: "error downloading github archive on #{Time.now}")
       logfile.puts "[#{Time.now}] error downloading github archive"
+      self.update(status: 'failed', status_reason: "error downloading github archive on #{Time.now}", log: logfile.read)
+      logfile.close
+      File.delete(Rails.root.join("log/burns/#{self.id}.log"))
       $redis.publish "burn:#{self.id}:log", "[#{Time.now}] error downloading github archive"
       $redis.publish "burn:#{self.id}:log", "END_PIPELINE_LOG"
       Rails.logger.info e.message
@@ -281,8 +284,8 @@ Findings:
       if logfile and not logfile.closed?
         self.update(:log => logfile.read)
         logfile.close
+        File.delete(Rails.root.join("log/burns/#{self.id}.log"))
       end
-      File.delete(Rails.root.join("log/burns/#{self.id}.log"))
     end
   end
 
