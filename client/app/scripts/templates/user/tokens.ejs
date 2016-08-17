@@ -37,7 +37,7 @@ THE SOFTWARE.
           <br>
           <center>
             <button class="btn btn-default btn-flat" data-dismiss="modal" id="generate-cancel-btn"><i class="octicon octicon-x"></i> Cancel</button>
-            <button class="btn btn-primary btn-flat" data-dismiss="modal" id="generate-token-confirm"><i class="octicon octicon-check"></i> Generate</button>
+            <button class="btn btn-primary btn-flat" id="generate-token-confirm"><i class="octicon octicon-check"></i> Generate</button>
           </center>
         </div>
       </form>
@@ -49,7 +49,7 @@ THE SOFTWARE.
   <div class="panel-heading">API Tokens</div>
   <div class="panel-body">
     <% tokens.forEach(function(token) { %>
-      <%= token.name %> - <%= token.token %>
+      <button data-id="<%= token.id %>" class="btn btn-flat btn-sm btn-no-padding token-delete-btn"><i class="material-icons">clear</i></button>&nbsp;<%= token.name %> - <%= token.token %><br>
     <% }) %>
     <br>
     <button id="generate-token" class="btn btn-primary pull-right">Generate Token</button>

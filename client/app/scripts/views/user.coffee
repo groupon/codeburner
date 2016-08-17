@@ -46,8 +46,7 @@ Codeburner.Views.User = Backbone.View.extend
       @renderUserDetail id
 
     'click #generate-token': (e) ->
-      do $('#token-dialog').show
-      do $('#token-dialog').modal
+      $('#token-dialog').modal('toggle')
 
     'click #generate-token-confirm': (e) ->
       name = $('#token-name').val()
@@ -56,9 +55,19 @@ Codeburner.Views.User = Backbone.View.extend
         Codeburner.Utilities.alert "token name required"
 
       Codeburner.Utilities.postRequest '/api/token', {'name': name}, ((data) ->
+        $('#token-dialog').modal('toggle')
+        $('.modal-backdrop').remove()
         window.router.userView.renderUserDetail 'tokens'
       ), (data) ->
         Codeburner.Utilities.alert "#{data.responseJSON.error}"
+
+    'click .token-delete-btn': (e) ->
+      Codeburner.Utilities.confirm 'Are you sure you want to delete this token?', (=>
+        Codeburner.Utilities.deleteRequest "/api/token/#{$(e.target).data('id')}", ((res) =>
+          @renderUserDetail 'tokens'
+        ), (res) =>
+          Codeburner.Utilities.alert "#{res.responseJSON.error}"
+        ), ->
 
     'click #add-repo': (e) ->
       do Codeburner.Utilities.selectRepo
