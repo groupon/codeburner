@@ -27,7 +27,6 @@ class Api::UserController < ApplicationController
   #before_filter :fake_authz
 
   VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url, :role ]
-  WEBHOOK_URL = "http:///api/github/webhook"
 
   def index
     render(:json => @current_user, :only => VALID_ATTRS)
@@ -79,7 +78,7 @@ class Api::UserController < ApplicationController
   def remove_repo_hook
     repo = Repo.find(params[:repo])
     github = CodeburnerUtil.user_github(@current_user)
-    hook = github.hooks(repo.name).detect {|h| h.config[:url] == WEBHOOK_URL}
+    hook = github.hooks(repo.name).detect {|h| h.config[:url] == Setting.github['webhook_url']}
 
     if hook
       result = github.remove_hook repo.name, hook.id

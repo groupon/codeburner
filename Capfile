@@ -69,28 +69,56 @@ namespace :puma do
   end
 end
 
+namespace :logdir do
+  desc "create burn logs directory"
+  task :create do
+    on roles(:app) do
+      within release_path do
+        execute :mkdir, "log/burns"
+      end
+    end
+  end
+end
+
 namespace :frontend do
+  desc "build frontend javascript client"
   task :build do
-    sh 'cd client && grunt build && cp -r dist/* "#{Dir.pwd}/public/"'
+    sh "cd client && grunt build && cp -r dist/* \"#{Dir.pwd}/public/\""
   end
 end
 
 namespace :retire do
+  desc "install/update retire.js"
   task :install do
-    execute "if [ `retire -V` ]; then echo RetireJS already installed; else sudo npm install -g retire; fi"
-    execute :sudo, "npm update -g retire"
+    on roles(:app) do
+      unless test("[ `retire -V` ]")
+        execute :sudo, "npm", "install", "-g", "retire"
+      else
+        puts "RetireJS already installed"
+        execute :sudo, "npm", "update", "-g", "retire"
+      end
+    end
   end
 end
 
 namespace :nsp do
+  desc "install/update nsp"
   task :install do
-    execute "if [ `nsp --version` ]; then echo NodeSecurityProject already installed; else sudo npm install -g nsp; fi"
-    execute :sudo, "sudo npm update -g nsp"
+    on roles(:app) do
+      unless test("[ `nsp --version` ]")
+        execute :sudo, "npm", "install", "-g", "nsp"
+      else
+        puts "NSP already installed"
+        execute :sudo, "npm", "update", "-g", "nsp"
+      end
+    end
   end
 end
 
-before "deploy", "loadbalancer:remove"
+#before "deploy", 'frontend:build'
+before "deploy", 'loadbalancer:remove'
 after 'deploy', 'loadbalancer:add'
 after 'deploy', 'puma:restart'
-# after 'deploy', 'retire:install'
-# after 'deploy', 'nsp:install'
+after 'deploy', 'logdir:create'
+after 'deploy', 'retire:install'
+after 'deploy', 'nsp:install'

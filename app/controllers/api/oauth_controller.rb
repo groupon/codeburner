@@ -65,13 +65,15 @@ class Api::OauthController < ApplicationController
       user_github = Octokit::Client.new(:access_token => response['access_token'])
       user_info = user_github.user
 
-      user = User.find_or_create_by(:github_uid => user_info[:id]) do |u|
-        u.name = user_info[:login]
-        u.fullname = user_info[:name]
-        u.profile_url = user_info[:html_url]
-        u.avatar_url = user_info[:avatar_url]
-        u.access_token = response['access_token']
-      end
+      user = User.find_or_create_by(:github_uid => user_info[:id])
+
+      user.update(
+        :name => user_info[:login],
+        :fullname => user_info[:name],
+        :profile_url => user_info[:html_url],
+        :avatar_url => user_info[:avatar_url],
+        :access_token => response['access_token']
+      )
 
       jwt = JWT.encode({:uid => user.github_uid, :exp => 6.hours.from_now.to_i}, Rails.application.secrets.secret_key_base)
 
