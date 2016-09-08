@@ -35,7 +35,7 @@ Codeburner.Utilities =
       type: 'POST'
       data: data
       headers:
-        'Authorization': localStorage.getItem("authz")
+        'Authorization': 'JWT ' + localStorage.getItem("authz")
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -47,7 +47,7 @@ Codeburner.Utilities =
       type: 'GET'
       dataType: 'json'
       headers:
-        'Authorization': localStorage.getItem("authz")
+        'Authorization': 'JWT ' + localStorage.getItem("authz")
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -59,7 +59,7 @@ Codeburner.Utilities =
       type: 'PUT'
       dataType: 'json'
       headers:
-        'Authorization': localStorage.getItem("authz")
+        'Authorization': 'JWT ' + localStorage.getItem("authz")
       success: (res) ->
         cb res if cb?
       error: (res) ->
@@ -71,7 +71,7 @@ Codeburner.Utilities =
       type: 'DELETE'
       dataType: 'json'
       headers:
-        'Authorization': localStorage.getItem("authz")
+        'Authorization': 'JWT ' + localStorage.getItem("authz")
       success: (res) ->
         cb res if cb?
       error: (res) ->

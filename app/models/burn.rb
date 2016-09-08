@@ -270,9 +270,8 @@ Findings:
 
         self.send_notifications(previous_stats)
       end
-    rescue => e
-      Rails.logger.info "BURN FAILED: #{e.inspect}"
-      logfile.puts "[#{Time.now}] #{e.message}"
+
+    rescue StandardError => e
       logfile.puts "[#{Time.now}] error downloading github archive"
       self.update(status: 'failed', status_reason: "error downloading github archive on #{Time.now}", log: logfile.read)
       logfile.close
