@@ -69,18 +69,11 @@ class Codeburner.Routers.Main extends Backbone.Router
 
       unless parsedQuery.authz == undefined
         localStorage.setItem "authz", parsedQuery.authz
+        Codeburner.Utilities.authz()
 
-        Codeburner.Utilities.getRequest "/api/user", ((data) =>
-          Codeburner.User = data
-          Codeburner.Utilities.authz()
-
-          if localStorage.getItem "authRedirect"
-            window.location.hash = localStorage.getItem("authRedirect")
-            localStorage.removeItem "authRedirect"
-
-        ), (data) ->
-          Codeburner.User = null
-          console.log "invalid authz token"
+        if localStorage.getItem "authRedirect"
+          window.location.hash = localStorage.getItem("authRedirect")
+          localStorage.removeItem "authRedirect"
 
   resetViews: ->
     views = Object.keys(window.router).filter((key) =>

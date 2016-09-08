@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     resources :burn, :only => [:index, :show, :create ] do
       member do
         get 'reignite'
+        get 'livelog'
         get 'log'
       end
     end

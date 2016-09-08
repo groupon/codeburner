@@ -27,6 +27,7 @@ Codeburner.Views.BurnList = Backbone.View.extend
   el: $('#content')
   currentPage: 1
   logSources: {}
+  logSource: null
   initialize: (@burnCollection, @repoCollection) ->
     do @undelegateEvents
 
@@ -114,23 +115,24 @@ Codeburner.Views.BurnList = Backbone.View.extend
       $('[data-toggle="tooltip"]').tooltip('hide')
       target = $(e.target).closest('.burn-toggle-log')
       burnId = target.data 'id'
+      burn = @burnCollection.get(burnId).attributes
       logSpan = target.closest('.burn-list-item').find('.burn-log')
       button = $("button.burn-toggle-log[data-id=#{burnId}]")
 
       if logSpan.is(':visible')
         $("button.burn-toggle-log").removeClass('btn-highlight')
 
-        if @logSources[burnId]
-          logSpan.slideUp(300)
-          logSpan.html ""
+        logSpan.slideUp(300)
+        logSpan.html ""
 
-          @logSources[burnId].close()
-          delete @logSources[burnId]
-          @logSources[burnId] = null
+        if @logSource
+          @logSource.close()
+          delete @logSource
+          @logSource = null
 
-          $('#burn-pause-alert').hide()
-          do @burnCollection.resetFilter
-          do @setRefreshInterval
+        do @burnCollection.resetFilter
+        do @setRefreshInterval
+        do @renderBurns
       else
         $('#burn-pause-alert').show()
         do @clearRefreshInterval
@@ -138,28 +140,32 @@ Codeburner.Views.BurnList = Backbone.View.extend
         $("button.burn-toggle-log").removeClass('btn-highlight')
         button.addClass('btn-highlight')
 
-
         allLogSpans = target.closest('.container').find('.burn-log')
         allLogSpans.slideUp(300)
 
-        logSource = new EventSource("api/burn/#{burnId}/log")
+        unless burn.status == 'done' or burn.status == 'failed'
+          @logSource = new EventSource("api/burn/#{burnId}/livelog")
 
-        logSource.addEventListener('message', (e) ->
-          logSpan.append "#{e.data}\n"
-          logSpan.scrollTop logSpan[0].scrollHeight
-        , false)
+          @logSource.addEventListener('message', (e) ->
+            logSpan.append "#{e.data}\n"
+            logSpan.scrollTop logSpan[0].scrollHeight
+          , false)
 
-        logSource.addEventListener('error', (e) ->
-          e.srcElement.close()
-          window.router.burnListView.burnCollection.getPage(window.router.burnListView.currentPage).done =>
-            burn = window.router.burnListView.burnCollection.get(burnId).attributes
-            $(".burn-status[data-id=#{burn.id}]").html "&nbsp;#{burn.status}"
-            $(".burn-done-buttons[data-id=#{burn.id}]").fadeIn(500)
-        , false)
+          @logSource.addEventListener('error', (e) ->
+            e.srcElement.close()
+            window.router.burnListView.burnCollection.getPage(window.router.burnListView.currentPage).done =>
+              burn = window.router.burnListView.burnCollection.get(burnId).attributes
+              $(".burn-status[data-id=#{burn.id}]").html "&nbsp;#{burn.status}"
+              $(".burn-done-buttons[data-id=#{burn.id}]").fadeIn(500)
+          , false)
+        else
+          Codeburner.Utilities.getRequest "/api/burn/#{burnId}/log", ((data) =>
+            logSpan.html data.log
+            logSpan.scrollTop logSpan[0].scrollHeight
+          ), (data) =>
+            Codeburner.Utilities.alert "#{data.responseJSON.error}"
 
         logSpan.slideDown(300)
-
-        @logSources[burnId] = logSource
 
     'click #resume-burn-updates': (e) ->
       $('#burn-pause-alert').slideUp(300)

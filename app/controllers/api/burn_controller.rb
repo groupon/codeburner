@@ -285,6 +285,24 @@ class Api::BurnController < ApplicationController
   end
 
   def log
+    burn = Burn.find(params[:id])
+
+    if burn.status == 'burning'
+      log = @redis.get("burn:#{burn.id}:log")
+    else
+      log = burn.log
+    end
+
+    if log.nil?
+      log = "No pipeline log recorded\n"
+    end
+
+    render(:json => {lines: log.lines.count, log: log})
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no burn with that id found}"}, :status => 404)
+  end
+
+  def livelog
     response.headers['Content-Type'] = 'text/event-stream'
 
     burn = Burn.find(params[:id])
@@ -331,6 +349,8 @@ class Api::BurnController < ApplicationController
     ensure
       response.stream.close
     end
+  rescue ActiveRecord::RecordNotFound
+    render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
 
 end

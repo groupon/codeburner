@@ -86,6 +86,7 @@ module CodeburnerUtil
     return nil unless user
 
     Octokit.configure do |c|
+      c.auto_paginate = true
       if Setting.github['api_endpoint']
         c.api_endpoint = Setting.github['api_endpoint']
       end
