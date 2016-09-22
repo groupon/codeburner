@@ -177,8 +177,18 @@ Codeburner.Utilities =
 
   authz: ->
     if localStorage.getItem "authz"
-      Codeburner.Utilities.getRequest "/api/user", ((data) =>
+      Codeburner.Utilities.getRequest "/api/user", ((data) ->
         Codeburner.User = data
+
+        sync = Backbone.sync
+        Backbone.sync = (method, model, options) ->
+          options.beforeSend = (xhr) ->
+            xhr.setRequestHeader "Authorization", "JWT " + localStorage.getItem "authz"
+          sync(method, model, options)
+
+        $('.navbar-hidden').fadeIn(500)
+        $('#navbar-settings').fadeIn(500)
+
         $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
           name: Codeburner.User.name
           profileUrl: Codeburner.User.profile_url

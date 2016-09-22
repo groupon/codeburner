@@ -32,7 +32,8 @@ class Api::BurnController < ApplicationController
 
   protect_from_forgery
   respond_to :json, :html
-  before_filter :authz, only: [ :create, :destroy, :reignite ]
+  before_filter :authz, only: [ :index, :create, :destroy, :reignite ] unless Rails.env == 'development'
+  before_filter :fake_authz, only: [ :index, :create, :destroy, :reignite ] if Rails.env == 'development'
 
   # START ServiceDiscovery
   # resource: burns.index
@@ -118,6 +119,7 @@ class Api::BurnController < ApplicationController
     end
 
     burns = Burn.id(params[:id]) \
+      # .repo_id(params[:repo_id] ||= @current_user.repos.map{|r| r.id}.join(',')) \
       .repo_id(params[:repo_id]) \
       .repo_name(params[:repo_name]) \
       .revision(params[:revision]) \

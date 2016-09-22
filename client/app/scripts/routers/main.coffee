@@ -117,12 +117,11 @@ class Codeburner.Routers.Main extends Backbone.Router
 
 $ ->
   Codeburner.Utilities.checkAuthz window.location.hash
-  Codeburner.Utilities.authz()
+  Codeburner.Utilities.authz().done =>
+    repoCollection = new Codeburner.Collections.Repo
 
-  repoCollection = new Codeburner.Collections.Repo
-
-  repoCollection.fetch().done =>
-    window.router = new Codeburner.Routers.Main repoCollection
-    do $.material.init
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' })
-    do Backbone.history.start
+    repoCollection.fetch().done =>
+      window.router = new Codeburner.Routers.Main repoCollection
+      do $.material.init
+      $("body").tooltip({ selector: '[data-toggle=tooltip]' })
+      do Backbone.history.start

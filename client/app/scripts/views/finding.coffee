@@ -56,6 +56,12 @@ Codeburner.Views.FindingList = Backbone.View.extend
       if $('#fingerprint-span').height() > 20
         $('#fingerprint-span').html @collection.get(id).get('fingerprint').substring(0,36) + '<b style="font-size: 16px;"> <a href="javascript:void(0)" id="truncate-fingerprint">...</a></b>'
 
+      $('#detail').affix(
+        offset:
+          top: $('.navbar').outerHeight(true) + $('.finding-header-1').outerHeight(true) + $('.finding-header-2').outerHeight(true)
+          bottom: 0
+      )
+
     'click .header': (e) ->
       if @collection.state.sortKey is e.target.dataset.id
         @collection.state.order *= -1

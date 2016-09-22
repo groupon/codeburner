@@ -75,6 +75,8 @@ class Api::OauthController < ApplicationController
         :access_token => response['access_token']
       )
 
+      user.update_repos
+
       jwt = JWT.encode({:uid => user.github_uid, :exp => 6.hours.from_now.to_i}, Rails.application.secrets.secret_key_base)
 
       authenticated_url = "#{Setting.email['link_host']}#?authz=#{jwt}"

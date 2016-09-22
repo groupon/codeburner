@@ -62,6 +62,7 @@ module CodeburnerUtil
     yield Dir.glob("#{dir}/*/").max_by {|f| File.mtime(f)}
   rescue StandardError => e
     Rails.logger.error "Error inside_github_archive #{e.message}" unless Rails.env == 'test'
+    Rails.logger.error e.backtrace
     raise e
   ensure
     FileUtils.remove_entry_secure(dir)

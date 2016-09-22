@@ -28,10 +28,14 @@ Codeburner.Views.BurnList = Backbone.View.extend
   currentPage: 1
   logSources: {}
   logSource: null
+  repoSelect: null
   initialize: (@burnCollection, @repoCollection) ->
     do @undelegateEvents
 
   events:
+    # 'click .selectize-control': (e) ->
+    #   $('#repo-list')[0].selectize.clear()
+
     'click .header': (e) ->
       if @burnCollection.state.sortKey is e.target.dataset.id
         @burnCollection.state.order *= -1
@@ -176,11 +180,31 @@ Codeburner.Views.BurnList = Backbone.View.extend
 
       do @renderBurns
 
+    'change #repo-list': (e) ->
+      $('#burn_list').hide()
+      do @renderBurns
+
   renderBurns: ->
+    repoId = null
+    val = parseInt $('#repo-list').val()
+    switch val
+      when -1
+        repoId = null
+      when -2
+        repoId = Codeburner.User.repos.join(',')
+      else
+        repoId = val
+
+    @burnCollection.filters.repo_id = repoId
+    do @burnCollection.changeFilter
+
     @burnCollection.getPage(@currentPage).done =>
       $('#burn_list').html JST['app/scripts/templates/burn.ejs']
         burns: @burnCollection.models
+        repos: @repoCollection.models
         tagIdentifiers: [ '-', '.', '_' ]
+
+      $('#burn_list').fadeIn(500)
 
       Codeburner.Utilities.renderPaginater @currentPage, @burnCollection.state.totalPages, @burnCollection.state.totalRecords, @burnCollection.state.pageSize
 
@@ -199,5 +223,13 @@ Codeburner.Views.BurnList = Backbone.View.extend
   render: ->
     do @delegateEvents
     @$el.html JST['app/scripts/templates/burn_page.ejs']
+     repos: @repoCollection.models
+
+    $('#repo-list').selectize ->
+      valueField: 'full_name'
+      labelField: 'full_name'
+      searchField: [ 'name', 'html_url', 'full_name' ]
+      create: false
+
     do @renderBurns
     do @setRefreshInterval

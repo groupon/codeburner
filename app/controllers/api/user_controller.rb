@@ -23,18 +23,18 @@
 #
 class Api::UserController < ApplicationController
   respond_to :json
-  before_filter :authz
-  #before_filter :fake_authz
+  before_filter :authz unless Rails.env == 'development'
+  before_filter :fake_authz if Rails.env == 'development'
 
-  VALID_ATTRS = [ :id, :name, :fullname, :profile_url, :avatar_url, :role ]
+  VALID_ATTRS = [ 'id', 'name', 'fullname', 'profile_url', 'avatar_url', 'role', 'repos' ]
 
   def index
-    render(:json => @current_user, :only => VALID_ATTRS)
+    render(:json => @current_user.attributes.merge({'repos' => @current_user.repos.map{|r| r.id}}), :only => VALID_ATTRS)
   end
 
   def show
     user = User.find(params[:id])
-    render(:json => user, :only => VALID_ATTRS)
+    render(:json => user.attributes.merge({'repos' => user.repos.map{|r| r.id}}), :only => VALID_ATTRS)
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no user with that id found"}, :status => 404)
   end

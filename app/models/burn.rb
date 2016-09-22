@@ -21,6 +21,7 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
 #
+require 'pry'
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
   validates :repo_id, presence: true
@@ -34,14 +35,14 @@ class Burn < ActiveRecord::Base
   after_commit :run_worker, on: :create
 
   scope :id,                  -> (burn_id)      { scope_multiselect('burns.id', burn_id) }
-  scope :repo_id,          -> (repo_id)   { scope_multiselect('burns.repo_id', repo_id) }
-  scope :repo_name,        -> (repo_name) { joins(:repo).scope_repo_name(repo_name) }
-  scope :repo_name,  -> (name)   { joins(:repo).where("repos.name LIKE ?", name ||= '%') }
+  scope :repo_id,             -> (repo_id)      { scope_multiselect('burns.repo_id', repo_id) }
+  scope :repo_name,           -> (repo_name)    { joins(:repo).scope_repo_name(repo_name) }
+  # scope :repo_name,           -> (name)         { joins(:repo).where("repos.name LIKE ?", name ||= '%') }
   scope :revision,            -> (revision)     { where("revision LIKE ?", revision ||= "%") }
   scope :code_lang,           -> (code_lang)    { where("code_lang LIKE ? OR code_lang IS NULL", code_lang ||= "%") }
   scope :repo_url,            -> (repo_url)     { where("repo_url LIKE ? OR repo_url IS NULL", repo_url ||= "%") }
   scope :status,              -> (status)       { where("status LIKE ?", status ||= "%") }
-  scope :repo_portal,      -> (select)       { where("burns.repo_portal = ?", select) }
+  scope :repo_portal,         -> (select)       { where("burns.repo_portal = ?", select) }
   scope :branch_name,         -> (branch)       { joins(:branch).where("branches.name LIKE ?", branch ||= "%") }
   scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request ||= "%") }
 
@@ -272,15 +273,27 @@ Findings:
       end
 
     rescue StandardError => e
-      logfile.puts "[#{Time.now}] error downloading github archive"
-      self.update(status: 'failed', status_reason: "error downloading github archive on #{Time.now}", log: logfile.read)
-      logfile.close
-      File.delete(Rails.root.join("log/burns/#{self.id}.log"))
+      if logfile and not logfile.closed?
+        logfile.puts "[#{Time.now}] error downloading github archive"
+        
+        begin
+          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rb').read)
+        rescue IOError => e
+          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: 'logfile unavailable')
+          Rails.logger.error e.message
+          Rails.logger.error e.backtrace
+        end
+        logfile.close
+        File.delete(Rails.root.join("log/burns/#{self.id}.log"))
+      end
+
       $redis.publish "burn:#{self.id}:log", "[#{Time.now}] error downloading github archive"
       $redis.publish "burn:#{self.id}:log", "END_PIPELINE_LOG"
-      Rails.logger.info e.message
-      Rails.logger.info e.backtrace
-      self.send_failure_notification
+
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+
+      self.send_failure_notifications
     ensure
       if logfile and not logfile.closed?
         logfile.close
