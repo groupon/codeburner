@@ -75,3 +75,5 @@ gem 'rails-settings-cached'
 gem 'puma'
 
 gem 'capistrano-sidekiq', group: :development
+
+gem 'attr_encrypted', '~> 3.0.0'

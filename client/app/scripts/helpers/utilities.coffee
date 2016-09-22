@@ -187,7 +187,9 @@ Codeburner.Utilities =
           sync(method, model, options)
 
         $('.navbar-hidden').fadeIn(500)
-        $('#navbar-settings').fadeIn(500)
+
+        if Codeburner.User.role == 1
+          $('#navbar-settings').fadeIn(500)
 
         $('#login-menu').html JST['app/scripts/templates/login_menu.ejs']
           name: Codeburner.User.name

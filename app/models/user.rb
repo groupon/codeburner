@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   enum role: [:user, :admin]
   after_initialize :set_default_role, :if => :new_record?
 
+  attr_encrypted :access_token, key: '2317ae3699811fe0f614ff64a32dfee7cfad7583bbf130f367f2f31348c8b744'
+
   def set_default_role
     self.role ||= :user
   end

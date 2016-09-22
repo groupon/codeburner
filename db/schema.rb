@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160607153518) do
+ActiveRecord::Schema.define(version: 20160922204536) do
 
   create_table "branches", force: :cascade do |t|
     t.integer  "repo_id",    limit: 4
@@ -178,15 +178,16 @@ ActiveRecord::Schema.define(version: 20160607153518) do
   add_index "tokens", ["user_id"], name: "index_tokens_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.integer  "github_uid",   limit: 4
-    t.string   "name",         limit: 255
-    t.string   "profile_url",  limit: 255
-    t.string   "avatar_url",   limit: 255
-    t.string   "access_token", limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.integer  "role",         limit: 4
-    t.string   "fullname",     limit: 255
+    t.integer  "github_uid",                limit: 4
+    t.string   "name",                      limit: 255
+    t.string   "profile_url",               limit: 255
+    t.string   "avatar_url",                limit: 255
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.integer  "role",                      limit: 4
+    t.string   "fullname",                  limit: 255
+    t.string   "encrypted_access_token",    limit: 255
+    t.string   "encrypted_access_token_iv", limit: 255
   end
 
   create_table "versions", force: :cascade do |t|
