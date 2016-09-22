@@ -202,6 +202,8 @@ Codeburner.Utilities =
         Codeburner.User = null
         console.log "invalid authz token"
 
+    return $.Deferred().resolve(false)
+
   selectRepo: ->
     $('#select-repo').selectize
       valueField: 'full_name'

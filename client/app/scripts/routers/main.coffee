@@ -61,6 +61,12 @@ class Codeburner.Routers.Main extends Backbone.Router
     $('.nav-item').removeClass('active')
     $("#nav-#{name.split("Action")[0]}").addClass('active')
 
+    $('#sign-in').on 'click', ->
+      console.log 'Signing On'
+      localStorage.setItem('authRedirect',Backbone.history.location.hash)
+      $('#sign-in').html '<center><img class="center" alt="spinner" src="/images/loader.gif"></center>'
+      $('#sign-in').off()
+
     callback.apply(this, args) if callback
 
   checkAuthz: (query) ->

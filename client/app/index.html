@@ -91,7 +91,7 @@
           <li id="nav-stats" class="nav-item"><a href="#stats"><span class="octicon octicon-graph"></span> Statistics</a></li>
         </ul>
         <ul id="login-menu" class="nav navbar-nav navbar-right nav-dropdown">
-          <li class="nav-item" onclick="$('.nav-item').removeClass('active');$(this).addClass('active')"><a onclick="localStorage.setItem('authRedirect',Backbone.history.location.hash)" href="/api/oauth/authorize">Sign In</a></li>
+          <li class="nav-item"><a id="sign-in" href="/api/oauth/authorize">Sign In</a></li>
         </ul>
         <ul id="navbar-settings" class="nav navbar-nav" hidden>
           <li class="nav-item" id="nav-settings"><a href="#settings"><span class="octicon octicon-settings"></span> Settings</a></li>
