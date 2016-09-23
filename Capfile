@@ -115,6 +115,20 @@ namespace :nsp do
   end
 end
 
+namespace :snyk do
+  desc "install/update snyk"
+  task :install do
+    on roles(:app) do
+      unless test("[ `snyk --version` ]")
+        execute :sudo, "npm", "install", "-g", "snyk"
+      else
+        puts "snyk already installed"
+        execute :sudo, "npm", "update", "-g", "snyk"
+      end
+    end
+  end
+end
+
 #before "deploy", 'frontend:build'
 before "deploy", 'loadbalancer:remove'
 after 'deploy', 'loadbalancer:add'
@@ -122,3 +136,4 @@ after 'deploy', 'puma:restart'
 after 'deploy', 'logdir:create'
 after 'deploy', 'retire:install'
 after 'deploy', 'nsp:install'
+after 'deploy', 'snyk:install'

@@ -263,10 +263,11 @@ Findings:
 
         if self.report_status
           if self.findings.status(0).count == 0
-            github.create_status self.repo.name, self.revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{self.repo_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
+            status = 'success'
           else
-            github.create_status self.repo.name, self.revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{self.repo_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
+            status = 'failure'
           end
+          github.create_status self.repo.name, self.revision, status, :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{self.repo_id}&burn_id=#{self.id}&branch=#{self.branch.name}&only_current=false"
         end
 
         self.send_notifications(previous_stats)
@@ -275,7 +276,7 @@ Findings:
     rescue StandardError => e
       if logfile and not logfile.closed?
         logfile.puts "[#{Time.now}] error downloading github archive"
-        
+
         begin
           self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rb').read)
         rescue IOError => e
