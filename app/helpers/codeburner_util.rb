@@ -23,7 +23,7 @@
 #
 require 'open-uri'
 require 'tempfile'
-require 'pipeline'
+require 'glue'
 
 module CodeburnerUtil
 

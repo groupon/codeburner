@@ -22,6 +22,8 @@
 #THE SOFTWARE.
 #
 require 'pry'
+require 'glue'
+
 class Burn < ActiveRecord::Base
   validates :revision, presence: true
   validates :repo_id, presence: true
@@ -174,11 +176,11 @@ class Burn < ActiveRecord::Base
             if pipeline_options[:run_tasks].map{|t| t.downcase}.include?('checkmarx')
               checkmarx_options = pipeline_options
               checkmarx_options[:run_tasks] = 'Checkmarx'
-              tracker = Pipeline.run(checkmarx_options)
+              tracker = Glue.run(checkmarx_options)
               findings << tracker.findings
             end
 
-            tracker = Pipeline.run(pipeline_options)
+            tracker = Glue.run(pipeline_options)
             findings << tracker.findings
           end
 

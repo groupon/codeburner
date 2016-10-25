@@ -55,7 +55,7 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'owasp-pipeline', '>= 0.8.7'
+gem 'owasp-glue', '>= 0.9.0'
 gem 'whenever'
 gem 'chronic'
 
