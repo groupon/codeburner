@@ -45,7 +45,7 @@ class Api::RepoController < ApplicationController
   #         $ref: repos.show.response
   # END ServiceDiscovery
   def index
-    repos = Rails.cache.fetch('repos') { CodeburnerUtil.get_repos }
+    repos = CodeburnerUtil.get_repos
 
     render(:json => { "count": repos.length, "results": repos })
   end

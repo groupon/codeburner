@@ -93,7 +93,12 @@ module CodeburnerUtil
       end
     end
 
-    return Octokit::Client.new(:access_token => user.access_token)
+    begin
+      return Octokit::Client.new(:access_token => user.access_token)
+    rescue OpenSSL::Cipher::CipherError => e
+      Rails.logger.error e.message
+      Rails.logger.error e.backtrace
+    end
   end
 
   def self.tally_code dir, languages
@@ -133,11 +138,11 @@ module CodeburnerUtil
     {
       :repos => Repo.joins(:burns).where('burns.repo_id = repos.id').distinct.count,
       :burns => Burn.count,
-      :total_findings => Finding.only_current(true).count,
-      :open_findings => Finding.only_current(true).status(Finding.status_code[:open]).count,
-      :hidden_findings => Finding.only_current(true).status(Finding.status_code[:hidden]).count,
-      :published_findings => Finding.only_current(true).status(Finding.status_code[:published]).count,
-      :filtered_findings => Finding.only_current(true).status(Finding.status_code[:filtered]).count,
+      :total_findings => Finding.only_current.count,
+      :open_findings => Finding.only_current.status(Finding.status_code[:open]).count,
+      :hidden_findings => Finding.only_current.status(Finding.status_code[:hidden]).count,
+      :published_findings => Finding.only_current.status(Finding.status_code[:published]).count,
+      :filtered_findings => Finding.only_current.status(Finding.status_code[:filtered]).count,
       :files => Burn.sum(:num_files),
       :lines => Burn.sum(:num_lines)
     }
@@ -178,7 +183,7 @@ module CodeburnerUtil
 
   def self.get_repo_stats repo_id
     repo = Repo.find(repo_id)
-    findings = Finding.repo_id(repo.id).only_current(true)
+    findings = Finding.repo_id(repo.id).only_current
     return {
       :burns => Burn.repo_id(repo.id).count,
       :open_findings => findings.status(Finding.status_code[:open]).count,
@@ -202,7 +207,6 @@ module CodeburnerUtil
     end
 
     repo_stat.update(stats)
-    Rails.cache.write('repos', CodeburnerUtil.get_repos)
   end
 
   def self.update_system_stats

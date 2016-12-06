@@ -22,6 +22,8 @@
 #THE SOFTWARE.
 #
 class Finding < ActiveRecord::Base
+  include Filterable
+
   validates :repo_id, presence: true
   validates :fingerprint, presence: true
 
@@ -40,25 +42,23 @@ class Finding < ActiveRecord::Base
   belongs_to    :filter
 
   scope :id,                  -> (finding_id)   { scope_multiselect('findings.id', finding_id) }
-  scope :burn_id,             -> (burn_id)      { joins("INNER JOIN burns_findings ON findings.id = burns_findings.finding_id").where("burns_findings.burn_id LIKE ? OR burns_findings.burn_id IS NULL", burn_id ||= "%") }
-  scope :description,         -> (description)  { where("findings.description LIKE ? OR findings.description IS NULL", description ||= "%") }
-  scope :detail,              -> (detail)       { where("findings.detail LIKE ? OR findings.detail IS NULL", detail ||= "%" ) }
-  scope :repo_id,          -> (repo_id)   { scope_multiselect('findings.repo_id', repo_id) }
+  scope :burn_id,             -> (burn_id)      { joins('INNER JOIN burns_findings ON findings.id = burns_findings.finding_id').where('burns_findings.burn_id = ?', burn_id) }
+  scope :description,         -> (description)  { where description: description }
+  scope :detail,              -> (detail)       { where detail: detail }
+  scope :repo_id,             -> (repo_id)      { scope_multiselect('findings.repo_id', repo_id) }
   scope :branch_id,           -> (branch_id)    { scope_multiselect('findings.branch_id', branch_id) }
-  scope :branch_name,         -> (branch_name)  { joins(:branch).where("branches.name LIKE ?", branch_name ||= "%") }
-  scope :repo_name,        -> (repo_name) { joins(:repo).scope_repo_name(repo_name) }
-  scope :severity,            -> (severity)     { where("findings.severity LIKE ? OR findings.severity IS NULL", severity ||= "%") }
-  scope :fingerprint,         -> (fingerprint)  { where("findings.fingerprint LIKE ?", fingerprint ||= "%") }
-  scope :scanner,             -> (scanner)      { where("findings.scanner LIKE ? OR findings.scanner IS NULL", scanner ||= "%") }
-  scope :file,                -> (file)         { where("findings.file LIKE ? OR findings.file IS NULL", file ||= "%") }
-  scope :line,                -> (line)         { where("findings.line LIKE ? OR findings.line IS NULL", line ||= "%") }
-  scope :code,                -> (code)         { where("findings.code LIKE ? OR findings.code IS NULL", code ||= "%") }
-  scope :status,              -> (status)       { scope_multiselect('findings.status', status) }
-  scope :filtered_by,         -> (filter_id)    { joins(:filter).where("filters.id = ?", filter_id)}
-  scope :repo_portal,      -> (select)       { joins(:burn).where("burns.repo_portal = ?", select) }
-  scope :only_current,        -> (select)       { scope_current(select) }
-  scope :latest,              ->                {  }
-  scope :branch,              -> (branch)       { where("findings.branch_id LIKE ?", branch ||= "%") }
+  scope :branch,              -> (branch_name)  { joins(:branch).where('branches.name = ?', branch_name) }
+  scope :repo_name,           -> (repo_name)    { joins(:repo).where('lower(repos.full_name) = ? OR lower(repos.name) = ?', repo_name.downcase, repo_name.downcase) }
+  scope :severity,            -> (severity)     { where severity: severity }
+  scope :fingerprint,         -> (fingerprint)  { where fingerprint: fingerprint }
+  scope :scanner,             -> (scanner)      { where scanner: scanner }
+  scope :file,                -> (file)         { where file: file }
+  scope :line,                -> (line)         { where line: line }
+  scope :code,                -> (code)         { where code: code }
+  scope :status,              -> (status)       { scope_multiselect('findings.status', status.to_s) }
+  scope :filtered_by,         -> (filter_id)    { joins(:filter).where('filters.id = ?', filter_id)}
+  scope :repo_portal,         -> (repo_portal)  { joins(:burn).where('burns.repo_portal = ?', repo_portal) }
+  scope :only_current,        ->                { where current: true }
 
   def filter!
     hit = self.filtered_by?
@@ -83,20 +83,7 @@ class Finding < ActiveRecord::Base
 
   def self.scope_current only_current
     if only_current
-      where("findings.current = ?", true)
-    end
-  end
-
-  def self.scope_multiselect attribute, value
-    case value
-    when nil
-      where("#{attribute} LIKE '%'")
-    when /,/
-      hash = {}
-      hash[attribute] = value.split(',')
-      where(hash)
-    else
-      where("#{attribute} LIKE ?", value)
+      where('findings.current = ?', true)
     end
   end
 

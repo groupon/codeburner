@@ -118,23 +118,7 @@ class Api::FindingController < ApplicationController
       order = params[:order].upcase if ['ASC','DESC'].include? params[:order].upcase
     end
 
-    if params.has_key?(:only_current) and ["false", "no", "n"].include? params[:only_current].downcase
-      only_current = false
-    else
-      only_current = true
-    end
-
-
-
-    results = Finding.only_current(only_current) \
-      .id(params[:id]) \
-      .repo_id(params[:repo_id]) \
-      .branch_name(params[:branch]) \
-      .repo_name(params[:repo_name]) \
-      .severity(params[:severity]) \
-      .description(params[:description]) \
-      .fingerprint(params[:fingerprint]) \
-      .status(params[:status]) \
+    results = Finding.filter(whitelist_params)
       .order("#{sort_by} #{order}") \
       .page(params[:page]) \
       .per(params[:per_page]) \
@@ -145,6 +129,10 @@ class Api::FindingController < ApplicationController
 
     if params.has_key?(:filtered_by)
       results = results.filtered_by(params[:filtered_by])
+    end
+
+    if params.has_key?(:only_current) and ["true", "yes", "y"].include? params[:only_current].downcase
+      results = results.only_current
     end
 
     render(:json => { "count": results.total_count, "results": results.map{|r| r.to_json} })
@@ -375,5 +363,10 @@ class Api::FindingController < ApplicationController
       return nil
     end
   end
+
+  private
+    def whitelist_params
+      params.permit(:id, :burn_id, :description, :detail, :repo_id, :branch_id, :repo_name, :severity, :fingerprint, :scanner, :file, :line, :code, :status, :filtered_by, :repo_portal, :branch)
+    end
 
 end

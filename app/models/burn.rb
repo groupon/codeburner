@@ -25,6 +25,8 @@ require 'pry'
 require 'glue'
 
 class Burn < ActiveRecord::Base
+  include Filterable
+
   validates :revision, presence: true
   validates :repo_id, presence: true
   attr_default :status, 'created'
@@ -38,15 +40,14 @@ class Burn < ActiveRecord::Base
 
   scope :id,                  -> (burn_id)      { scope_multiselect('burns.id', burn_id) }
   scope :repo_id,             -> (repo_id)      { scope_multiselect('burns.repo_id', repo_id) }
-  scope :repo_name,           -> (repo_name)    { joins(:repo).scope_repo_name(repo_name) }
-  # scope :repo_name,           -> (name)         { joins(:repo).where("repos.name LIKE ?", name ||= '%') }
-  scope :revision,            -> (revision)     { where("revision LIKE ?", revision ||= "%") }
-  scope :code_lang,           -> (code_lang)    { where("code_lang LIKE ? OR code_lang IS NULL", code_lang ||= "%") }
-  scope :repo_url,            -> (repo_url)     { where("repo_url LIKE ? OR repo_url IS NULL", repo_url ||= "%") }
-  scope :status,              -> (status)       { where("status LIKE ?", status ||= "%") }
-  scope :repo_portal,         -> (select)       { where("burns.repo_portal = ?", select) }
-  scope :branch_name,         -> (branch)       { joins(:branch).where("branches.name LIKE ?", branch ||= "%") }
-  scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request ||= "%") }
+  scope :repo_name,           -> (repo_name)    { joins(:repo).where('lower(repos.full_name) LIKE ? OR lower(repos.name) LIKE ?', repo_name.downcase, repo_name.downcase) }
+  scope :revision,            -> (revision)     { where revision: revision }
+  scope :code_lang,           -> (code_lang)    { where code_lang: code_lang }
+  scope :repo_url,            -> (repo_url)     { where repo_url: repo_url }
+  scope :status,              -> (status)       { where status: status }
+  scope :repo_portal,         -> (repo_portal)  { where("burns.repo_portal = ?", repo_portal) }
+  scope :branch_name,         -> (branch)       { joins(:branch).where("branches.name = ?", branch) }
+  scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request) }
 
   def update_caches
     Rails.cache.write('burn_list', CodeburnerUtil.get_burn_list)
@@ -56,28 +57,6 @@ class Burn < ActiveRecord::Base
 
   def run_worker
     BurnWorker.perform_async(self.id)
-  end
-
-  def self.scope_multiselect attribute, value
-    case value
-    when nil
-      where("#{attribute} LIKE '%'")
-    when /,/
-      hash = {}
-      hash[attribute] = value.split(',')
-      where(hash)
-    else
-      where("#{attribute} LIKE ?", value)
-    end
-  end
-
-  def self.scope_repo_name name
-    if name.nil?
-      Burn.where("repos.full_name LIKE '%' OR repos.name LIKE '%'")
-    else
-      name_query = "#{name.downcase}"
-      Burn.where("lower(repos.full_name) LIKE ? OR lower(repos.name) LIKE ?", name_query, name_query)
-    end
   end
 
   def to_json
@@ -113,7 +92,7 @@ class Burn < ActiveRecord::Base
   def ignite
     begin
       github = CodeburnerUtil.user_github(self.user)
-      logfile = File.open(Rails.root.join("log/burns/#{self.id}.log"), 'a')
+      logfile = File.open(Rails.root.join("log/burns/#{self.id}.log"), 'w+')
       logfile.sync = true
 
       github.create_status self.repo.name, self.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns?id=#{self.id}" if self.report_status
@@ -185,7 +164,7 @@ class Burn < ActiveRecord::Base
           end
 
           log_thread = Thread.new do
-            File.open(Rails.root.join("log/burns/#{self.id}.log"), 'r') do |logfile_readonly|
+            File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rt') do |logfile_readonly|
               while pipeline_thread.status do
                 while line = logfile_readonly.gets
                   $redis.append "burn:#{self.id}:log", line if line =~ /^/
@@ -260,7 +239,7 @@ Findings:
 
         logfile.close unless logfile.closed?
 
-        self.update(status: 'done', status_reason: "completed on #{Time.now}", :log => File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rb').read)
+        self.update(status: 'done', status_reason: "completed on #{Time.now}", :log => File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rt').read)
         File.delete(Rails.root.join("log/burns/#{self.id}.log"))
 
         if self.report_status
@@ -280,7 +259,7 @@ Findings:
         logfile.puts "[#{Time.now}] error downloading github archive"
 
         begin
-          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rb').read)
+          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rt').read)
         rescue IOError => e
           self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: 'logfile unavailable')
           Rails.logger.error e.message
@@ -297,6 +276,8 @@ Findings:
       Rails.logger.error e.backtrace
 
       self.send_failure_notifications
+    rescue Octokit::UnprocessableEntity => e
+      Rails.logger.error e.message
     ensure
       if logfile and not logfile.closed?
         logfile.close

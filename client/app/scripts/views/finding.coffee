@@ -51,7 +51,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
       $('#detail').html JST['app/scripts/templates/detail.ejs']
         id: id
         finding: @collection.get(id).attributes
-        burnList: @collection.burnList
 
       if $('#fingerprint-span').height() > 20
         $('#fingerprint-span').html @collection.get(id).get('fingerprint').substring(0,36) + '<b style="font-size: 16px;"> <a href="javascript:void(0)" id="truncate-fingerprint">...</a></b>'
@@ -231,19 +230,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
     else
       repos
 
-  updateBurnList: ->
-      burns = []
-      for model in @collection.models
-        burns.push model.get('burn_id')
-
-      Codeburner.Utilities.getRequest "/api/burn?id=#{_.uniq(burns).join(',')}", ((data) =>
-        burnList = {}
-        for result in data.results
-          burnList[result.id] = { 'revision':result.revision, 'repoUrl':result.repo_url }
-        @collection.burnList = burnList
-      ), (data) ->
-        Codeburner.Utilities.alert "#{data.responseJSON.error}"
-
   renderFindings: ->
     if @collection.filters.repo_id
       @repo_name = @repoCollection.models[_.findIndex(@repoCollection.models, {id: parseInt(@collection.filters.repo_id)})].get('name')
@@ -266,7 +252,6 @@ Codeburner.Views.FindingList = Backbone.View.extend
         sortBy.addClass 'dropup'
 
       Codeburner.Utilities.renderPaginater @currentPage, @collection.state.totalPages, @collection.state.totalRecords, @collection.state.pageSize
-      do @updateBurnList
 
   filterFindings: (repo, branch) ->
     if repo?

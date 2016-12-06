@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 # sidekiq
 gem 'sidekiq', '>= 3.4.2'
@@ -6,7 +6,7 @@ gem 'sinatra', :require => false # for the UI
 gem 'slim'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.5.1'
+gem 'rails', '~> 4.2.7.1'
 
 # mysql db
 gem 'mysql2', '~> 0.3.20', '>= 0.3.20'

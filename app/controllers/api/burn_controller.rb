@@ -118,12 +118,7 @@ class Api::BurnController < ApplicationController
       order = params[:order].upcase if ['ASC','DESC'].include? params[:order].upcase
     end
 
-    burns = Burn.id(params[:id]) \
-      # .repo_id(params[:repo_id] ||= @current_user.repos.map{|r| r.id}.join(',')) \
-      .repo_id(params[:repo_id]) \
-      .repo_name(params[:repo_name]) \
-      .revision(params[:revision]) \
-      .status(params[:status]) \
+    burns = Burn.filter(whitelist_params) \
       .order("#{sort_by} #{order}") \
       .page(params[:page]) \
       .per(params[:per_page]) \
@@ -279,7 +274,11 @@ class Api::BurnController < ApplicationController
     new_burn.status = 'created'
     new_burn.save
 
-    github.create_status new_burn.repo.name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
+    begin
+      github.create_status new_burn.repo.name, new_burn.revision, 'pending', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#burns" if new_burn.report_status
+    rescue Octokit::UnprocessableEntity => e
+      Rails.logger.error e.message
+    end
 
     render(:json => {burn_id: new_burn.id, revision: new_burn.revision, status: new_burn.status})
   rescue ActiveRecord::RecordNotFound
@@ -354,5 +353,10 @@ class Api::BurnController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render(:json => {error: "no burn with that id found}"}, :status => 404)
   end
+
+  private
+    def whitelist_params
+      params.permit(:id, :repo_id, :repo_name, :revision, :code_lang, :repo_url, :repo_portal, :branch_name, :pull_request)
+    end
 
 end

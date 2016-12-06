@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
     self.update(:repos => [])
 
     github = CodeburnerUtil.user_github(self)
-    local_repos = Rails.cache.fetch('repos') { CodeburnerUtil.get_repos }
+    local_repos = CodeburnerUtil.get_repos
 
     matched_repo_ids = []
 

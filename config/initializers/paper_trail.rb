@@ -20,12 +20,5 @@
 #LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 #THE SOFTWARE.
-#
----
 
-:concurrency: 10
-:pidfile: tmp/pids/sidekiq.pid
-:logfile: ./log/sidekiq.log
-:timeout: 3600
-:queues:
-- codeburner
+PaperTrail.config.track_associations = false

@@ -87,16 +87,20 @@ class Api::GithubController < ApplicationController
 
     github = CodeburnerUtil.user_github(repo.webhook_user)
 
+    begin
     duplicate_burn = Burn.repo_name(repo.name).branch_name(branch.name).revision(revision).order("created_at").last
-    if duplicate_burn
-      unless duplicate_burn.status == 'failed'
-        if duplicate_burn.findings.status(0).count == 0
-          github.create_status repo.name, revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
-        else
-          github.create_status repo.name, revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
+      if duplicate_burn
+        unless duplicate_burn.status == 'failed'
+          if duplicate_burn.findings.status(0).count == 0
+            github.create_status repo.name, revision, 'success', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
+          else
+            github.create_status repo.name, revision, 'failure', :context => 'Codeburner', :description => 'codeburner security analysis', :target_url => "#{Setting.email['link_host']}/\#findings?repo_id=#{repo.id}&branch=#{duplicate_burn.branch.name}&burn_id=#{duplicate_burn.id}&only_current=false"
+          end
+          return render(:json => {error: "Already burning #{repo.name} - #{revision}"})
         end
-        return render(:json => {error: "Already burning #{repo.name} - #{revision}"})
       end
+    rescue Octokit::UnprocessableEntity => e
+      Rails.logger.error e.message
     end
 
     repo_url = github.repo(repo.name).html_url

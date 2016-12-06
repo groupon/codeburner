@@ -29,7 +29,7 @@ class Filter < ActiveRecord::Base
 
   validates_with FilterValidator
 
-  scope :repo_id,  -> (repo_id)   { where("filters.repo_id = ? OR filters.repo_id IS NULL", repo_id ||= '') }
+  scope :repo_id,     -> (repo_id)      { where("filters.repo_id = ? OR filters.repo_id IS NULL", repo_id ||= '') }
   scope :severity,    -> (severity)     { where("filters.severity = ? OR filters.severity IS NULL", severity ||= '') }
   scope :fingerprint, -> (fingerprint)  { where("filters.fingerprint = ? OR filters.fingerprint IS NULL", fingerprint ||= '') }
   scope :scanner,     -> (scanner)      { where("filters.scanner = ? OR filters.scanner IS NULL", scanner ||= '') }
