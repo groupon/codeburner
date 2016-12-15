@@ -23,7 +23,7 @@
 #
 common: &common
   adapter: mysql2
-  pool: 5
+  pool: 40
   wait_timeout: 1000
   connect_timeout: 500
   read_timeout: 2000

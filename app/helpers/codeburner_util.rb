@@ -48,24 +48,19 @@ module CodeburnerUtil
   end
 
   def self.inside_github_archive repo_url, ref
-    dir = Dir.mktmpdir
-    filename = Dir::Tmpname.make_tmpname(['codeburner', '.tar.gz'], nil)
-    archive_link = self.github.archive_link(strip_github_path(repo_url), {:ref => ref})
+    Dir.mktmpdir { |dir|
+      filename = Dir::Tmpname.make_tmpname(['codeburner', '.tar.gz'], nil)
+      archive_link = self.github.archive_link(strip_github_path(repo_url), {:ref => ref})
 
-    IO.copy_stream(open(archive_link), "#{dir}/#{filename}")
+      IO.copy_stream(open(archive_link), "#{dir}/#{filename}")
 
-    raise(IOError, "#{dir}/#{filename} does not exist") unless FileTest.exists?("#{dir}/#{filename}")
+      raise(IOError, "#{dir}/#{filename} does not exist") unless FileTest.exists?("#{dir}/#{filename}")
 
-    exit_msg = `tar xzf #{dir}/#{filename} -C #{dir} 2>&1`
-    raise(IOError, exit_msg) if $?.to_i != 0
+      exit_msg = `tar xzf #{dir}/#{filename} -C #{dir} 2>&1`
+      raise(IOError, exit_msg) if $?.to_i != 0
 
-    yield Dir.glob("#{dir}/*/").max_by {|f| File.mtime(f)}
-  rescue StandardError => e
-    Rails.logger.error "Error inside_github_archive #{e.message}" unless Rails.env == 'test'
-    Rails.logger.error e.backtrace
-    raise e
-  ensure
-    FileUtils.remove_entry_secure(dir)
+      yield Dir.glob("#{dir}/*/").max_by {|f| File.mtime(f)}
+    }
   end
 
   def self.get_repo_info repo_name
@@ -104,31 +99,35 @@ module CodeburnerUtil
   def self.tally_code dir, languages
     num_files, num_lines = 0, 0
 
-    languages.each do |lang|
-      case lang
-      when 'Ruby'
-        filelist = ['Gemfile','Gemfile.lock','*.rb','*.haml','*.erb']
-      when 'JavaScript'
-        filelist = ['package.json', '*.js']
-      when 'CoffeeScript'
-        filelist = ['package.json']
-      when 'Java'
-        filelist = ['*.java']
-      when 'Python'
-        filelist = ['*.py']
-      else
-        filelist = []
-      end
+    if Dir.exists? dir
+      languages.each do |lang|
+        case lang
+        when 'Ruby'
+          filelist = ['Gemfile','Gemfile.lock','*.rb','*.haml','*.erb']
+        when 'JavaScript'
+          filelist = ['package.json', '*.js']
+        when 'CoffeeScript'
+          filelist = ['package.json']
+        when 'Java'
+          filelist = ['*.java']
+        when 'Python'
+          filelist = ['*.py']
+        else
+          filelist = []
+        end
 
-      filelist.each do |files|
-        exclude = ''
-        exclude = "-not -path #{dir}/node_modules/*" if files == '*.js'
-        files_found = `find #{dir}/ -name #{files} #{exclude}| wc -l`.to_i
-        num_files += files_found
-        if files_found > 0
-          num_lines += `find #{dir}/ -name #{files} #{exclude}| xargs wc -l`.split("\n").last.split[0].to_i
+        filelist.each do |files|
+          exclude = ''
+          exclude = "-not -path #{dir}/node_modules/*" if files == '*.js'
+          files_found = `find #{dir}/ -name #{files} #{exclude}| wc -l`.to_i
+          num_files += files_found
+          if files_found > 0
+            num_lines += `find #{dir}/ -name #{files} #{exclude}| xargs wc -l`.split("\n").last.split[0].to_i
+          end
         end
       end
+    else
+      Rails.logger.warn "Directory #{dir} DOES NOT EXIST"
     end
 
     return num_files, num_lines
@@ -260,6 +259,7 @@ module CodeburnerUtil
 
   def self.get_burn_history start_date=nil, end_date=nil, repo_id=nil
     results = []
+
     first_burn = Burn.repo_id(repo_id).first.created_at
     if start_date.nil?
       start_date = Date.new(first_burn.year, first_burn.month, first_burn.day)

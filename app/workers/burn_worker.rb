@@ -24,7 +24,7 @@
 class BurnWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :codeburner, retry: 5, backtrace: true
+  sidekiq_options queue: :codeburner, retry: 5, backtrace: true, unique: :until_and_while_executing
 
   def perform(burn_id)
     burn = Burn.find(burn_id)

@@ -4,6 +4,7 @@ source 'http://rubygems.org'
 gem 'sidekiq', '>= 3.4.2'
 gem 'sinatra', :require => false # for the UI
 gem 'slim'
+gem 'sidekiq-unique-jobs'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.7.1'
@@ -55,15 +56,14 @@ gem 'jira-ruby'
 gem 'octokit'
 
 # scanning stuff
-gem 'owasp-glue', '>= 0.9.0'
-gem 'whenever'
+gem 'owasp-glue', '>= 0.9.2'
 gem 'chronic'
 
 # redis caching
 gem 'redis-rails'
 
 # paper_trail for stats generation/tracking
-gem 'paper_trail', '>= 4.0.0'
+gem 'paper_trail', '~> 4.0.0'
 
 # for OAuth
 gem 'jwt'

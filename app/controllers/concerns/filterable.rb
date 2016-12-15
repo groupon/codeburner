@@ -13,8 +13,10 @@ module Filterable
     end
 
     def scope_multiselect attribute, value
-      value = value.to_s
-      where(attribute.to_sym => value.split(','))
+      unless value.nil?
+        value = value.to_s
+        where(attribute.to_sym => value.split(','))
+      end
     end
   end
 end

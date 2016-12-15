@@ -50,7 +50,6 @@ class Burn < ActiveRecord::Base
   scope :pull_request,        -> (pull_request) { where("burns.pull_request = ?", pull_request) }
 
   def update_caches
-    Rails.cache.write('burn_list', CodeburnerUtil.get_burn_list)
     CodeburnerUtil.update_repo_stats(self.repo_id)
     CodeburnerUtil.update_system_stats
   end
@@ -176,6 +175,7 @@ class Burn < ActiveRecord::Base
           end
 
           [ pipeline_thread, log_thread ].each {|t| t.join}
+
         end
 
         previous_stats = CodeburnerUtil.get_repo_stats(self.repo_id)
@@ -217,8 +217,9 @@ class Burn < ActiveRecord::Base
             end
           end
         end
-        files,lines = CodeburnerUtil.tally_code(dir, languages)
-        self.update(num_files: files, num_lines: lines)
+
+        # files,lines = CodeburnerUtil.tally_code(dir, languages)
+        # self.update(num_files: files, num_lines: lines)
 
         finish_lines = %Q(
 [#{Time.now}] Burn #{self.id} finished
@@ -254,28 +255,28 @@ Findings:
         self.send_notifications(previous_stats)
       end
 
-    rescue StandardError => e
-      if logfile and not logfile.closed?
-        logfile.puts "[#{Time.now}] error downloading github archive"
-
-        begin
-          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rt').read)
-        rescue IOError => e
-          self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: 'logfile unavailable')
-          Rails.logger.error e.message
-          Rails.logger.error e.backtrace
-        end
-        logfile.close
-        File.delete(Rails.root.join("log/burns/#{self.id}.log"))
-      end
-
-      $redis.publish "burn:#{self.id}:log", "[#{Time.now}] error downloading github archive"
-      $redis.publish "burn:#{self.id}:log", "END_PIPELINE_LOG"
-
-      Rails.logger.error e.message
-      Rails.logger.error e.backtrace
-
-      self.send_failure_notifications
+    # rescue StandardError => e
+    #   if logfile and not logfile.closed?
+    #     logfile.puts "[#{Time.now}] error downloading github archive"
+    #
+    #     begin
+    #       self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: File.open(Rails.root.join("log/burns/#{self.id}.log"), 'rt').read)
+    #     rescue IOError => e
+    #       self.update(status: 'failed', status_reason: "[#{Time.now}] - #{e.message}", log: 'logfile unavailable')
+    #       Rails.logger.error e.message
+    #       Rails.logger.error e.backtrace
+    #     end
+    #     logfile.close
+    #     File.delete(Rails.root.join("log/burns/#{self.id}.log"))
+    #   end
+    #
+    #   $redis.publish "burn:#{self.id}:log", "[#{Time.now}] error downloading github archive"
+    #   $redis.publish "burn:#{self.id}:log", "END_PIPELINE_LOG"
+    #
+    #   Rails.logger.error e.message
+    #   Rails.logger.error e.backtrace
+    #
+    #   self.send_failure_notifications
     rescue Octokit::UnprocessableEntity => e
       Rails.logger.error e.message
     ensure

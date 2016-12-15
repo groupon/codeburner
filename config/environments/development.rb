@@ -67,4 +67,5 @@ Rails.application.configure do
 
   #logging level
   config.log_level = :debug
+
 end

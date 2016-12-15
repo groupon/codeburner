@@ -100,7 +100,7 @@ class Api::BurnController < ApplicationController
   # END ServiceDiscovery
   def index
     if params[:page] == '1' and params[:per_page] == '10' and params[:sort_by] == 'count' and params[:order] == 'desc'
-      burn_list = Rails.cache.fetch('burn_list') { CodeburnerUtil.get_burn_list }
+      burn_list = CodeburnerUtil.get_burn_list
       return render(:json => {count: Rails.cache.fetch('stats'){CodeburnerUtil.get_stats}[:burns], results: burn_list })
     end
 
