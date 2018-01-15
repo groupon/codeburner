@@ -6,7 +6,7 @@ gem 'sinatra', :require => false # for the UI
 gem 'slim'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.7.1'
+gem 'rails', '~> 4.2'
 
 # mysql db
 gem 'mysql2', '~> 0.3.20', '>= 0.3.20'
@@ -73,7 +73,5 @@ gem 'rails-settings-cached'
 
 # for eventsource
 gem 'puma'
-
-gem 'capistrano-sidekiq', group: :development
 
 gem 'attr_encrypted', '~> 3.0.0'
