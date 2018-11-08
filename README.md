@@ -17,7 +17,7 @@ One static analysis tool to rule them all.
 ## What is Codeburner?
 Codeburner is a tool to help security (and dev!) teams manage the chaos of static code analysis.  Sure, you can fire off a bunch of scripts at the end of every CI build... but what do you actually DO with all those results?
 
-Codeburner uses the [OWASP pipeline](https://github.com/OWASP/pipeline) project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.
+Codeburner uses the [OWASP Glue](https://github.com/OWASP/glue) project to run multiple open source and commercial static analysis tools against your code, and provides a unified (and we think rather attractive) interface to sort and act on the issues it finds.
 
 ## Key Features
 * Asynchronous scanning (via sidekiq) that scales
